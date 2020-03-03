@@ -4,7 +4,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using RecruitMe.Data.Common.Models;
-    using RecruitMe.Data.Models.Enums;
+    using RecruitMe.Data.Models.EnumModels;
 
     public class JobApplication : BaseDeletableModel<string>
     {
@@ -24,6 +24,8 @@
         public JobOffer JobOffer { get; set; }
 
         [Required]
-        public ApplicationStatus ApplicationStatus { get; set; }
+        public int ApplicationStatusId { get; set; }
+
+        public JobApplicationStatus ApplicationStatus { get; set; }
     }
 }

@@ -13,7 +13,7 @@
     using Microsoft.EntityFrameworkCore.Metadata;
     using RecruitMe.Data.Common.Models;
     using RecruitMe.Data.Models;
-    using RecruitMe.Data.Models.Enums;
+    using RecruitMe.Data.Models.EnumModels;
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
@@ -37,15 +37,25 @@
 
         public DbSet<JobOffer> JobOffers { get; set; }
 
-        public DbSet<Skill> Skills { get; set; }
+        public DbSet<JobApplicationStatus> ApplicationStatuses { get; set; }
 
-        public DbSet<Language> Languages { get; set; }
+        public DbSet<DocumentCategory> DocumentCategories { get; set; }
+
+        public DbSet<FileExtension> FileExtensions { get; set; }
+
+        public DbSet<JobLevel> JobLevels { get; set; }
 
         public DbSet<JobSector> JobSectors { get; set; }
 
-        public DbSet<CandidateSkill> CandidateSkills { get; set; }
+        public DbSet<JobType> JobTypes { get; set; }
+
+        public DbSet<Language> Languages { get; set; }
+
+        public DbSet<Skill> Skills { get; set; }
 
         public DbSet<CandidateLanguage> CandidateLanguages { get; set; }
+
+        public DbSet<CandidateSkill> CandidateSkills { get; set; }
 
         public DbSet<JobOfferLanguage> JobOfferLanguages { get; set; }
 
@@ -80,8 +90,6 @@
             ConfigureUserIdentityRelations(builder);
 
             ConfigureEntityRelations(builder);
-
-            ConfigureEnumSaveOptions(builder);
 
             EntityIndexesConfiguration.Configure(builder);
 
@@ -190,29 +198,6 @@
                 .WithOne(au => au.Employer)
                 .HasForeignKey<Employer>(c => c.ApplicationUserId)
                 .OnDelete(DeleteBehavior.Restrict);
-        }
-
-        private static void ConfigureEnumSaveOptions(ModelBuilder builder)
-        {
-            builder
-                .Entity<Document>()
-                .Property(d => d.DocumentExtension)
-                .HasConversion(e => (int)e, e => (FileExtension)e);
-
-            builder
-               .Entity<Document>()
-               .Property(d => d.DocumentCategory)
-               .HasConversion(c => (int)c, c => (DocumentCategory)c);
-
-            builder
-              .Entity<JobOffer>()
-              .Property(jo => jo.JobLevel)
-              .HasConversion(jl => (int)jl, jl => (JobLevel)jl);
-
-            builder
-            .Entity<JobOffer>()
-            .Property(jo => jo.JobType)
-            .HasConversion(jt => (int)jt, jt => (JobType)jt);
         }
 
         private static void SetIsDeletedQueryFilter<T>(ModelBuilder builder)

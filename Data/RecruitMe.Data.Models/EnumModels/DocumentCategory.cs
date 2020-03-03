@@ -1,0 +1,23 @@
+﻿namespace RecruitMe.Data.Models.EnumModels
+{
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    using RecruitMe.Data.Common.Models;
+
+    [Table("DocumentCategories", Schema = "enum")]
+
+    public class DocumentCategory : BaseDeletableModel<int>
+    {
+        public DocumentCategory()
+        {
+            this.Documents = new HashSet<Document>();
+        }
+
+        [Required]
+        public string Name { get; set; }
+
+        public ICollection<Document> Documents { get; set; }
+    }
+}

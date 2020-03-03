@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using RecruitMe.Data.Models;
+    using RecruitMe.Data.Models.EnumModels;
 
     internal class JobSectorsSeeder : ISeeder
     {

@@ -1,16 +1,18 @@
-﻿namespace RecruitMe.Data.Models
+﻿namespace RecruitMe.Data.Models.EnumModels
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     using RecruitMe.Data.Common.Models;
 
-    public class Language : BaseDeletableModel<string>
+    [Table("Languages", Schema = "enum")]
+
+    public class Language : BaseDeletableModel<int>
     {
         public Language()
         {
-            this.Id = Guid.NewGuid().ToString();
             this.JobOffers = new HashSet<JobOfferLanguage>();
             this.Candidates = new HashSet<CandidateLanguage>();
         }

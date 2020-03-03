@@ -4,6 +4,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using RecruitMe.Data.Common.Models;
+    using RecruitMe.Data.Models.EnumModels;
 
     public class JobOfferSkill : BaseDeletableModel<string>
     {
@@ -18,7 +19,7 @@
         public JobOffer JobOffer { get; set; }
 
         [Required]
-        public string SkillId { get; set; }
+        public int SkillId { get; set; }
 
         public Skill Skill { get; set; }
     }

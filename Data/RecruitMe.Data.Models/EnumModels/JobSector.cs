@@ -1,15 +1,18 @@
-﻿namespace RecruitMe.Data.Models
+﻿namespace RecruitMe.Data.Models.EnumModels
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     using RecruitMe.Data.Common.Models;
 
-    public class JobSector : BaseDeletableModel<string>
+    [Table("JobSectors", Schema = "enum")]
+
+    public class JobSector : BaseDeletableModel<int>
     {
         public JobSector()
         {
-            this.Id = Guid.NewGuid().ToString();
             this.Employers = new HashSet<Employer>();
             this.JobOffers = new HashSet<JobOffer>();
         }
@@ -20,6 +23,5 @@
         public virtual ICollection<Employer> Employers { get; set; }
 
         public virtual ICollection<JobOffer> JobOffers { get; set; }
-
     }
 }

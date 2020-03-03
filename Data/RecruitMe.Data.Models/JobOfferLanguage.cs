@@ -2,8 +2,9 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+
     using RecruitMe.Data.Common.Models;
-    using RecruitMe.Data.Models.Enums;
+    using RecruitMe.Data.Models.EnumModels;
 
     public class JobOfferLanguage : BaseDeletableModel<string>
     {
@@ -18,7 +19,7 @@
         public JobOffer JobOffer { get; set; }
 
         [Required]
-        public string LanguageId { get; set; }
+        public int LanguageId { get; set; }
 
         public Language Language { get; set; }
     }

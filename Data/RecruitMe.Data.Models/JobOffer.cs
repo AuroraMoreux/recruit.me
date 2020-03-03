@@ -5,7 +5,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using RecruitMe.Data.Common.Models;
-    using RecruitMe.Data.Models.Enums;
+    using RecruitMe.Data.Models.EnumModels;
 
     public class JobOffer : BaseDeletableModel<string>
     {
@@ -44,13 +44,17 @@
         public DateTime ValidUntil { get; set; }
 
         [Required]
+        public int JobLevelId { get; set; }
+
         public JobLevel JobLevel { get; set; }
 
         [Required]
+        public int JobTypeId { get; set; }
+
         public JobType JobType { get; set; }
 
         [Required]
-        public string JobSectorId { get; set; }
+        public int JobSectorId { get; set; }
 
         public JobSector JobSector { get; set; }
 

@@ -5,6 +5,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using RecruitMe.Data.Common.Models;
+    using RecruitMe.Data.Models.EnumModels;
 
     public class Employer : BaseDeletableModel<string>
     {
@@ -56,7 +57,7 @@
 
         public ApplicationUser ApplicationUser { get; set; }
 
-        public string JobSectorId { get; set; }
+        public int JobSectorId { get; set; }
 
         public JobSector JobSector { get; set; }
 

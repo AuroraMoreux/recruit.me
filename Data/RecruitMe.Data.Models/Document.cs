@@ -4,7 +4,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using RecruitMe.Data.Common.Models;
-    using RecruitMe.Data.Models.Enums;
+    using RecruitMe.Data.Models.EnumModels;
 
     public class Document : BaseDeletableModel<string>
     {
@@ -18,10 +18,14 @@
         public string Name { get; set; }
 
         [Required]
+        public int DocumentCategoryId { get; set; }
+
         public DocumentCategory DocumentCategory { get; set; }
 
         [Required]
-        public FileExtension DocumentExtension { get; set; }
+        public int FileExtensionId { get; set; }
+
+        public FileExtension FileExtension { get; set; }
 
         [Required]
         public long Size { get; set; }

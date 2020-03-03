@@ -328,9 +328,8 @@ namespace RecruitMe.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LanguageId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -367,9 +366,8 @@ namespace RecruitMe.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SkillId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("SkillId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -397,10 +395,10 @@ namespace RecruitMe.Data.Migrations
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DocumentCategory")
+                    b.Property<int>("DocumentCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DocumentExtension")
+                    b.Property<int>("FileExtensionId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -424,6 +422,10 @@ namespace RecruitMe.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CandidateId");
+
+                    b.HasIndex("DocumentCategoryId");
+
+                    b.HasIndex("FileExtensionId");
 
                     b.HasIndex("IsDeleted");
 
@@ -474,8 +476,8 @@ namespace RecruitMe.Data.Migrations
                     b.Property<bool>("IsPublicSector")
                         .HasColumnType("bit");
 
-                    b.Property<string>("JobSectorId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("JobSectorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Logo")
                         .HasColumnType("nvarchar(max)");
@@ -510,12 +512,252 @@ namespace RecruitMe.Data.Migrations
                     b.ToTable("Employers");
                 });
 
+            modelBuilder.Entity("RecruitMe.Data.Models.EnumModels.DocumentCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("DocumentCategories","enum");
+                });
+
+            modelBuilder.Entity("RecruitMe.Data.Models.EnumModels.FileExtension", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("FileExtensions","enum");
+                });
+
+            modelBuilder.Entity("RecruitMe.Data.Models.EnumModels.JobApplicationStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("ApplicationStatuses","enum");
+                });
+
+            modelBuilder.Entity("RecruitMe.Data.Models.EnumModels.JobLevel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("JobLevels","enum");
+                });
+
+            modelBuilder.Entity("RecruitMe.Data.Models.EnumModels.JobSector", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("JobSectors","enum");
+                });
+
+            modelBuilder.Entity("RecruitMe.Data.Models.EnumModels.JobType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("JobTypes","enum");
+                });
+
+            modelBuilder.Entity("RecruitMe.Data.Models.EnumModels.Language", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("Languages","enum");
+                });
+
+            modelBuilder.Entity("RecruitMe.Data.Models.EnumModels.Skill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("Skills","enum");
+                });
+
             modelBuilder.Entity("RecruitMe.Data.Models.JobApplication", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ApplicationStatus")
+                    b.Property<int>("ApplicationStatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("CandidateId")
@@ -539,6 +781,8 @@ namespace RecruitMe.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationStatusId");
 
                     b.HasIndex("CandidateId");
 
@@ -581,14 +825,13 @@ namespace RecruitMe.Data.Migrations
                     b.Property<bool>("IsRemote")
                         .HasColumnType("bit");
 
-                    b.Property<int>("JobLevel")
+                    b.Property<int>("JobLevelId")
                         .HasColumnType("int");
 
-                    b.Property<string>("JobSectorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("JobSectorId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("JobType")
+                    b.Property<int>("JobTypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedOn")
@@ -617,7 +860,11 @@ namespace RecruitMe.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
+                    b.HasIndex("JobLevelId");
+
                     b.HasIndex("JobSectorId");
+
+                    b.HasIndex("JobTypeId");
 
                     b.ToTable("JobOffers");
                 });
@@ -640,9 +887,8 @@ namespace RecruitMe.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LanguageId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -679,9 +925,8 @@ namespace RecruitMe.Data.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SkillId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("SkillId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -692,62 +937,6 @@ namespace RecruitMe.Data.Migrations
                     b.HasIndex("SkillId");
 
                     b.ToTable("JobOfferSkills");
-                });
-
-            modelBuilder.Entity("RecruitMe.Data.Models.JobSector", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("JobSectors");
-                });
-
-            modelBuilder.Entity("RecruitMe.Data.Models.Language", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("Languages");
                 });
 
             modelBuilder.Entity("RecruitMe.Data.Models.Setting", b =>
@@ -780,34 +969,6 @@ namespace RecruitMe.Data.Migrations
                     b.HasIndex("IsDeleted");
 
                     b.ToTable("Settings");
-                });
-
-            modelBuilder.Entity("RecruitMe.Data.Models.Skill", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsDeleted");
-
-                    b.ToTable("Skills");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -878,7 +1039,7 @@ namespace RecruitMe.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RecruitMe.Data.Models.Language", "Language")
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.Language", "Language")
                         .WithMany("Candidates")
                         .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -893,7 +1054,7 @@ namespace RecruitMe.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RecruitMe.Data.Models.Skill", "Skill")
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.Skill", "Skill")
                         .WithMany("Candidates")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -907,6 +1068,18 @@ namespace RecruitMe.Data.Migrations
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.DocumentCategory", "DocumentCategory")
+                        .WithMany("Documents")
+                        .HasForeignKey("DocumentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.FileExtension", "FileExtension")
+                        .WithMany("Documents")
+                        .HasForeignKey("FileExtensionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RecruitMe.Data.Models.Employer", b =>
@@ -917,13 +1090,21 @@ namespace RecruitMe.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RecruitMe.Data.Models.JobSector", "JobSector")
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.JobSector", "JobSector")
                         .WithMany("Employers")
-                        .HasForeignKey("JobSectorId");
+                        .HasForeignKey("JobSectorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RecruitMe.Data.Models.JobApplication", b =>
                 {
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.JobApplicationStatus", "ApplicationStatus")
+                        .WithMany("JobApplications")
+                        .HasForeignKey("ApplicationStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("RecruitMe.Data.Models.Candidate", "Candidate")
                         .WithMany("JobApplications")
                         .HasForeignKey("CandidateId")
@@ -945,9 +1126,21 @@ namespace RecruitMe.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RecruitMe.Data.Models.JobSector", "JobSector")
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.JobLevel", "JobLevel")
+                        .WithMany("JobOffers")
+                        .HasForeignKey("JobLevelId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.JobSector", "JobSector")
                         .WithMany("JobOffers")
                         .HasForeignKey("JobSectorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.JobType", "JobType")
+                        .WithMany("JobOffers")
+                        .HasForeignKey("JobTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -960,7 +1153,7 @@ namespace RecruitMe.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RecruitMe.Data.Models.Language", "Language")
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.Language", "Language")
                         .WithMany("JobOffers")
                         .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -975,7 +1168,7 @@ namespace RecruitMe.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RecruitMe.Data.Models.Skill", "Skill")
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.Skill", "Skill")
                         .WithMany("JobOffers")
                         .HasForeignKey("SkillId")
                         .OnDelete(DeleteBehavior.Restrict)
