@@ -57,9 +57,9 @@
             ApplicationUser user = await userManager.FindByNameAsync(configManager["DefaultAdminCredentials:Username"]);
             ApplicationRole role = await roleManager.FindByNameAsync(roleName);
 
-            if (!dbContext.UserRoles.Any(ur=>ur.RoleId==role.Id&&ur.UserId==user.Id))
+            if (!dbContext.UserRoles.Any(ur => ur.RoleId == role.Id && ur.UserId == user.Id))
             {
-            await dbContext.UserRoles.AddAsync(new IdentityUserRole<string> { UserId = user.Id, RoleId = role.Id });
+                await dbContext.UserRoles.AddAsync(new IdentityUserRole<string> { UserId = user.Id, RoleId = role.Id });
             }
         }
 

@@ -358,3 +358,6 @@ appsettings.Production.json
 *.min.css
 *.min.js
 /Themes
+/Web/RecruitMe.Web/appsettings.json
+/Web/RecruitMe.Web/appsettings.Development.json
+/Web/RecruitMe.Web/wwwroot/css/custom.css

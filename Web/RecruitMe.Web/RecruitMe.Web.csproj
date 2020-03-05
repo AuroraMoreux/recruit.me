@@ -39,4 +39,10 @@
     <ProjectReference Include="..\RecruitMe.Web.Infrastructure\RecruitMe.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\RecruitMe.Web.ViewModels\RecruitMe.Web.ViewModels.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Candidates\Views\" />
+    <Folder Include="Areas\Employers\Controllers\" />
+    <Folder Include="Areas\Employers\Views\" />
+  </ItemGroup>
 </Project>
