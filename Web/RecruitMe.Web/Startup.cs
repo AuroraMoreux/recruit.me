@@ -2,6 +2,7 @@
 {
     using System.Reflection;
 
+    using CloudinaryDotNet;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -46,6 +47,8 @@
                         options.MinimumSameSitePolicy = SameSiteMode.None;
                     });
 
+            services.AddDistributedMemoryCache();
+            services.AddSession();
             services.AddControllersWithViews();
             services.AddRazorPages();
 
@@ -57,8 +60,13 @@
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
             // Application services
-            services.AddTransient<IEmailSender, NullMessageSender>();
+            services.AddTransient<IEmailSender>(x => new SendGridEmailSender(this.configuration["SendGridKey"]));
+
             services.AddTransient<ISettingsService, SettingsService>();
+
+            Account account = new Account(this.configuration["CloudinaryDetails:CloudName"], this.configuration["CloudinaryDetails:ApiKey"], this.configuration["CloudinaryDetails:ApiSecret"]);
+            Cloudinary cloudinary = new Cloudinary(account);
+            services.AddSingleton(cloudinary);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,6 +103,8 @@
             app.UseCookiePolicy();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();

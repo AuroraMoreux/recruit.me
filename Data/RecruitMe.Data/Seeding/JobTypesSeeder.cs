@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Data.Seeding
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -15,10 +16,15 @@
                 return;
             }
 
-            await dbContext.JobTypes.AddAsync(new JobType { Name = "Permanent" });
-            await dbContext.JobTypes.AddAsync(new JobType { Name = "Replacement" });
-            await dbContext.JobTypes.AddAsync(new JobType { Name = "Seasonal" });
-            await dbContext.JobTypes.AddAsync(new JobType { Name = "Internship" });
+            List<string> types = new List<string> { "Permanent", "Replacement", "Seasonal", "Internship" };
+
+            foreach (string type in types)
+            {
+                await dbContext.JobTypes.AddAsync(new JobType
+                {
+                    Name = type,
+                });
+            }
         }
     }
 }

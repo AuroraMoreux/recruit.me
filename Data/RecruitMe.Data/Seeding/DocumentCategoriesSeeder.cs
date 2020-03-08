@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Data.Seeding
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -15,12 +16,15 @@
                 return;
             }
 
-            await dbContext.DocumentCategories.AddAsync(new DocumentCategory { Name = "Resume" });
-            await dbContext.DocumentCategories.AddAsync(new DocumentCategory { Name = "Cover Letter" });
-            await dbContext.DocumentCategories.AddAsync(new DocumentCategory { Name = "Reference List" });
-            await dbContext.DocumentCategories.AddAsync(new DocumentCategory { Name = "Letter Of Recommendation" });
-            await dbContext.DocumentCategories.AddAsync(new DocumentCategory { Name = "Portflolio" });
-            await dbContext.DocumentCategories.AddAsync(new DocumentCategory { Name = "Certificate" });
+            List<string> documentCategories = new List<string> { "Resume", "Cover Letter", "Reference List", "Letter Of Recommendation", "Portflolio", "Certificate" };
+
+            foreach (string category in documentCategories)
+            {
+                await dbContext.DocumentCategories.AddAsync(new DocumentCategory
+                {
+                    Name = category,
+                });
+            }
         }
     }
 }

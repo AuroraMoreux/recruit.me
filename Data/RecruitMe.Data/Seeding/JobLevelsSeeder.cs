@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Data.Seeding
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -15,9 +16,15 @@
                 return;
             }
 
-            await dbContext.JobLevels.AddAsync(new JobLevel { Name = "Management" });
-            await dbContext.JobLevels.AddAsync(new JobLevel { Name = "Expert" });
-            await dbContext.JobLevels.AddAsync(new JobLevel { Name = "Entry Level" });
+            List<string> levels = new List<string> { "Management", "Expert", "Entry Level" };
+
+            foreach (string level in levels)
+            {
+                await dbContext.JobLevels.AddAsync(new JobLevel
+                {
+                    Name = level,
+                });
+            }
         }
     }
 }

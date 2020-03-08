@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Data.Seeding
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -15,13 +16,15 @@
                 return;
             }
 
-            await dbContext.FileExtensions.AddAsync(new FileExtension { Name = "Docx" });
-            await dbContext.FileExtensions.AddAsync(new FileExtension { Name = "Doc" });
-            await dbContext.FileExtensions.AddAsync(new FileExtension { Name = "Pdf" });
-            await dbContext.FileExtensions.AddAsync(new FileExtension { Name = "Jpg" });
-            await dbContext.FileExtensions.AddAsync(new FileExtension { Name = "Zip" });
-            await dbContext.FileExtensions.AddAsync(new FileExtension { Name = "Eml" });
-            await dbContext.FileExtensions.AddAsync(new FileExtension { Name = "Msg" });
+            List<string> extensions = new List<string> { "Docx", "Doc", "Pdf", "Jpg", "Zip", "Eml", "Msg" };
+
+            foreach (string extension in extensions)
+            {
+                await dbContext.FileExtensions.AddAsync(new FileExtension
+                {
+                    Name = extension,
+                });
+            }
         }
     }
 }

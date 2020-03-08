@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Data.Seeding
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -15,12 +16,15 @@
                 return;
             }
 
-            await dbContext.ApplicationStatuses.AddAsync(new JobApplicationStatus { Name = "Open" });
-            await dbContext.ApplicationStatuses.AddAsync(new JobApplicationStatus { Name = "Under Review" });
-            await dbContext.ApplicationStatuses.AddAsync(new JobApplicationStatus { Name = "Accepted" });
-            await dbContext.ApplicationStatuses.AddAsync(new JobApplicationStatus { Name = "Rejected" });
-            await dbContext.ApplicationStatuses.AddAsync(new JobApplicationStatus { Name = "Retracted" });
-            await dbContext.ApplicationStatuses.AddAsync(new JobApplicationStatus { Name = "Closed" });
+            List<string> statuses = new List<string> { "Open", "Under Review", "Accepted", "Rejected", "Retracted", "Closed" };
+
+            foreach (string status in statuses)
+            {
+                await dbContext.ApplicationStatuses.AddAsync(new JobApplicationStatus
+                {
+                    Name = status,
+                });
+            }
         }
     }
 }

@@ -14,11 +14,26 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Candidates\**" />
+    <Compile Remove="Areas\Employers\**" />
+    <Content Remove="Areas\Candidates\**" />
+    <Content Remove="Areas\Employers\**" />
+    <EmbeddedResource Remove="Areas\Candidates\**" />
+    <EmbeddedResource Remove="Areas\Employers\**" />
+    <None Remove="Areas\Candidates\**" />
+    <None Remove="Areas\Employers\**" />
+  </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.96" />
@@ -38,11 +53,5 @@
     <ProjectReference Include="..\..\Services\RecruitMe.Services\RecruitMe.Services.csproj" />
     <ProjectReference Include="..\RecruitMe.Web.Infrastructure\RecruitMe.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\RecruitMe.Web.ViewModels\RecruitMe.Web.ViewModels.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Candidates\Views\" />
-    <Folder Include="Areas\Employers\Controllers\" />
-    <Folder Include="Areas\Employers\Views\" />
   </ItemGroup>
 </Project>
