@@ -361,3 +361,4 @@ appsettings.Production.json
 /Web/RecruitMe.Web/appsettings.json
 /Web/RecruitMe.Web/appsettings.Development.json
 /Web/RecruitMe.Web/wwwroot/css/custom.css
+/Data/RecruitMe.Data/appsettings.json
