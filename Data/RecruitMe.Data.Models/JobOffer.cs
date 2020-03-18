@@ -46,22 +46,22 @@
         [Required]
         public int JobLevelId { get; set; }
 
-        public JobLevel JobLevel { get; set; }
+        public virtual JobLevel JobLevel { get; set; }
 
         [Required]
         public int JobTypeId { get; set; }
 
-        public JobType JobType { get; set; }
+        public virtual JobType JobType { get; set; }
 
         [Required]
         public int JobSectorId { get; set; }
 
-        public JobSector JobSector { get; set; }
+        public virtual JobSector JobSector { get; set; }
 
         [Required]
         public string EmployerId { get; set; }
 
-        public Employer Employer { get; set; }
+        public virtual Employer Employer { get; set; }
 
         public virtual ICollection<JobOfferSkill> Skills { get; set; }
 

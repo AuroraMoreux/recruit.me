@@ -16,11 +16,11 @@
         [Required]
         public string JobOfferId { get; set; }
 
-        public JobOffer JobOffer { get; set; }
+        public virtual JobOffer JobOffer { get; set; }
 
         [Required]
         public int SkillId { get; set; }
 
-        public Skill Skill { get; set; }
+        public virtual Skill Skill { get; set; }
     }
 }

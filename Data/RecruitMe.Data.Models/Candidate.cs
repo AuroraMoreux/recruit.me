@@ -25,7 +25,7 @@
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        public string ProfilePicture { get; set; }
+        public string ProfilePictureUrl { get; set; }
 
         [MaxLength(12)]
         [RegularExpression("[0-9]+")]
@@ -39,7 +39,7 @@
         [Required]
         public string ApplicationUserId { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
 
         public virtual ICollection<Document> Documents { get; set; }
 

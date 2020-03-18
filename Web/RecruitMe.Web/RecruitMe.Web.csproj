@@ -25,6 +25,10 @@
     <None Remove="Areas\Candidates\**" />
     <None Remove="Areas\Employers\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ScaffoldingReadMe.txt" />
+  </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

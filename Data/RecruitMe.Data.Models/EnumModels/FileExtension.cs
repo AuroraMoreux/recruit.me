@@ -8,16 +8,18 @@
 
     [Table("FileExtensions", Schema = "enum")]
 
-    public class FileExtension : BaseDeletableModel<int>
+    public class FileExtension
     {
         public FileExtension()
         {
             this.Documents = new HashSet<Document>();
         }
 
+        public int Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 
-        public ICollection<Document> Documents { get; set; }
+        public virtual ICollection<Document> Documents { get; set; }
     }
 }

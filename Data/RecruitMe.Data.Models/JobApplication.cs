@@ -16,16 +16,16 @@
         [Required]
         public string CandidateId { get; set; }
 
-        public Candidate Candidate { get; set; }
+        public virtual Candidate Candidate { get; set; }
 
         [Required]
         public string JobOfferId { get; set; }
 
-        public JobOffer JobOffer { get; set; }
+        public virtual JobOffer JobOffer { get; set; }
 
         [Required]
         public int ApplicationStatusId { get; set; }
 
-        public JobApplicationStatus ApplicationStatus { get; set; }
+        public virtual JobApplicationStatus ApplicationStatus { get; set; }
     }
 }

@@ -16,7 +16,7 @@
                 return;
             }
 
-            List<string> languages = new List<string> { "Bulgarian", "Croatian", "Czech", "Danish", "English", "Estonian", "Finnish", "French", "German", "Greek", "Hungarian", "Irish", "Italian", "Latvian", "Lithuanian", "Maltese", "Polish", "Portuguese", "Romanian", "Slovak", "Slovene", "Spanish", "Swedish"};
+            List<string> languages = new List<string> { "Bulgarian", "Croatian", "Czech", "Danish", "English", "Estonian", "Finnish", "French", "German", "Greek", "Hungarian", "Irish", "Italian", "Latvian", "Lithuanian", "Maltese", "Polish", "Portuguese", "Romanian", "Slovak", "Slovene", "Spanish", "Swedish" };
 
             foreach (string laguage in languages)
             {

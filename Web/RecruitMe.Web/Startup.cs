@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,8 @@
                 options => options.UseSqlServer(this.configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
-                .AddRoles<ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddRoles<ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.Configure<CookiePolicyOptions>(
                 options =>
@@ -49,7 +51,11 @@
 
             services.AddDistributedMemoryCache();
             services.AddSession();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(
+                options =>
+                {
+                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                });
             services.AddRazorPages();
 
             services.AddSingleton(this.configuration);
@@ -63,6 +69,7 @@
             services.AddTransient<IEmailSender>(x => new SendGridEmailSender(this.configuration["SendGridKey"]));
 
             services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<ICandidatesService, CandidatesService>();
 
             Account account = new Account(this.configuration["CloudinaryDetails:CloudName"], this.configuration["CloudinaryDetails:ApiKey"], this.configuration["CloudinaryDetails:ApiSecret"]);
             Cloudinary cloudinary = new Cloudinary(account);

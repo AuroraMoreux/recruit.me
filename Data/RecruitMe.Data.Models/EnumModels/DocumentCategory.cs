@@ -8,16 +8,18 @@
 
     [Table("DocumentCategories", Schema = "enum")]
 
-    public class DocumentCategory : BaseDeletableModel<int>
+    public class DocumentCategory
     {
         public DocumentCategory()
         {
             this.Documents = new HashSet<Document>();
         }
 
+        public int Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 
-        public ICollection<Document> Documents { get; set; }
+        public virtual ICollection<Document> Documents { get; set; }
     }
 }

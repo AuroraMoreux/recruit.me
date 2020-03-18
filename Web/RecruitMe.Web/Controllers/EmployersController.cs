@@ -8,29 +8,27 @@
     using Microsoft.AspNetCore.Mvc;
     using RecruitMe.Common;
     using RecruitMe.Data.Models;
-    using RecruitMe.Services.Data;
-    using RecruitMe.Web.ViewModels.Candidates;
 
-    public class CandidatesController : BaseController
+    public class EmployersController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly ICandidatesService candidatesService;
+        private readonly IEmployerService employerService;
 
-        public CandidatesController(UserManager<ApplicationUser> userManager, ICandidatesService candidatesService)
+        public EmployersController(UserManager<ApplicationUser> userManager, IEmployerService employerService)
         {
             this.userManager = userManager;
-            this.candidatesService = candidatesService;
+            this.employerService = employerService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            this.HttpContext.Session.SetString("UserRole", GlobalConstants.CandidateRoleName);
+            this.HttpContext.Session.SetString("UserRole", GlobalConstants.EmployerRoleName);
 
             return this.View();
         }
 
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
+        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         [HttpGet]
         public IActionResult CreateProfile()
         {
@@ -38,12 +36,12 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProfile(CreateCandidateProfileInputModel input)
+        public async Task<IActionResult> CreateProfile(CreateProfileInputModel input)
         {
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             input.ApplicationUserId = user.Id;
 
-            string candidateId = await this.candidatesService.CreateProfile(input);
+            string candidateId = await this.employerService.CreateProfile(input);
 
             if (candidateId != null)
             {

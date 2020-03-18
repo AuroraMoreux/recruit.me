@@ -31,13 +31,13 @@
 
         public string CandidateId { get; set; }
 
-        public Candidate Candidate { get; set; }
+        public virtual Candidate Candidate { get; set; }
 
         public bool IsEmployer { get; set; }
 
         public string EmployerId { get; set; }
 
-        public Employer Employer { get; set; }
+        public virtual Employer Employer { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 

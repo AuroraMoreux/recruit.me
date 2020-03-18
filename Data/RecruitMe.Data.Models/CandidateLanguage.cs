@@ -16,11 +16,11 @@
         [Required]
         public string CandidateId { get; set; }
 
-        public Candidate Candidate { get; set; }
+        public virtual Candidate Candidate { get; set; }
 
         [Required]
         public int LanguageId { get; set; }
 
-        public Language Language { get; set; }
+        public virtual Language Language { get; set; }
     }
 }

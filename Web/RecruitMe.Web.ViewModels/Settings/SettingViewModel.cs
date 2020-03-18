@@ -1,9 +1,8 @@
 ﻿namespace RecruitMe.Web.ViewModels.Settings
 {
+    using AutoMapper;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
-
-    using AutoMapper;
 
     public class SettingViewModel : IMapFrom<Setting>, IHaveCustomMappings
     {

@@ -8,16 +8,18 @@
 
     [Table("JobLevels", Schema = "enum")]
 
-    public class JobLevel : BaseDeletableModel<int>
+    public class JobLevel
     {
         public JobLevel()
         {
             this.JobOffers = new HashSet<JobOffer>();
         }
 
+        public int Id { get; set; }
+
         [Required]
         public string Name { get; set; }
 
-        public ICollection<JobOffer> JobOffers { get; set; }
+        public virtual ICollection<JobOffer> JobOffers { get; set; }
     }
 }

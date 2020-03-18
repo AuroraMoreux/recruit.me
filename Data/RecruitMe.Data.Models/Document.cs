@@ -20,12 +20,12 @@
         [Required]
         public int DocumentCategoryId { get; set; }
 
-        public DocumentCategory DocumentCategory { get; set; }
+        public virtual DocumentCategory DocumentCategory { get; set; }
 
         [Required]
         public int FileExtensionId { get; set; }
 
-        public FileExtension FileExtension { get; set; }
+        public virtual FileExtension FileExtension { get; set; }
 
         [Required]
         public long Size { get; set; }
@@ -36,6 +36,6 @@
         [Required]
         public string CandidateId { get; set; }
 
-        public Candidate Candidate { get; set; }
+        public virtual Candidate Candidate { get; set; }
     }
 }

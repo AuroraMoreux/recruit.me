@@ -1,17 +1,16 @@
 ﻿namespace RecruitMe.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Text;
     using System.Threading.Tasks;
+
     using CloudinaryDotNet;
     using CloudinaryDotNet.Actions;
     using Microsoft.AspNetCore.Http;
 
     public static class CloudinaryService
     {
-        public static async Task<string> UploadImage(Cloudinary cloudinary, IFormFile image, string name)
+        public static async Task<string> UploadImageAsync(Cloudinary cloudinary, IFormFile image, string name)
         {
             byte[] destinationImage;
 
