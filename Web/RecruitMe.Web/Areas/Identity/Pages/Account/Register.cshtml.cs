@@ -82,10 +82,24 @@ namespace RecruitMe.Web.Areas.Identity.Pages.Account
             this.ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-                ApplicationUser user = new ApplicationUser { UserName = this.Input.Email, Email = this.Input.Email };
+                var userInDb = await this.userManager.FindByEmailAsync(Input.Email);
+
+                if (userInDb != null)
+                {
+                    this.ModelState.AddModelError(string.Empty, GlobalConstants.UserAlreadyExists);
+                    return this.Page();
+                }
+
+                ApplicationUser user = new ApplicationUser
+                {
+                    UserName = this.Input.Email,
+                    Email = this.Input.Email,
+                };
 
                 string userRoleName = this.HttpContext.Session.GetString("UserRole");
+
                 IdentityResult result = await this.userManager.CreateAsync(user, this.Input.Password);
+
                 if (result.Succeeded)
                 {
                     this.logger.LogInformation(GlobalConstants.UserSuccessfullyCreated);

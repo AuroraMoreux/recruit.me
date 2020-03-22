@@ -14,9 +14,16 @@
         // Validation Errors
         public const string UserAlreadyExists = "The provided email address is already registered";
 
+        public const string UicCannotBeNull = "The UIC value cannot be null";
+
+        public const string UicMustBeNineOrThirteenDigits = "The UIC must contain 9 or 13 digits";
+
+        public const string InvalidUic = "The provided UIC is invalid";
+
         // Notifications
         public const string UserSuccessfullyCreated = "User created a new account with password.";
 
         public const string UserSuccessfullyAddedToRole = "User has successfully been added to a user role";
+
     }
 }

@@ -6,6 +6,7 @@
     using RecruitMe.Data.Common.Repositories;
     using RecruitMe.Data.Models;
     using RecruitMe.Services;
+    using RecruitMe.Services.Mapping;
     using RecruitMe.Web.ViewModels.Candidates;
 
     public class CandidatesService : ICandidatesService
@@ -19,18 +20,9 @@
             this.cloudinary = cloudinary;
         }
 
-        public async Task<string> CreateProfile(CreateCandidateProfileInputModel model)
+        public async Task<string> CreateProfileAsync(CreateCandidateProfileInputModel model)
         {
-            // TODO: Can this be done with Automapper?
-            Candidate candidate = new Candidate
-            {
-                ApplicationUserId = model.ApplicationUserId,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                ContactAddress = model.ContactAddress,
-                PhoneNumber = model.PhoneNumber,
-                Education = model.Education,
-            };
+            Candidate candidate = AutoMapperConfig.MapperInstance.Map<Candidate>(model);
 
             if (model.ProfilePicture != null)
             {

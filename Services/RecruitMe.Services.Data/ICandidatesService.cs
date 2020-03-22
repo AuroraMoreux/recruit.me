@@ -6,6 +6,6 @@
 
     public interface ICandidatesService
     {
-        Task<string> CreateProfile(CreateCandidateProfileInputModel model);
+        Task<string> CreateProfileAsync(CreateCandidateProfileInputModel model);
     }
 }

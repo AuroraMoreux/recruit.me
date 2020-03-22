@@ -1,11 +1,14 @@
 ﻿namespace RecruitMe.Web.ViewModels.Employers
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
+    using RecruitMe.Web.Infrastructure;
 
-    public class CreateEmployerProfileInputModel : IMapFrom<Employer>, IMapTo<Employer>
+    public class CreateEmployerProfileInputModel : IMapTo<Employer>
     {
         public string ApplicationUserId { get; set; }
 
@@ -13,6 +16,7 @@
         public string Name { get; set; }
 
         [Required]
+        [UicValidation]
         [Display(Name = "Unique Identification Code")]
         public string UniqueIdentificationCode { get; set; }
 
@@ -43,7 +47,7 @@
         [Display(Name = "Contact Person Position")]
         public string ContactPersonPosition { get; set; }
 
-        public string Logo { get; set; }
+        public IFormFile Logo { get; set; }
 
         [Url]
         [Display(Name = "Website Address")]
@@ -59,5 +63,7 @@
 
         [Display(Name = "Job Sector")]
         public int JobSectorId { get; set; }
+
+        public IEnumerable<JobSectorsDropDownViewModel> JobSectors { get; set; }
     }
 }

@@ -24,17 +24,18 @@
             ILogger logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(typeof(ApplicationDbContextSeeder));
 
             List<ISeeder> seeders = new List<ISeeder>
-                          {
-                              new AdminUserSeeder(),
-                              new SettingsSeeder(),
-                              new LanguagesSeeder(),
-                              new JobSectorsSeeder(),
-                              new JobApplicationStatusesSeeder(),
-                              new DocumentCategoriesSeeder(),
-                              new FileExtensionsSeeder(),
-                              new JobLevelsSeeder(),
-                              new JobTypesSeeder(),
-                          };
+            {
+                new RolesSeeder(),
+                new AdminUserSeeder(),
+                new SettingsSeeder(),
+                new LanguagesSeeder(),
+                new JobSectorsSeeder(),
+                new JobApplicationStatusesSeeder(),
+                new DocumentCategoriesSeeder(),
+                new FileExtensionsSeeder(),
+                new JobLevelsSeeder(),
+                new JobTypesSeeder(),
+            };
 
             foreach (ISeeder seeder in seeders)
             {

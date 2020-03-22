@@ -42,7 +42,7 @@
 
         public string ContactPersonPosition { get; set; }
 
-        public string Logo { get; set; }
+        public string LogoUrl { get; set; }
 
         [Url]
         public string WebsiteAddress { get; set; }

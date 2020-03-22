@@ -7,7 +7,7 @@
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
 
-    public class CreateCandidateProfileInputModel : IMapFrom<Candidate>, IMapTo<Candidate>, IHaveCustomMappings
+    public class CreateCandidateProfileInputModel : IMapTo<Candidate>
     {
         public string ApplicationUserId { get; set; }
 
@@ -34,15 +34,5 @@
         public string Education { get; set; }
 
         public IFormFile ProfilePicture { get; set; }
-
-        public string ProfilePictureUrl { get; set; }
-
-        public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<CreateCandidateProfileInputModel, Candidate>()
-                .ForMember(
-                    s => s.ProfilePictureUrl,
-                    d => d.MapFrom(c => c.ProfilePictureUrl));
-        }
     }
 }
