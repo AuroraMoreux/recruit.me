@@ -30,7 +30,6 @@
             return this.View();
         }
 
-        [HttpGet]
         [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public async Task<IActionResult> CreateProfile()
         {
@@ -63,7 +62,7 @@
             {
                 user.CandidateId = candidateId;
                 await this.userManager.UpdateAsync(user);
-                return this.RedirectToAction(nameof(HomeController.Index));
+                return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
             }
 
             return this.View("Error");
@@ -72,8 +71,41 @@
         [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public async Task<IActionResult> UpdateProfile()
         {
-            // TODO
-            return this.Ok();
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+
+            if (user.CandidateId == null)
+            {
+                return this.RedirectToAction(nameof(this.CreateProfile));
+            }
+
+            var details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(user.EmployerId);
+
+            return this.View(details);
         }
+
+        [HttpPost]
+        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        public async Task<IActionResult> UpdateProfile(UpdateCandidateProfileViewModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            input.ApplicationUserId = user.Id;
+            var candidateId = await this.candidatesService.UpdateProfileAsync(user.CandidateId, input);
+
+            if (candidateId == null)
+            {
+                return this.View("Error");
+            }
+
+            this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
+
+            return this.RedirectToAction(nameof(HomeController.Index));
+        }
+
+        // TODO: add skills and languages to the models
     }
 }

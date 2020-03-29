@@ -1,5 +1,6 @@
 ﻿namespace RecruitMe.Services.Data
 {
+    using System.Linq;
     using System.Threading.Tasks;
 
     using CloudinaryDotNet;
@@ -11,6 +12,7 @@
 
     public class CandidatesService : ICandidatesService
     {
+        private const string PictureNameAddIn = "_profilePicture";
         private readonly IDeletableEntityRepository<Candidate> candidatesRepository;
         private readonly Cloudinary cloudinary;
 
@@ -26,12 +28,53 @@
 
             if (model.ProfilePicture != null)
             {
-                string pictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + "_profilePicture");
+                string pictureUrl = await CloudinaryService.UploadFileAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
 
                 candidate.ProfilePictureUrl = pictureUrl;
             }
 
             await this.candidatesRepository.AddAsync(candidate);
+            await this.candidatesRepository.SaveChangesAsync();
+
+            return candidate.Id;
+        }
+
+        public T GetProfileDetails<T>(string candidateId)
+        {
+            T candidate = this.candidatesRepository
+                 .All()
+                 .Where(e => e.Id == candidateId)
+                 .To<T>()
+                 .FirstOrDefault();
+
+            return candidate;
+        }
+
+        public async Task<string> UpdateProfileAsync(string candidateId, UpdateCandidateProfileViewModel model)
+        {
+            var candidate = this.candidatesRepository
+                .All()
+                .FirstOrDefault(c => c.Id == candidateId);
+
+            if (candidate == null)
+            {
+                return null;
+            }
+
+            candidate.FirstName = model.FirstName;
+            candidate.LastName = model.LastName;
+            candidate.PhoneNumber = model.PhoneNumber;
+            candidate.ContactAddress = model.ContactAddress;
+            candidate.Education = model.Education;
+
+            if (candidate.ProfilePictureUrl != null)
+            {
+                CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + PictureNameAddIn);
+            }
+
+            candidate.ProfilePictureUrl = await CloudinaryService.UploadFileAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
+
+            this.candidatesRepository.Update(candidate);
             await this.candidatesRepository.SaveChangesAsync();
 
             return candidate.Id;

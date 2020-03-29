@@ -1,0 +1,40 @@
+﻿@model RecruitMe.Web.ViewModels.Documents.UserDocumentsViewModel
+@{
+    ViewData["Title"] = "My Documents";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="table-responsive-sm">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"></th>
+                <th scope="col">File Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">File Size</th>
+                <th scope="col">Uploaded On</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 1; i < Model.Documents.Count(); i++)
+            {
+                var documents = Model.Documents.ToList();
+                <tr>
+                    <th scope="row">@i</th>
+                    <td id="iconPlaceholder" name="@documents[i].FileExtension"></td>
+                    <td>@documents[i].Name</td>
+                    <td>@documents[i].Category</td>
+                    <td>@documents[i].Size</td>
+                    <td>@documents[i].UploadedOn</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+    // DO SOMETHING to add FA icons
+</script>

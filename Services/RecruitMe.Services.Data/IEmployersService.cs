@@ -8,6 +8,8 @@
     {
         Task<string> CreateProfileAsync(CreateEmployerProfileInputModel model);
 
-        Task<T> GetProfileDetailsAsync<T>(string employerId);
+        T GetProfileDetails<T>(string employerId);
+
+        Task<string> UpdateProfileAsync(string employerId, UpdateEmployerProfileViewModel model);
     }
 }

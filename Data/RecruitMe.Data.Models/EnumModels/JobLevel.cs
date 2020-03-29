@@ -8,14 +8,12 @@
 
     [Table("JobLevels", Schema = "enum")]
 
-    public class JobLevel
+    public class JobLevel : BaseModel<int>
     {
         public JobLevel()
         {
             this.JobOffers = new HashSet<JobOffer>();
         }
-
-        public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }

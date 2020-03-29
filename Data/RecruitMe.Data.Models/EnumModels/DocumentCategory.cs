@@ -8,14 +8,12 @@
 
     [Table("DocumentCategories", Schema = "enum")]
 
-    public class DocumentCategory
+    public class DocumentCategory : BaseModel<int>
     {
         public DocumentCategory()
         {
             this.Documents = new HashSet<Document>();
         }
-
-        public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }

@@ -1,5 +1,6 @@
 ﻿namespace RecruitMe.Web
 {
+    using System;
     using System.Reflection;
 
     using CloudinaryDotNet;
@@ -32,7 +33,6 @@
             this.configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(
@@ -46,11 +46,17 @@
                 options =>
                     {
                         options.CheckConsentNeeded = context => true;
-                        options.MinimumSameSitePolicy = SameSiteMode.None;
+                        options.MinimumSameSitePolicy = SameSiteMode.Strict;
                     });
 
             services.AddDistributedMemoryCache();
-            services.AddSession();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(8);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddControllersWithViews(
                 options =>
                 {
@@ -72,13 +78,13 @@
             services.AddTransient<ICandidatesService, CandidatesService>();
             services.AddTransient<IEmployersService, EmployersService>();
             services.AddTransient<IJobSectorsService, JobSectorsService>();
+            services.AddTransient<IDocumentsService, DocumentsService>();
 
             Account account = new Account(this.configuration["CloudinaryDetails:CloudName"], this.configuration["CloudinaryDetails:ApiKey"], this.configuration["CloudinaryDetails:ApiSecret"]);
             Cloudinary cloudinary = new Cloudinary(account);
             services.AddSingleton(cloudinary);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
@@ -110,11 +116,8 @@
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
-            app.UseRouting();
-
             app.UseSession();
-
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
 

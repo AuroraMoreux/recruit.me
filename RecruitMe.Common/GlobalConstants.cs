@@ -25,5 +25,8 @@
 
         public const string UserSuccessfullyAddedToRole = "User has successfully been added to a user role";
 
+        public const string ProfileSuccessfullyCreated = "Your profile has been successfully created";
+
+        public const string ProfileSuccessfullyUpdated = "Your profile has been successfully updated";
     }
 }

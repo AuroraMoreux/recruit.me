@@ -1,4 +1,4 @@
-﻿namespace RecruitMe.Web.Infrastructure
+﻿namespace RecruitMe.Web.Infrastructure.ValidationAttributes
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -48,32 +48,32 @@
             int currentSum = 0;
             var initialCoefficients = new int[] { 2, 7, 3, 5 };
 
-            for (int i = 8; i < 12; i++)
+            for (int i = 0; i < 4; i++)
             {
-                currentSum += (valueAsString[i] - '0') * initialCoefficients[i];
+                currentSum += (valueAsString[i + 8] - '0') * initialCoefficients[i];
             }
 
             var remainder = currentSum % 11;
 
             if (remainder != 10)
             {
-                return Convert.ToChar(remainder);
+                return Convert.ToChar(remainder + '0');
             }
             else
             {
                 currentSum = 0;
                 var secondaryCoefficients = new int[] { 4, 9, 5, 7 };
 
-                for (int i = 8; i < 12; i++)
+                for (int i = 0; i < 4; i++)
                 {
-                    currentSum += (valueAsString[i] - '0') * secondaryCoefficients[i];
+                    currentSum += (valueAsString[i + 8] - '0') * secondaryCoefficients[i];
                 }
 
                 remainder = currentSum % 11;
 
                 if (remainder != 10)
                 {
-                    return Convert.ToChar(remainder);
+                    return Convert.ToChar(remainder + '0');
                 }
                 else
                 {
@@ -95,7 +95,7 @@
 
             if (remainder != 10)
             {
-                return Convert.ToChar(remainder);
+                return Convert.ToChar(remainder + '0');
             }
             else
             {
@@ -110,7 +110,7 @@
                 remainder = currentSum % 11;
                 if (remainder != 10)
                 {
-                    return Convert.ToChar(remainder);
+                    return Convert.ToChar(remainder + '0');
                 }
                 else
                 {

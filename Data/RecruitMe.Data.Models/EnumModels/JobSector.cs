@@ -9,15 +9,13 @@
 
     [Table("JobSectors", Schema = "enum")]
 
-    public class JobSector
+    public class JobSector : BaseModel<int>
     {
         public JobSector()
         {
             this.Employers = new HashSet<Employer>();
             this.JobOffers = new HashSet<JobOffer>();
         }
-
-        public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }

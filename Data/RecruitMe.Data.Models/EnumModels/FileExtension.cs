@@ -8,14 +8,12 @@
 
     [Table("FileExtensions", Schema = "enum")]
 
-    public class FileExtension
+    public class FileExtension : BaseModel<int>
     {
         public FileExtension()
         {
             this.Documents = new HashSet<Document>();
         }
-
-        public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }

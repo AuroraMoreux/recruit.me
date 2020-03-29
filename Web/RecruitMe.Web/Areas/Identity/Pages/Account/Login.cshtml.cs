@@ -58,8 +58,6 @@ namespace RecruitMe.Web.Areas.Identity.Pages.Account
             }
 
             returnUrl ??= this.Url.Content("~/");
-
-            // Clear the existing external cookie to ensure a clean login process
             await this.HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             this.ExternalLogins = (await this.signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -73,8 +71,6 @@ namespace RecruitMe.Web.Areas.Identity.Pages.Account
 
             if (this.ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 Microsoft.AspNetCore.Identity.SignInResult result = await this.signInManager.PasswordSignInAsync(this.Input.Email, this.Input.Password, this.Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
@@ -98,8 +94,6 @@ namespace RecruitMe.Web.Areas.Identity.Pages.Account
                     return this.Page();
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return this.Page();
         }
     }

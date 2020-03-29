@@ -7,14 +7,12 @@
     using RecruitMe.Data.Common.Models;
 
     [Table("ApplicationStatuses", Schema = "enum")]
-    public class JobApplicationStatus
+    public class JobApplicationStatus : BaseModel<int>
     {
         public JobApplicationStatus()
         {
             this.JobApplications = new HashSet<JobApplication>();
         }
-
-        public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }

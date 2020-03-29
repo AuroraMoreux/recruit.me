@@ -1,5 +1,6 @@
 ﻿namespace RecruitMe.Web.Controllers
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -15,14 +16,17 @@
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IEmployersService employerService;
+        private readonly IJobSectorsService jobSectorsService;
 
-        public IJobSectorsService JobSectorsService { get; }
+        private IEnumerable<JobSectorsDropDownViewModel> jobSectors;
 
         public EmployersController(UserManager<ApplicationUser> userManager, IEmployersService employerService, IJobSectorsService jobSectorsService)
         {
             this.userManager = userManager;
             this.employerService = employerService;
-            this.JobSectorsService = jobSectorsService;
+            this.jobSectorsService = jobSectorsService;
+
+            this.jobSectors = this.jobSectorsService.GetAllAsync<JobSectorsDropDownViewModel>();
         }
 
         [HttpGet]
@@ -33,7 +37,6 @@
             return this.View();
         }
 
-        [HttpGet]
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public async Task<IActionResult> CreateProfile()
         {
@@ -44,11 +47,9 @@
                 return this.RedirectToAction(nameof(this.UpdateProfile));
             }
 
-            var jobSectors = await this.JobSectorsService.GetAllAsync<JobSectorsDropDownViewModel>();
-
             var model = new CreateEmployerProfileInputModel
             {
-                JobSectors = jobSectors,
+                JobSectors = this.jobSectors,
             };
 
             return this.View(model);
@@ -60,6 +61,7 @@
         {
             if (!this.ModelState.IsValid)
             {
+                input.JobSectors = this.jobSectors;
                 return this.View(input);
             }
 
@@ -68,15 +70,10 @@
 
             string employerId = await this.employerService.CreateProfileAsync(input);
 
-            if (employerId != null)
-            {
-                user.EmployerId = employerId;
-                await this.userManager.UpdateAsync(user);
-
-                return this.RedirectToAction(nameof(HomeController.Index));
-            }
-
-            return this.View("Error");
+            user.EmployerId = employerId;
+            await this.userManager.UpdateAsync(user);
+            this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyCreated;
+            return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
         }
 
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
@@ -89,9 +86,34 @@
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            var details = await this.employerService.GetProfileDetailsAsync<CreateEmployerProfileInputModel>(user.EmployerId);
+            var details = this.employerService.GetProfileDetails<UpdateEmployerProfileViewModel>(user.EmployerId);
+            details.JobSectors = this.jobSectors;
 
             return this.View(details);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        public async Task<IActionResult> UpdateProfile(UpdateEmployerProfileViewModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                input.JobSectors = this.jobSectors;
+                return this.View(input);
+            }
+
+            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            input.ApplicationUserId = user.Id;
+            var employerId = await this.employerService.UpdateProfileAsync(user.EmployerId, input);
+
+            if (employerId == null)
+            {
+                return this.View("Error");
+            }
+
+            this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
+
+            return this.RedirectToAction(nameof(HomeController.Index));
         }
     }
 }

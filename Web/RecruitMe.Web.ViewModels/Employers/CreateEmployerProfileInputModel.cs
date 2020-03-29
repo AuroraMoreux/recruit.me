@@ -6,7 +6,7 @@
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
-    using RecruitMe.Web.Infrastructure;
+    using RecruitMe.Web.Infrastructure.ValidationAttributes;
 
     public class CreateEmployerProfileInputModel : IMapTo<Employer>
     {
@@ -28,7 +28,7 @@
         [MaxLength(80)]
         public string Address { get; set; }
 
-        // TODO: split it into a mini section, partial view possibly? or with the weird line
+        // TODO: split it into a mini section, partial view possibly? or with a line
         [Required]
         [MaxLength(100)]
         [Display(Name = "Contact Person Names")]
@@ -53,12 +53,10 @@
         [Display(Name = "Website Address")]
         public string WebsiteAddress { get; set; }
 
-        [Required]
         [Display(Name = "Public Sector")]
         public bool IsPublicSector { get; set; }
 
-        [Required]
-        [Display(Name = "Is Hiring Agency")]
+        [Display(Name = "Hiring Agency")]
         public bool IsHiringAgency { get; set; }
 
         [Display(Name = "Job Sector")]

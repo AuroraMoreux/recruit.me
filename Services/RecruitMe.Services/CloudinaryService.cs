@@ -10,7 +10,7 @@
 
     public static class CloudinaryService
     {
-        public static async Task<string> UploadImageAsync(Cloudinary cloudinary, IFormFile image, string name)
+        public static async Task<string> UploadFileAsync(Cloudinary cloudinary, IFormFile image, string name)
         {
             byte[] destinationImage;
 
@@ -31,7 +31,7 @@
             return uploadResult.SecureUri.AbsoluteUri;
         }
 
-        public static void DeleteImage(Cloudinary cloudinary, string name)
+        public static void DeleteFile(Cloudinary cloudinary, string name)
         {
             DelResParams delParams = new DelResParams()
             {

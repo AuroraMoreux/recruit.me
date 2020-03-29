@@ -11,7 +11,8 @@
 
     public class EmployersService : IEmployersService
     {
-        private readonly RecruitMe.Data.Common.Repositories.IDeletableEntityRepository<Employer> employersRepository;
+        private const string LogoNameAddIn = "_logo";
+        private readonly IDeletableEntityRepository<Employer> employersRepository;
         private readonly Cloudinary cloudinary;
 
         public EmployersService(IDeletableEntityRepository<Employer> employersRepository, Cloudinary cloudinary)
@@ -26,7 +27,7 @@
 
             if (model.Logo != null)
             {
-                string logoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + "_Logo");
+                string logoUrl = await CloudinaryService.UploadFileAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
 
                 employer.LogoUrl = logoUrl;
             }
@@ -37,7 +38,7 @@
             return employer.Id;
         }
 
-        public T GetProfileDetailsAsync<T>(string employerId)
+        public T GetProfileDetails<T>(string employerId)
         {
             T employer = this.employersRepository
                  .All()
@@ -46,6 +47,44 @@
                  .FirstOrDefault();
 
             return employer;
+        }
+
+        public async Task<string> UpdateProfileAsync(string employerId, UpdateEmployerProfileViewModel model)
+        {
+            var employer = this.employersRepository
+                  .All()
+                  .FirstOrDefault(e => e.Id == employerId);
+
+            if (employer == null)
+            {
+                return null;
+            }
+
+            employer.Address = model.Address;
+            employer.ContactPersonEmail = model.ContactPersonEmail;
+            employer.ContactPersonNames = model.ContactPersonNames;
+            employer.ContactPersonPhoneNumber = model.ContactPersonPhoneNumber;
+            employer.ContactPersonPosition = model.ContactPersonPosition;
+            employer.IsHiringAgency = model.IsHiringAgency;
+            employer.IsPublicSector = model.IsPublicSector;
+            employer.JobSectorId = model.JobSectorId;
+            employer.PhoneNumber = model.PhoneNumber;
+            employer.Name = model.Name;
+            employer.UniqueIdentificationCode = model.UniqueIdentificationCode;
+            employer.WebsiteAddress = model.WebsiteAddress;
+
+            if (employer.LogoUrl != null)
+            {
+                CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + LogoNameAddIn);
+            }
+
+            employer.LogoUrl = await CloudinaryService.UploadFileAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
+
+            this.employersRepository.Update(employer);
+
+            await this.employersRepository.SaveChangesAsync();
+
+            return employer.Id;
         }
     }
 }

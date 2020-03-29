@@ -7,6 +7,6 @@
 
     public interface IJobSectorsService
     {
-        Task<IEnumerable<T>> GetAllAsync<T>();
+        IEnumerable<T> GetAllAsync<T>();
     }
 }
