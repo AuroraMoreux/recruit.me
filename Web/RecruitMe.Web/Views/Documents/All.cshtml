@@ -1,6 +1,8 @@
 ﻿@model RecruitMe.Web.ViewModels.Documents.UserDocumentsViewModel
 @{
     ViewData["Title"] = "My Documents";
+    var documents = Model.Documents.ToList();
+
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -9,8 +11,9 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col"></th>
+                <th scope="col">
+                    <i class="far fa-file"></i>
+                </th>
                 <th scope="col">File Name</th>
                 <th scope="col">Category</th>
                 <th scope="col">File Size</th>
@@ -18,23 +21,72 @@
             </tr>
         </thead>
         <tbody>
-            @for (int i = 1; i < Model.Documents.Count(); i++)
+            @for (int i = 0; i < documents.Count; i++)
             {
-                var documents = Model.Documents.ToList();
+                var fileSize = (documents[i].Size < 1024 ? @documents[i].Size + " KB" : Math.Round(@documents[i].Size / 1024m, 2) + " MB");
                 <tr>
-                    <th scope="row">@i</th>
-                    <td id="iconPlaceholder" name="@documents[i].FileExtension"></td>
+                    <td><icon name="@documents[i].FileExtensionName"></icon></td>
                     <td>@documents[i].Name</td>
-                    <td>@documents[i].Category</td>
-                    <td>@documents[i].Size</td>
+                    <td>@documents[i].DocumentCategoryName</td>
+                    <td>@fileSize</td>
                     <td>@documents[i].UploadedOn</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-controller="Documents" asp-action="Download" asp-route-id="@documents[i].Id">Download</a>
+                        <a class="btn btn-danger btn-sm" asp-controller="Documents" asp-action="Delete" asp-route-id="@documents[i].Id">Delete</a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
-
+    @if (Model.PagesCount > 0)
+    {
+        <div class="text-center">
+            <ul class="pagination">
+                <li><a style="margin: 5px" href="~/Documents/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+                @for (int i = 1; i <= Model.PagesCount; i++)
+                {
+                    if (i == Model.CurrentPage)
+                    {
+                        <li class="active"><a style="margin: 5px" href="~/Documents/All?page=@i">@i</a></li>
+                    }
+                    else
+                    {
+                        <li><a style="margin: 5px" href="~/Documents/All?page=@i">@i</a></li>
+                    }
+                }
+                <li><a style="margin: 5px" href="~/Documents/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+            </ul>
+        </div>
+    }
 </div>
 
-<script>
-    // DO SOMETHING to add FA icons
-</script>
+@section Scripts{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var iconElements = $("icon").toArray();
+            jQuery.each(iconElements, function () {
+                var elementName = this.getAttribute("name");
+                if (elementName.includes("doc")) {
+                    this.classList.add("far");
+                    this.classList.add("fa-file-word");
+                }
+                else if (elementName === ".pdf") {
+                    this.classList.add("far");
+                    this.classList.add("fa-file-pdf");
+                }
+                else if (elementName === ".jpeg" || elementName === ".jpg" || elementName === ".png") {
+                    this.classList.add("far");
+                    this.classList.add("fa-image");
+                }
+                else if (elementName === ".eml" || elementName === ".msg") {
+                    this.classList.add("far");
+                    this.classList.add("fa-envelope-open");
+                }
+                else {
+                    this.classList.add("far");
+                    this.classList.add("fa-file-alt");
+                }
+            });
+        });
+    </script>
+}

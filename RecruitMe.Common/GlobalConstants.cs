@@ -20,6 +20,16 @@
 
         public const string InvalidUic = "The provided UIC is invalid";
 
+        public const string DocumentFileCannotBeNull = "Please provide a file to upload";
+
+        public const string DocumentFileExtensionNotSupported = "The file extension is not supported";
+
+        public const string DocumentFileSizeTooLarge = "File size exceeds the maximum allowed limit of 10MB";
+
+        public const string DocumentFileNameTooLong = "File size name exceeds the maximum length of 50 characters";
+
+        public const string DocumentAlreadyExists = "A document with the same name already exists for your profile";
+
         // Notifications
         public const string UserSuccessfullyCreated = "User created a new account with password.";
 

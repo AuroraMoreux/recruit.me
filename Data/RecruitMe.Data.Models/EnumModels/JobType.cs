@@ -8,7 +8,7 @@
 
     [Table("JobTypes", Schema = "enum")]
 
-    public class JobType : BaseModel<int>
+    public class JobType : BaseDeletableModel<int>
     {
         public JobType()
         {

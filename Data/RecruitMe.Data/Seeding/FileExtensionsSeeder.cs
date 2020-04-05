@@ -16,7 +16,7 @@
                 return;
             }
 
-            List<string> extensions = new List<string> { "Docx", "Doc", "Pdf", "Jpg", "Eml", "Msg" };
+            List<string> extensions = new List<string> { ".docx", ".doc", ".pdf", ".jpg", ".jpeg", ".png", ".eml", ".msg" };
 
             foreach (string extension in extensions)
             {

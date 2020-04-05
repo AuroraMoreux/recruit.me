@@ -2,7 +2,6 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using AutoMapper;
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;

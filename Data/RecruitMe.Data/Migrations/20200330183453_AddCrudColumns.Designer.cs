@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecruitMe.Data;
 
 namespace RecruitMe.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200330183453_AddCrudColumns")]
+    partial class AddCrudColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -392,7 +394,7 @@ namespace RecruitMe.Data.Migrations
                     b.Property<int>("DocumentCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("FileExtensionId")
+                    b.Property<int>("FileExtensionId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -403,8 +405,8 @@ namespace RecruitMe.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(30);
 
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
@@ -1069,9 +1071,11 @@ namespace RecruitMe.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RecruitMe.Data.Models.EnumModels.FileExtension", null)
+                    b.HasOne("RecruitMe.Data.Models.EnumModels.FileExtension", "FileExtension")
                         .WithMany("Documents")
-                        .HasForeignKey("FileExtensionId");
+                        .HasForeignKey("FileExtensionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RecruitMe.Data.Models.Employer", b =>

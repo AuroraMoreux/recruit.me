@@ -1,14 +1,12 @@
 ﻿namespace RecruitMe.Web.ViewModels.Employers
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Text;
 
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
-    using RecruitMe.Web.Infrastructure.ValidationAttributes;
+    using RecruitMe.Web.ValidationAttributes;
 
     public class UpdateEmployerProfileViewModel : IMapFrom<Employer>, IMapTo<Employer>
     {
@@ -16,7 +14,7 @@
 
         public string Name { get; set; }
 
-        [UicValidation]
+        [UicValidator]
         [Display(Name = "Unique Identification Code")]
         public string UniqueIdentificationCode { get; set; }
 

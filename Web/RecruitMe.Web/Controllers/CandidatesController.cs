@@ -62,7 +62,8 @@
             {
                 user.CandidateId = candidateId;
                 await this.userManager.UpdateAsync(user);
-                return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
+                this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyCreated;
+                return this.RedirectToAction("Index");
             }
 
             return this.View("Error");
@@ -84,7 +85,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public async Task<IActionResult> UpdateProfile(UpdateCandidateProfileViewModel input)
         {
             if (!this.ModelState.IsValid)
@@ -96,14 +97,13 @@
             input.ApplicationUserId = user.Id;
             var candidateId = await this.candidatesService.UpdateProfileAsync(user.CandidateId, input);
 
-            if (candidateId == null)
+            if (candidateId != null)
             {
-                return this.View("Error");
+                this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
+                return this.RedirectToAction("Index");
             }
 
-            this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
-
-            return this.RedirectToAction(nameof(HomeController.Index));
+            return this.View("Error");
         }
 
         // TODO: add skills and languages to the models

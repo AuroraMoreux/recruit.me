@@ -1,4 +1,4 @@
-﻿namespace RecruitMe.Web.Infrastructure.ValidationAttributes
+﻿namespace RecruitMe.Web.ValidationAttributes
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -6,7 +6,7 @@
 
     using RecruitMe.Common;
 
-    public class UicValidationAttribute : ValidationAttribute
+    public class UicValidatorAttribute : ValidationAttribute
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {

@@ -51,7 +51,6 @@
     <ProjectReference Include="..\..\Services\RecruitMe.Services.Mapping\RecruitMe.Services.Mapping.csproj" />
     <ProjectReference Include="..\..\Services\RecruitMe.Services.Messaging\RecruitMe.Services.Messaging.csproj" />
     <ProjectReference Include="..\..\Services\RecruitMe.Services\RecruitMe.Services.csproj" />
-    <ProjectReference Include="..\RecruitMe.Web.Infrastructure\RecruitMe.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\RecruitMe.Web.ViewModels\RecruitMe.Web.ViewModels.csproj" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,24 @@
 ﻿namespace RecruitMe.Services.Data
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    using RecruitMe.Web.ViewModels.Documents;
 
     public interface IDocumentsService
     {
-        int GetCount();
+        IEnumerable<T> GetAllDocumentsForCandidate<T>(string candidateId);
 
-        IEnumerable<T> GetAllCandidateDocuments<T>(string userId, int page, int perPage);
+        string GetDocumentNameById(string documentId);
+
+        Task<string> Create(UploadInputModel model, string candidateId);
+
+        bool DocumentNameAlreadyExists(string fileName);
+
+        Task Delete(string documentId);
+
+        Task<byte[]> Download(string documentId);
+
+        bool IsCandidateOwnerOfDocument(string candidateId, string documentId);
     }
 }

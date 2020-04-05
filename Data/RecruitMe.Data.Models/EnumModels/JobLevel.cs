@@ -8,7 +8,7 @@
 
     [Table("JobLevels", Schema = "enum")]
 
-    public class JobLevel : BaseModel<int>
+    public class JobLevel : BaseDeletableModel<int>
     {
         public JobLevel()
         {

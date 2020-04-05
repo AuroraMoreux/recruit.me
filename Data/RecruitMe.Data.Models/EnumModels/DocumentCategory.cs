@@ -8,7 +8,7 @@
 
     [Table("DocumentCategories", Schema = "enum")]
 
-    public class DocumentCategory : BaseModel<int>
+    public class DocumentCategory : BaseDeletableModel<int>
     {
         public DocumentCategory()
         {

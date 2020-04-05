@@ -28,8 +28,7 @@
 
             if (model.ProfilePicture != null)
             {
-                string pictureUrl = await CloudinaryService.UploadFileAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
-
+                string pictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
                 candidate.ProfilePictureUrl = pictureUrl;
             }
 
@@ -37,6 +36,17 @@
             await this.candidatesRepository.SaveChangesAsync();
 
             return candidate.Id;
+        }
+
+        public string GetCandidateIdByUsername(string username)
+        {
+            var candidateId = this.candidatesRepository
+                  .All()
+                  .Where(c => c.ApplicationUser.UserName == username)
+                  .Select(c => c.Id)
+                  .FirstOrDefault();
+
+            return candidateId;
         }
 
         public T GetProfileDetails<T>(string candidateId)
@@ -70,9 +80,8 @@
             if (candidate.ProfilePictureUrl != null)
             {
                 CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + PictureNameAddIn);
+                candidate.ProfilePictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
             }
-
-            candidate.ProfilePictureUrl = await CloudinaryService.UploadFileAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
 
             this.candidatesRepository.Update(candidate);
             await this.candidatesRepository.SaveChangesAsync();

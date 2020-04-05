@@ -70,10 +70,15 @@
 
             string employerId = await this.employerService.CreateProfileAsync(input);
 
-            user.EmployerId = employerId;
-            await this.userManager.UpdateAsync(user);
-            this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyCreated;
-            return this.RedirectToAction(nameof(HomeController.Index), nameof(HomeController));
+            if (employerId != null)
+            {
+                user.EmployerId = employerId;
+                await this.userManager.UpdateAsync(user);
+                this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyCreated;
+                return this.RedirectToAction("Index");
+            }
+
+            return this.View("Error");
         }
 
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
@@ -106,14 +111,13 @@
             input.ApplicationUserId = user.Id;
             var employerId = await this.employerService.UpdateProfileAsync(user.EmployerId, input);
 
-            if (employerId == null)
+            if (employerId != null)
             {
-                return this.View("Error");
+                this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
+                return this.RedirectToAction("Index");
             }
 
-            this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
-
-            return this.RedirectToAction(nameof(HomeController.Index));
+            return this.View("Error");
         }
     }
 }

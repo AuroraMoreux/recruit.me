@@ -4,6 +4,15 @@
 
 <h1>@ViewData["Title"]</h1>
 
+@if (this.TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["InfoMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 <h3>Welcome</h3>
 
 <p>Lorem ipsum dolor sit amet, eos assentior adipiscing an. Eam in mucius sensibus. Simul graeco aliquip duo ad. Probatus argumentum et mea. Ea his hinc expetenda patrioque, dicit iudicabit at pri. Omnium deseruisse quo id, omnes moderatius cu mei. Intellegam reprehendunt cum ad, id eum unum meliore alienum.</p>

@@ -8,7 +8,7 @@
 
     [Table("FileExtensions", Schema = "enum")]
 
-    public class FileExtension : BaseModel<int>
+    public class FileExtension : BaseDeletableModel<int>
     {
         public FileExtension()
         {

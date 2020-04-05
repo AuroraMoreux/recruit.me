@@ -9,7 +9,7 @@
 
     [Table("Languages", Schema = "enum")]
 
-    public class Language : BaseModel<int>
+    public class Language : BaseDeletableModel<int>
     {
         public Language()
         {

@@ -8,6 +8,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.StaticFiles;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@
     using RecruitMe.Data.Models;
     using RecruitMe.Data.Repositories;
     using RecruitMe.Data.Seeding;
+    using RecruitMe.Services;
     using RecruitMe.Services.Data;
     using RecruitMe.Services.Mapping;
     using RecruitMe.Services.Messaging;
@@ -73,16 +75,19 @@
 
             // Application services
             services.AddTransient<IEmailSender>(x => new SendGridEmailSender(this.configuration["SendGridKey"]));
-
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<ICandidatesService, CandidatesService>();
             services.AddTransient<IEmployersService, EmployersService>();
             services.AddTransient<IJobSectorsService, JobSectorsService>();
             services.AddTransient<IDocumentsService, DocumentsService>();
+            services.AddTransient<IDocumentCategoriesService, DocumentCategoriesService>();
+            services.AddTransient<IFileExtensionsService, FileExtensionsService>();
+            services.AddTransient<IFileDownloadService, FileDownloadService>();
 
             Account account = new Account(this.configuration["CloudinaryDetails:CloudName"], this.configuration["CloudinaryDetails:ApiKey"], this.configuration["CloudinaryDetails:ApiSecret"]);
             Cloudinary cloudinary = new Cloudinary(account);
             services.AddSingleton(cloudinary);
+            services.AddSingleton<IMimeMappingService>(new MimeMappingService(new FileExtensionContentTypeProvider()));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

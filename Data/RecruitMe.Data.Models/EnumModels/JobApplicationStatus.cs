@@ -7,7 +7,7 @@
     using RecruitMe.Data.Common.Models;
 
     [Table("ApplicationStatuses", Schema = "enum")]
-    public class JobApplicationStatus : BaseModel<int>
+    public class JobApplicationStatus : BaseDeletableModel<int>
     {
         public JobApplicationStatus()
         {

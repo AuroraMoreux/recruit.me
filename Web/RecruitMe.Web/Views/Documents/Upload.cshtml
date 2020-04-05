@@ -1,0 +1,34 @@
+﻿@model RecruitMe.Web.ViewModels.Documents.UploadInputModel
+@{
+    ViewData["Title"] = "Upload new file";
+    var allowedFileExtensions = string.Join(", ", this.Model.FileExtensions);
+    var categories = this.Model.Categories.Select(c => new SelectListItem(c.Name, c.Id.ToString()));
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="container-fluid">
+    <form class="container" asp-controller="Documents" asp-action="Upload" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="File">Upload a file...</label>
+                    <label>Allowed file extensions: @allowedFileExtensions</label>
+                    <label>Max Size allowed: 10MB</label>
+                    <input asp-for="File" class="form-control" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DocumentCategoryId"></label>
+                    <select asp-for="DocumentCategoryId" asp-items="categories" class="form-control"></select>
+                    <span asp-validation-for="DocumentCategoryId" class="text-danger"></span>
+                </div>
+
+                <input type="submit" value="Send" class="btn btn-primary" />
+                <hr />
+            </div>
+        </div>
+    </form>
+</div>

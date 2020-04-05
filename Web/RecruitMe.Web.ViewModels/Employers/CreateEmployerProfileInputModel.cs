@@ -6,7 +6,7 @@
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
-    using RecruitMe.Web.Infrastructure.ValidationAttributes;
+    using RecruitMe.Web.ValidationAttributes;
 
     public class CreateEmployerProfileInputModel : IMapTo<Employer>
     {
@@ -16,7 +16,7 @@
         public string Name { get; set; }
 
         [Required]
-        [UicValidation]
+        [UicValidator]
         [Display(Name = "Unique Identification Code")]
         public string UniqueIdentificationCode { get; set; }
 

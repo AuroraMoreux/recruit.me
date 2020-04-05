@@ -14,18 +14,13 @@
         }
 
         [Required]
-        [MaxLength(30)]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         [Required]
         public int DocumentCategoryId { get; set; }
 
         public virtual DocumentCategory DocumentCategory { get; set; }
-
-        [Required]
-        public int FileExtensionId { get; set; }
-
-        public virtual FileExtension FileExtension { get; set; }
 
         [Required]
         public long Size { get; set; }

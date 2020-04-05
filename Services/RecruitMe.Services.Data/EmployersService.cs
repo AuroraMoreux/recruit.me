@@ -27,7 +27,7 @@
 
             if (model.Logo != null)
             {
-                string logoUrl = await CloudinaryService.UploadFileAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
+                string logoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
 
                 employer.LogoUrl = logoUrl;
             }
@@ -76,9 +76,8 @@
             if (employer.LogoUrl != null)
             {
                 CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + LogoNameAddIn);
+                employer.LogoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
             }
-
-            employer.LogoUrl = await CloudinaryService.UploadFileAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
 
             this.employersRepository.Update(employer);
 

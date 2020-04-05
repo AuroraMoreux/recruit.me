@@ -9,7 +9,7 @@
 
     [Table("JobSectors", Schema = "enum")]
 
-    public class JobSector : BaseModel<int>
+    public class JobSector : BaseDeletableModel<int>
     {
         public JobSector()
         {

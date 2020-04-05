@@ -11,5 +11,7 @@
         T GetProfileDetails<T>(string candidateId);
 
         Task<string> UpdateProfileAsync(string candidateId, UpdateCandidateProfileViewModel model);
+
+        string GetCandidateIdByUsername(string username);
     }
 }
