@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Microsoft.EntityFrameworkCore;
@@ -27,8 +28,8 @@
 
         public Task<TEntity> GetByIdWithDeletedAsync(params object[] id)
         {
-            var getByIdPredicate = EfExpressionHelper.BuildByIdPredicate<TEntity>(this.Context, id);
-            return this.AllWithDeleted().FirstOrDefaultAsync(getByIdPredicate);
+           Expression<Func<TEntity, bool>> getByIdPredicate = EfExpressionHelper.BuildByIdPredicate<TEntity>(this.Context, id);
+           return this.AllWithDeleted().FirstOrDefaultAsync(getByIdPredicate);
         }
 
         public void HardDelete(TEntity entity) => base.Delete(entity);

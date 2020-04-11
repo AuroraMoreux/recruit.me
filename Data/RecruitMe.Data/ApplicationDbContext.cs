@@ -61,6 +61,8 @@
 
         public DbSet<JobOfferSkill> JobOfferSkills { get; set; }
 
+        public DbSet<JobOfferJobType> JobOfferJobTypes { get; set; }
+
         public DbSet<Setting> Settings { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
@@ -140,6 +142,8 @@
         private static void ConfigureEntityRelations(ModelBuilder builder)
         {
             builder.Entity<CandidateLanguage>()
+                .HasKey(cl => new { cl.CandidateId, cl.LanguageId });
+            builder.Entity<CandidateLanguage>()
                 .HasOne(cl => cl.Candidate)
                 .WithMany(c => c.Languages)
                 .HasForeignKey(cl => cl.CandidateId)
@@ -151,6 +155,8 @@
                .HasForeignKey(cl => cl.LanguageId)
                .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<CandidateSkill>()
+                .HasKey(cs => new { cs.CandidateId, cs.SkillId });
             builder.Entity<CandidateSkill>()
                 .HasOne(cs => cs.Candidate)
                 .WithMany(c => c.Skills)
@@ -164,6 +170,8 @@
                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<JobOfferLanguage>()
+                .HasKey(jol => new { jol.JobOfferId, jol.LanguageId });
+            builder.Entity<JobOfferLanguage>()
                 .HasOne(jol => jol.Language)
                 .WithMany(l => l.JobOffers)
                 .HasForeignKey(jol => jol.LanguageId)
@@ -176,6 +184,8 @@
                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<JobOfferSkill>()
+                .HasKey(jos => new { jos.JobOfferId, jos.SkillId });
+            builder.Entity<JobOfferSkill>()
                 .HasOne(jos => jos.Skill)
                 .WithMany(s => s.JobOffers)
                 .HasForeignKey(jos => jos.SkillId)
@@ -185,6 +195,20 @@
                .HasOne(jos => jos.JobOffer)
                .WithMany(jo => jo.Skills)
                .HasForeignKey(jos => jos.JobOfferId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<JobOfferJobType>()
+                .HasKey(jojt => new { jojt.JobOfferId, jojt.JobTypeId });
+            builder.Entity<JobOfferJobType>()
+                .HasOne(jojt => jojt.JobOffer)
+                .WithMany(jo => jo.JobTypes)
+                .HasForeignKey(jojt => jojt.JobOfferId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<JobOfferJobType>()
+               .HasOne(jojt => jojt.JobType)
+               .WithMany(jt => jt.JobOffers)
+               .HasForeignKey(jojt => jojt.JobTypeId)
                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Candidate>()

@@ -26,7 +26,7 @@
             this.employerService = employerService;
             this.jobSectorsService = jobSectorsService;
 
-            this.jobSectors = this.jobSectorsService.GetAllAsync<JobSectorsDropDownViewModel>();
+            this.jobSectors = this.jobSectorsService.GetAll<JobSectorsDropDownViewModel>();
         }
 
         [HttpGet]
@@ -47,7 +47,7 @@
                 return this.RedirectToAction(nameof(this.UpdateProfile));
             }
 
-            var model = new CreateEmployerProfileInputModel
+            CreateEmployerProfileInputModel model = new CreateEmployerProfileInputModel
             {
                 JobSectors = this.jobSectors,
             };
@@ -91,7 +91,7 @@
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            var details = this.employerService.GetProfileDetails<UpdateEmployerProfileViewModel>(user.EmployerId);
+            UpdateEmployerProfileViewModel details = this.employerService.GetProfileDetails<UpdateEmployerProfileViewModel>(user.EmployerId);
             details.JobSectors = this.jobSectors;
 
             return this.View(details);
@@ -109,7 +109,7 @@
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             input.ApplicationUserId = user.Id;
-            var employerId = await this.employerService.UpdateProfileAsync(user.EmployerId, input);
+            string employerId = await this.employerService.UpdateProfileAsync(user.EmployerId, input);
 
             if (employerId != null)
             {

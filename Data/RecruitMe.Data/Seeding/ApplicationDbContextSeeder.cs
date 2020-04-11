@@ -25,16 +25,17 @@
 
             List<ISeeder> seeders = new List<ISeeder>
             {
-                new RolesSeeder(),
                 new AdminUserSeeder(),
-                new SettingsSeeder(),
-                new LanguagesSeeder(),
-                new JobSectorsSeeder(),
-                new JobApplicationStatusesSeeder(),
                 new DocumentCategoriesSeeder(),
                 new FileExtensionsSeeder(),
+                new JobApplicationStatusesSeeder(),
                 new JobLevelsSeeder(),
+                new JobSectorsSeeder(),
                 new JobTypesSeeder(),
+                new LanguagesSeeder(),
+                new RolesSeeder(),
+                new SettingsSeeder(),
+                new SkillsSeeder(),
             };
 
             foreach (ISeeder seeder in seeders)

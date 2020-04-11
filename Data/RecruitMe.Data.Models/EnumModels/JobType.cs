@@ -12,12 +12,12 @@
     {
         public JobType()
         {
-            this.JobOffers = new HashSet<JobOffer>();
+            this.JobOffers = new HashSet<JobOfferJobType>();
         }
 
         [Required]
         public string Name { get; set; }
 
-        public ICollection<JobOffer> JobOffers { get; set; }
+        public virtual ICollection<JobOfferJobType> JobOffers { get; set; }
     }
 }

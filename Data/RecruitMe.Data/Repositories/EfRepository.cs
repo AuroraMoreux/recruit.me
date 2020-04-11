@@ -1,11 +1,12 @@
 ﻿namespace RecruitMe.Data.Repositories
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.EntityFrameworkCore;
-
+    using Microsoft.EntityFrameworkCore.ChangeTracking;
     using RecruitMe.Data.Common.Repositories;
 
     public class EfRepository<TEntity> : IRepository<TEntity>
@@ -27,9 +28,11 @@
 
         public virtual Task AddAsync(TEntity entity) => this.DbSet.AddAsync(entity).AsTask();
 
+        public virtual Task AddRangeAsync(IEnumerable<TEntity> entities) => this.DbSet.AddRangeAsync(entities);
+
         public virtual void Update(TEntity entity)
         {
-            var entry = this.Context.Entry(entity);
+            EntityEntry<TEntity> entry = this.Context.Entry(entity);
             if (entry.State == EntityState.Detached)
             {
                 this.DbSet.Attach(entity);

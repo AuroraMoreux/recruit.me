@@ -8,24 +8,23 @@
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
-    public class JobSectorsService : IJobSectorsService
+    public class JobLevelsService : IJobLevelsService
     {
-        public JobSectorsService(IDeletableEntityRepository<JobSector> jobSectorsRepository)
-        {
-            this.JobSectorsRepository = jobSectorsRepository;
-        }
+        private readonly IDeletableEntityRepository<JobLevel> jobLevelsRepository;
 
-        public IRepository<JobSector> JobSectorsRepository { get; }
+        public JobLevelsService(IDeletableEntityRepository<JobLevel> jobLevelsRepository)
+        {
+            this.jobLevelsRepository = jobLevelsRepository;
+        }
 
         public IEnumerable<T> GetAll<T>()
         {
-            var jobSectors = this.JobSectorsRepository
+            var jobLevels = this.jobLevelsRepository
                 .All()
-                .OrderBy(js => js.Name)
                 .To<T>()
                 .ToList();
 
-            return jobSectors;
+            return jobLevels;
         }
     }
 }

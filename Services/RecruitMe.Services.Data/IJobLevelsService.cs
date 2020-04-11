@@ -1,12 +1,10 @@
 ﻿namespace RecruitMe.Services.Data
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Threading.Tasks;
 
-    public interface IJobSectorsService
+    public interface IJobLevelsService
     {
-       IEnumerable<T> GetAll<T>();
+        IEnumerable<T> GetAll<T>();
     }
 }

@@ -21,6 +21,12 @@
     <Compile Remove="Migrations\20200405110609_MakeEnumsDeletable.Designer.cs" />
     <Compile Remove="Migrations\20200405110802_PendingUpdate.cs" />
     <Compile Remove="Migrations\20200405110802_PendingUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20200411143222_LinkMappingTableForJobOfferTypes.cs" />
+    <Compile Remove="Migrations\20200411143222_LinkMappingTableForJobOfferTypes.Designer.cs" />
+    <Compile Remove="Migrations\20200411143920_LinkMappingTableForJobOfferTypes.cs" />
+    <Compile Remove="Migrations\20200411143920_LinkMappingTableForJobOfferTypes.Designer.cs" />
+    <Compile Remove="Migrations\20200411144055_LinkMappingTableForJobOfferTypes.cs" />
+    <Compile Remove="Migrations\20200411144055_LinkMappingTableForJobOfferTypes.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

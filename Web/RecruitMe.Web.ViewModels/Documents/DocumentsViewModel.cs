@@ -14,7 +14,7 @@
 
         public string DocumentCategoryName { get; set; }
 
-        public string FileExtensionName { get; set; }
+        public string FileExtensionName => this.Name.Split(".", StringSplitOptions.None)[1];
 
         public long Size { get; set; }
 

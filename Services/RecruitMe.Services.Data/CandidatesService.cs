@@ -1,5 +1,6 @@
 ﻿namespace RecruitMe.Services.Data
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -32,6 +33,7 @@
                 candidate.ProfilePictureUrl = pictureUrl;
             }
 
+            candidate.CreatedOn = DateTime.UtcNow;
             await this.candidatesRepository.AddAsync(candidate);
             await this.candidatesRepository.SaveChangesAsync();
 
@@ -40,7 +42,7 @@
 
         public string GetCandidateIdByUsername(string username)
         {
-            var candidateId = this.candidatesRepository
+            string candidateId = this.candidatesRepository
                   .All()
                   .Where(c => c.ApplicationUser.UserName == username)
                   .Select(c => c.Id)
@@ -62,7 +64,7 @@
 
         public async Task<string> UpdateProfileAsync(string candidateId, UpdateCandidateProfileViewModel model)
         {
-            var candidate = this.candidatesRepository
+            Candidate candidate = this.candidatesRepository
                 .All()
                 .FirstOrDefault(c => c.Id == candidateId);
 
@@ -83,6 +85,7 @@
                 candidate.ProfilePictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
             }
 
+            candidate.ModifiedOn = DateTime.UtcNow;
             this.candidatesRepository.Update(candidate);
             await this.candidatesRepository.SaveChangesAsync();
 

@@ -27,7 +27,7 @@
 
         public IEnumerable<T> GetAllDocumentsForCandidate<T>(string candidateId)
         {
-            var documents = this.documentRepository
+            List<T> documents = this.documentRepository
                 .All()
                 .Where(d => d.CandidateId == candidateId)
                 .OrderBy(d => d.CreatedOn)
@@ -39,7 +39,7 @@
 
         public async Task<string> Create(UploadInputModel model, string candidateId)
         {
-            var document = AutoMapperConfig.MapperInstance.Map<Document>(model);
+            Document document = AutoMapperConfig.MapperInstance.Map<Document>(model);
             document.CandidateId = candidateId;
             string documentUrl = await CloudinaryService.UploadRawFileAsync(this.cloudinary, model.File, candidateId + $"_{document.Name}");
 
@@ -59,7 +59,7 @@
 
         public async Task Delete(string documentId)
         {
-            var document = this.documentRepository
+            Document document = this.documentRepository
                 .All()
                 .FirstOrDefault(d => d.Id == documentId);
 
@@ -78,20 +78,20 @@
 
         public async Task<byte[]> Download(string documentId)
         {
-            var documentUrl = this.documentRepository
+            string documentUrl = this.documentRepository
                 .All()
                 .Where(d => d.Id == documentId)
                 .Select(d => d.Url)
                 .FirstOrDefault();
 
-            var file = await this.fileDownloadService.DownloadFile(documentUrl);
+            byte[] file = await this.fileDownloadService.DownloadFile(documentUrl);
 
             return file;
         }
 
         public string GetDocumentNameById(string documentId)
         {
-            var documentName = this.documentRepository
+            string documentName = this.documentRepository
                   .All()
                   .Where(d => d.Id == documentId)
                   .Select(d => d.Name)

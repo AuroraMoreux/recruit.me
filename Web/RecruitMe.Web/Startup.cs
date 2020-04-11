@@ -64,7 +64,7 @@
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 });
-            services.AddRazorPages();
+            services.AddRazorPages().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
             services.AddSingleton(this.configuration);
 
@@ -83,6 +83,11 @@
             services.AddTransient<IDocumentCategoriesService, DocumentCategoriesService>();
             services.AddTransient<IFileExtensionsService, FileExtensionsService>();
             services.AddTransient<IFileDownloadService, FileDownloadService>();
+            services.AddTransient<IJobLevelsService, JobLevelsService>();
+            services.AddTransient<IJobTypesService, JobTypesService>();
+            services.AddTransient<ILanguagesService, LanguagesService>();
+            services.AddTransient<ISkillsService, SkillsService>();
+            services.AddTransient<IJobOffersService, JobOffersService>();
 
             Account account = new Account(this.configuration["CloudinaryDetails:CloudName"], this.configuration["CloudinaryDetails:ApiKey"], this.configuration["CloudinaryDetails:ApiSecret"]);
             Cloudinary cloudinary = new Cloudinary(account);

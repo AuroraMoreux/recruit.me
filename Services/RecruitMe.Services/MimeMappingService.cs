@@ -13,8 +13,7 @@
 
         public string Map(string fileName)
         {
-            string contentType;
-            if (!this.contentTypeProvider.TryGetContentType(fileName, out contentType))
+            if (!this.contentTypeProvider.TryGetContentType(fileName, out string contentType))
             {
                 contentType = "application/octet-stream";
             }

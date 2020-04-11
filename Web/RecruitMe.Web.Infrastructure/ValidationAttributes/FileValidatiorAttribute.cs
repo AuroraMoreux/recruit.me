@@ -1,9 +1,7 @@
 ﻿namespace RecruitMe.Web.Infrastructure.ValidationAttributes
 {
-    using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Text;
+
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Common;
 

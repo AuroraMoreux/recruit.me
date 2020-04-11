@@ -59,6 +59,7 @@
         [Display(Name = "Hiring Agency")]
         public bool IsHiringAgency { get; set; }
 
+        [Required]
         [Display(Name = "Job Sector")]
         public int JobSectorId { get; set; }
 

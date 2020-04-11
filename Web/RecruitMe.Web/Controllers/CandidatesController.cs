@@ -79,7 +79,7 @@
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            var details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(user.EmployerId);
+            UpdateCandidateProfileViewModel details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(user.EmployerId);
 
             return this.View(details);
         }
@@ -95,7 +95,7 @@
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             input.ApplicationUserId = user.Id;
-            var candidateId = await this.candidatesService.UpdateProfileAsync(user.CandidateId, input);
+            string candidateId = await this.candidatesService.UpdateProfileAsync(user.CandidateId, input);
 
             if (candidateId != null)
             {

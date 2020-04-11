@@ -50,17 +50,17 @@
         [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public IActionResult All(int page = 1, int perPage = DocumentsPerPageDefaultCount)
         {
-            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-            var documents = this.documentsService.GetAllDocumentsForCandidate<DocumentsViewModel>(candidateId);
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            IEnumerable<DocumentsViewModel> documents = this.documentsService.GetAllDocumentsForCandidate<DocumentsViewModel>(candidateId);
 
-            var pagesCount = (int)Math.Ceiling(documents.Count() / (decimal)perPage);
+            int pagesCount = (int)Math.Ceiling(documents.Count() / (decimal)perPage);
 
-            var paginatedDocuments = documents
+            List<DocumentsViewModel> paginatedDocuments = documents
                 .Skip(perPage * (page - 1))
                 .Take(perPage)
                 .ToList();
 
-            var viewModel = new UserDocumentsViewModel
+            UserDocumentsViewModel viewModel = new UserDocumentsViewModel
             {
                 Documents = paginatedDocuments,
                 CurrentPage = page,
@@ -73,14 +73,14 @@
         [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public IActionResult Upload()
         {
-            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
 
             if (candidateId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Candidates");
             }
 
-            var viewModel = new UploadInputModel
+            UploadInputModel viewModel = new UploadInputModel
             {
                 FileExtensions = this.allowedExtensions,
                 Categories = this.allowedCategories,
@@ -115,7 +115,7 @@
             }
 
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-            var documentId = await this.documentsService.Create(input, candidateId);
+            string documentId = await this.documentsService.Create(input, candidateId);
 
             if (documentId == null)
             {
@@ -128,8 +128,8 @@
         [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-            var isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            bool isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
 
             if (!isOwner)
             {
@@ -144,17 +144,17 @@
         [HttpGet]
         public async Task<IActionResult> Download(string id)
         {
-            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-            var isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            bool isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
 
             if (!isOwner)
             {
                 return this.Forbid();
             }
 
-            var fileAsByteArray = await this.documentsService.Download(id);
+            byte[] fileAsByteArray = await this.documentsService.Download(id);
             string fileName = this.documentsService.GetDocumentNameById(id);
-            var contentType = this.mimeMappingService.Map(fileName);
+            string contentType = this.mimeMappingService.Map(fileName);
 
             return this.File(fileAsByteArray, contentType, fileName);
         }

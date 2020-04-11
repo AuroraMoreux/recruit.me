@@ -38,6 +38,15 @@
             return employer.Id;
         }
 
+        public string GetEmployerIdByUsername(string username)
+        {
+            return this.employersRepository
+                 .All()
+                 .Where(e => e.ApplicationUser.UserName == username)
+                 .Select(e => e.Id)
+                 .FirstOrDefault();
+        }
+
         public T GetProfileDetails<T>(string employerId)
         {
             T employer = this.employersRepository
@@ -51,7 +60,7 @@
 
         public async Task<string> UpdateProfileAsync(string employerId, UpdateEmployerProfileViewModel model)
         {
-            var employer = this.employersRepository
+            Employer employer = this.employersRepository
                   .All()
                   .FirstOrDefault(e => e.Id == employerId);
 

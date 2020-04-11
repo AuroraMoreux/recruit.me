@@ -11,5 +11,8 @@
         T GetProfileDetails<T>(string employerId);
 
         Task<string> UpdateProfileAsync(string employerId, UpdateEmployerProfileViewModel model);
+
+        string GetEmployerIdByUsername(string username);
+
     }
 }

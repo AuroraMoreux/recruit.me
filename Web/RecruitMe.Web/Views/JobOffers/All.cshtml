@@ -1,0 +1,69 @@
+﻿@model RecruitMe.Web.ViewModels.JobOffers.AllViewModel
+@using RecruitMe.Common
+@{
+    ViewData["Title"] = "Current Job Offers";
+
+    var jobOffers = this.Model.JobOffers.ToList();
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="table-responsive-sm">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Job Title</th>
+                <th scope="col">Employer</th>
+                <th scope="col">Position Level</th>
+                <th scope="col">Location</th>
+                <th scope="col">Published On</th>
+                <th scope="col">Sector</th>
+                <th scope="col">Position Specifics</th>
+
+                <th style="text-align:center">
+                    @if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
+                    {
+                        <a class=" btn btn-sm btn-success" asp-controller="JobOffers" asp-action="Post">Post New Job Offer</a>
+                    }
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < jobOffers.Count; i++)
+            {
+            <tr>
+                <td>@jobOffers[i].Title</td>
+                <td>@jobOffers[i].EmployerName</td>
+                <td>@jobOffers[i].JobLevelName</td>
+                <td>@jobOffers[i].City</td>
+                <td>@jobOffers[i].CreatedOn.ToString("dd-MM-yyyy")</td>
+                <td>@jobOffers[i].JobSectorName</td>
+                <td>@jobOffers[i].JobDetails</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffers[i].Id">View Details</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.PagesCount > 0)
+    {
+        <div class="text-center">
+            <ul class="pagination">
+                <li><a style="margin: 5px" href="~/JobOffers/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+                @for (int i = 1; i <= Model.PagesCount; i++)
+                {
+                    if (i == Model.CurrentPage)
+                    {
+                        <li class="active"><a style="margin: 5px" href="~/JobOffers/All?page=@i">@i</a></li>
+                    }
+                    else
+                    {
+                        <li><a style="margin: 5px" href="~/JobOffers/All?page=@i">@i</a></li>
+                    }
+                }
+                <li><a style="margin: 5px" href="~/JobOffers/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+            </ul>
+        </div>
+    }
+</div>

@@ -20,7 +20,7 @@
 
             using MemoryStream stream = new MemoryStream(destinationImage);
             name = name.Replace("&", "And");
-            var fileDescription = new FileDescription(name, stream);
+            FileDescription fileDescription = new FileDescription(name, stream);
 
             ImageUploadParams uploadParams = new ImageUploadParams()
             {
@@ -42,7 +42,7 @@
 
             using MemoryStream stream = new MemoryStream(destinationFile);
             name = name.Replace("&", "And");
-            var fileDescription = new FileDescription(name, stream);
+            FileDescription fileDescription = new FileDescription(name, stream);
 
             RawUploadParams uploadParams = new RawUploadParams()
             {
