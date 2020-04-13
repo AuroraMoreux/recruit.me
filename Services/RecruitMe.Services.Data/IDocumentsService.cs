@@ -11,7 +11,7 @@
 
         string GetDocumentNameById(string documentId);
 
-        Task<string> Create(UploadInputModel model, string candidateId);
+        Task<string> Upload(UploadInputModel model, string candidateId);
 
         bool DocumentNameAlreadyExists(string fileName);
 

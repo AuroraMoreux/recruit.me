@@ -30,6 +30,10 @@
 
         public const string DocumentAlreadyExists = "A document with the same name already exists for your profile";
 
+        public const string AtLeastOneDocumentRequired = "At least one document must be attached to the application";
+
+        public const string CandidateAlreadyApplied = "You have already submitted an application for this offer";
+
         // Notifications
         public const string UserSuccessfullyCreated = "User created a new account with password.";
 
@@ -38,5 +42,7 @@
         public const string ProfileSuccessfullyCreated = "Your profile has been successfully created";
 
         public const string ProfileSuccessfullyUpdated = "Your profile has been successfully updated";
+
+        public const string JobApplicationSuccessfullySubmitted = "Your application was submitted successfully";
     }
 }

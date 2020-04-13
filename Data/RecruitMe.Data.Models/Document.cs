@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Data.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using RecruitMe.Data.Common.Models;
@@ -11,6 +12,7 @@
         public Document()
         {
             this.Id = Guid.NewGuid().ToString();
+            this.JobApplications = new HashSet<JobApplicationDocument>();
         }
 
         [Required]
@@ -32,5 +34,7 @@
         public string CandidateId { get; set; }
 
         public virtual Candidate Candidate { get; set; }
+
+        public virtual ICollection<JobApplicationDocument> JobApplications { get; set; }
     }
 }

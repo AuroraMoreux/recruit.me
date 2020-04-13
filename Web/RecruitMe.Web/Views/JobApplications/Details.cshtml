@@ -1,0 +1,47 @@
+﻿@model RecruitMe.Web.ViewModels.JobApplications.DetailsViewModel
+@{
+    ViewData["Title"] = $"Application Details for Position {Model.JobOfferTitle}";
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title" style="display:inline-block">Candidate Contact Information:</h5>
+        <p class="card-text"><strong>Name: </strong>@Model.CandidateName</p>
+        <p class="card-text"><strong>Email: </strong>@Model.CandidateApplicationUserEmail; <strong>Phone Number: </strong>@Model.CandidatePhoneNumber</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title" style="display:inline-block">Application Message:</h5>
+        <p class="card-text">@Html.Raw(Model.Message)</p>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title" style="display:inline-block">Candidate Documents</h5>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">File Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Documents.Count(); i++)
+                {
+                    <tr>
+                        <td>@Model.Documents[i].DocumentName</td>
+                        <td>@Model.Documents[i].DocumentDocumentCategoryName</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" asp-controller="JobApplications" asp-action="Download" asp-route-id="@Model.Documents[i].DocumentId">Download</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

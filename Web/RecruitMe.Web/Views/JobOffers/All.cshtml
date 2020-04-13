@@ -5,8 +5,17 @@
 
     var jobOffers = this.Model.JobOffers.ToList();
 }
-
 <h1>@ViewData["Title"]</h1>
+
+@if (this.TempData["SuccessfulApplication"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessfulApplication"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
 <div class="table-responsive-sm">
     <table class="table table-hover">
@@ -31,18 +40,18 @@
         <tbody>
             @for (int i = 0; i < jobOffers.Count; i++)
             {
-            <tr>
-                <td>@jobOffers[i].Title</td>
-                <td>@jobOffers[i].EmployerName</td>
-                <td>@jobOffers[i].JobLevelName</td>
-                <td>@jobOffers[i].City</td>
-                <td>@jobOffers[i].CreatedOn.ToString("dd-MM-yyyy")</td>
-                <td>@jobOffers[i].JobSectorName</td>
-                <td>@jobOffers[i].JobDetails</td>
-                <td>
-                    <a class="btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffers[i].Id">View Details</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>@jobOffers[i].Title</td>
+                    <td>@jobOffers[i].EmployerName</td>
+                    <td>@jobOffers[i].JobLevelName</td>
+                    <td>@jobOffers[i].City</td>
+                    <td>@jobOffers[i].CreatedOn.ToString("dd-MM-yyyy")</td>
+                    <td>@jobOffers[i].JobSectorName</td>
+                    <td>@jobOffers[i].JobDetails</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffers[i].Id">View Details</a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

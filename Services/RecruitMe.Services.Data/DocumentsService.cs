@@ -37,7 +37,7 @@
             return documents;
         }
 
-        public async Task<string> Create(UploadInputModel model, string candidateId)
+        public async Task<string> Upload(UploadInputModel model, string candidateId)
         {
             Document document = AutoMapperConfig.MapperInstance.Map<Document>(model);
             document.CandidateId = candidateId;

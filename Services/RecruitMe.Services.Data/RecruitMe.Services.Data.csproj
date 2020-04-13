@@ -29,6 +29,7 @@
     <ProjectReference Include="..\..\Data\RecruitMe.Data.Models\RecruitMe.Data.Models.csproj" />
     <ProjectReference Include="..\..\Web\RecruitMe.Web.ViewModels\RecruitMe.Web.ViewModels.csproj" />
     <ProjectReference Include="..\RecruitMe.Services.Mapping\RecruitMe.Services.Mapping.csproj" />
+    <ProjectReference Include="..\RecruitMe.Services.Messaging\RecruitMe.Services.Messaging.csproj" />
     <ProjectReference Include="..\RecruitMe.Services\RecruitMe.Services.csproj" />
   </ItemGroup>
 

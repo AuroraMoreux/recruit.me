@@ -2,12 +2,15 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using AutoMapper;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
 
     public class JobOfferDetailsViewModel : IMapFrom<JobOffer>, IHaveCustomMappings
     {
+        public string Id { get; set; }
+
         public string Title { get; set; }
 
         public string Description { get; set; }

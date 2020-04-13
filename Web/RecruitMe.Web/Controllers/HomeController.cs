@@ -3,7 +3,6 @@
     using System.Diagnostics;
 
     using Microsoft.AspNetCore.Mvc;
-
     using RecruitMe.Web.ViewModels;
 
     public class HomeController : BaseController

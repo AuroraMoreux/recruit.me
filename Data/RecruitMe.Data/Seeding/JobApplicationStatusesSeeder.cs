@@ -16,7 +16,7 @@
                 return;
             }
 
-            List<string> statuses = new List<string> { "Open", "Under Review", "Accepted", "Rejected", "Retracted", "Closed" };
+            List<string> statuses = new List<string> {"Under Review", "Accepted", "Rejected", "Retracted"};
 
             foreach (string status in statuses)
             {

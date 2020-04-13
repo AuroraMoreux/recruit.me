@@ -115,7 +115,7 @@
             }
 
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-            string documentId = await this.documentsService.Create(input, candidateId);
+            string documentId = await this.documentsService.Upload(input, candidateId);
 
             if (documentId == null)
             {

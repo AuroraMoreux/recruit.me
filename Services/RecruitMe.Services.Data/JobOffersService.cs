@@ -27,15 +27,15 @@
 
         public async Task<string> AddOffer(PostViewModel model, string employerId)
         {
-            var offer = AutoMapperConfig.MapperInstance.Map<JobOffer>(model);
+            JobOffer offer = AutoMapperConfig.MapperInstance.Map<JobOffer>(model);
             offer.EmployerId = employerId;
             await this.jobOffersRepository.AddAsync(offer);
             await this.jobOffersRepository.SaveChangesAsync();
 
-            var jobOfferLanguages = new List<JobOfferLanguage>();
-            foreach (var languageId in model.LanguagesIds)
+            List<JobOfferLanguage> jobOfferLanguages = new List<JobOfferLanguage>();
+            foreach (int languageId in model.LanguagesIds)
             {
-                var jobOfferLanguage = new JobOfferLanguage
+                JobOfferLanguage jobOfferLanguage = new JobOfferLanguage
                 {
                     JobOffer = offer,
                     LanguageId = languageId,
@@ -46,10 +46,10 @@
             await this.jobOfferLanguagesRepository.AddRangeAsync(jobOfferLanguages);
             await this.jobOfferLanguagesRepository.SaveChangesAsync();
 
-            var jobOfferSkills = new List<JobOfferSkill>();
-            foreach (var skillId in model.SkillsIds)
+            List<JobOfferSkill> jobOfferSkills = new List<JobOfferSkill>();
+            foreach (int skillId in model.SkillsIds)
             {
-                var jobOfferSkill = new JobOfferSkill
+                JobOfferSkill jobOfferSkill = new JobOfferSkill
                 {
                     JobOffer = offer,
                     SkillId = skillId,
@@ -60,10 +60,10 @@
             await this.jobOfferSkillsRepository.AddRangeAsync(jobOfferSkills);
             await this.jobOfferSkillsRepository.SaveChangesAsync();
 
-            var jobTypes = new List<JobOfferJobType>();
-            foreach (var jobTypeId in model.JobTypesOptions.Where(jt => jt.Selected).Select(jt => jt.Id))
+            List<JobOfferJobType> jobTypes = new List<JobOfferJobType>();
+            foreach (int jobTypeId in model.JobTypesOptions.Where(jt => jt.Selected).Select(jt => jt.Id))
             {
-                var jobOfferJobType = new JobOfferJobType
+                JobOfferJobType jobOfferJobType = new JobOfferJobType
                 {
                     JobOffer = offer,
                     JobTypeId = jobTypeId,
@@ -79,9 +79,9 @@
 
         public IEnumerable<T> GetAllValidOffers<T>()
         {
-            var requestTime = DateTime.UtcNow;
+            DateTime requestTime = DateTime.UtcNow;
 
-            var offers = this.jobOffersRepository
+            List<T> offers = this.jobOffersRepository
                 .All()
                 .Where(jo => jo.ValidFrom <= requestTime
                 && jo.ValidUntil >= requestTime)
@@ -92,9 +92,17 @@
             return offers;
         }
 
+        public bool IsJobOfferPostedByEmployer(string jobOfferId, string employerId)
+        {
+            return this.jobOffersRepository
+                .AllAsNoTracking()
+                .Any(jo => jo.Id == jobOfferId
+                && jo.EmployerId == employerId);
+        }
+
         public T GetOfferDetails<T>(string jobOfferId)
         {
-            var offer = this.jobOffersRepository
+            T offer = this.jobOffersRepository
                  .All()
                  .Where(jo => jo.Id == jobOfferId)
                  .To<T>()

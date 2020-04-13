@@ -1,5 +1,5 @@
 ﻿@model RecruitMe.Web.ViewModels.JobOffers.JobOfferDetailsViewModel
-
+@using RecruitMe.Common
 @{
     ViewData["Title"] = Model.Title;
     var isFullTimeAsString = Model.IsFullTime == true ? "Yes" : "No";
@@ -12,9 +12,29 @@
 
 <h1>@ViewData["Title"]</h1>
 
+@if (this.TempData["AlreadyAppliedMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["AlreadyAppliedMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+@if (this.TempData["SuccessfulApplication"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessfulApplication"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Position Details:</h5>
+        <h5 class="card-title" style="display:inline-block">Position Details:</h5>
         <p class="card-text"><strong>Employer: </strong>@Model.EmployerName</p>
         <p class="card-text"><strong>City: </strong>@Model.City; <strong>Position Level: </strong>@Model.JobLevelName; <strong>Full-time: </strong>@isFullTimeAsString; <strong>Remote: </strong>@isRemoteAsString; <strong>Type: </strong>@jobTypes; <strong>Sector: </strong>@Model.JobSectorName</p>
         @if (Model.Salary.HasValue)
@@ -28,7 +48,14 @@
 <hr />
 <div class="card">
     <div class="card-body">
-    <h5 class="card-title">Position Description:</h5>
+        <h5 class="card-title">Position Description:</h5>
         <p class="card-text">@Html.Raw(Model.Description)</p>
+        @if (this.User.IsInRole(GlobalConstants.CandidateRoleName))
+        {
+        <div class="text-center">
+            <a class="btn btn-success align-center" asp-controller="JobApplications" asp-action="Apply" asp-route-jobOfferId="@Model.Id">Apply</a>
+        </div>
+        }
+
     </div>
 </div>

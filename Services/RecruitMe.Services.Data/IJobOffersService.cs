@@ -12,5 +12,7 @@
         IEnumerable<T> GetAllValidOffers<T>();
 
         T GetOfferDetails<T>(string jobOfferId);
+
+        bool IsJobOfferPostedByEmployer(string jobOfferId, string employerId);
     }
 }

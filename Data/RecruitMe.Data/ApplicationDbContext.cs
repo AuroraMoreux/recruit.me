@@ -63,6 +63,8 @@
 
         public DbSet<JobOfferJobType> JobOfferJobTypes { get; set; }
 
+        public DbSet<JobApplicationDocument> JobApplicationDocuments { get; set; }
+
         public DbSet<Setting> Settings { get; set; }
 
         public override int SaveChanges() => this.SaveChanges(true);
@@ -167,6 +169,20 @@
                .HasOne(cs => cs.Skill)
                .WithMany(s => s.Candidates)
                .HasForeignKey(cs => cs.SkillId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<JobApplicationDocument>()
+               .HasKey(jad => new { jad.JobApplicationId, jad.DocumentId });
+            builder.Entity<JobApplicationDocument>()
+                .HasOne(jad => jad.JobApplication)
+                .WithMany(ja => ja.Documents)
+                .HasForeignKey(jad => jad.JobApplicationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<JobApplicationDocument>()
+               .HasOne(jad => jad.Document)
+               .WithMany(d => d.JobApplications)
+               .HasForeignKey(jad => jad.DocumentId)
                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<JobOfferLanguage>()

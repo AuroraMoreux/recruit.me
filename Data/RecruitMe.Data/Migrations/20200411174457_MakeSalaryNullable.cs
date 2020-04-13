@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace RecruitMe.Data.Migrations
+﻿namespace RecruitMe.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class MakeSalaryNullable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

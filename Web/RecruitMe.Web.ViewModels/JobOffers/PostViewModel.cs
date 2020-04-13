@@ -35,7 +35,6 @@
         public DateTime ValidFrom { get; set; }
 
         // TODO: make sure this date is after valid from;
-
         [Required]
         [Display(Name = "Valid Until")]
         public DateTime ValidUntil { get; set; }
@@ -62,6 +61,7 @@
         [Display(Name = "Required Languages")]
         public List<int> LanguagesIds { get; set; }
 
+        // TODO: check how to make at least one checkbox per group be mandatory
         [Display(Name = "Job Type")]
         public List<JobTypesCheckboxViewModel> JobTypesOptions { get; set; }
 

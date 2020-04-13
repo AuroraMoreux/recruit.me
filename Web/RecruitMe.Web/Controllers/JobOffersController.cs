@@ -54,7 +54,7 @@
         [Authorize]
         public IActionResult All(int page = 1, int perPage = OffersPerPageDefaultCount)
         {
-            var jobOffers = this.jobOffersService.GetAllValidOffers<JobOffersViewModel>();
+            IEnumerable<JobOffersViewModel> jobOffers = this.jobOffersService.GetAllValidOffers<JobOffersViewModel>();
 
             int pagesCount = (int)Math.Ceiling(jobOffers.Count() / (decimal)perPage);
 
@@ -76,7 +76,7 @@
         [Authorize]
         public IActionResult Details(string id)
         {
-            var jobOfferDetails = this.jobOffersService.GetOfferDetails<JobOfferDetailsViewModel>(id);
+            JobOfferDetailsViewModel jobOfferDetails = this.jobOffersService.GetOfferDetails<JobOfferDetailsViewModel>(id);
             return this.View(jobOfferDetails);
         }
 
@@ -116,8 +116,8 @@
                 return this.View(input);
             }
 
-            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
-            var jobOfferId = await this.jobOffersService.AddOffer(input, employerId);
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            string jobOfferId = await this.jobOffersService.AddOffer(input, employerId);
 
             if (jobOfferId == null)
             {
