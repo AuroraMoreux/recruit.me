@@ -43,6 +43,7 @@
                  .Where(jas => jas.Name == "Under Review")
                  .Select(jas => jas.Id)
                  .FirstOrDefault();
+
             jobApplication.ApplicationStatusId = applicationStatusId;
             jobApplication.CreatedOn = DateTime.UtcNow;
             await this.jobApplicationRepository.AddAsync(jobApplication);
@@ -88,6 +89,27 @@
             return jobApplication.Id;
         }
 
+        public async Task<int> ChangeJobApplicationStatus(string jobApplicationId, int statusId)
+        {
+            var jobApplication = this.jobApplicationRepository
+                .All()
+                .Where(ja => ja.Id == jobApplicationId)
+                .FirstOrDefault();
+
+            var statusExists = this.applicationStatusRepository
+                .AllAsNoTracking()
+                .Any(jas => jas.Id == statusId);
+
+            if (statusExists)
+            {
+                jobApplication.ApplicationStatusId = statusId;
+                this.jobApplicationRepository.Update(jobApplication);
+                await this.jobApplicationRepository.SaveChangesAsync();
+            }
+
+            return jobApplication.ApplicationStatusId;
+        }
+
         public T GetJobApplicationDetails<T>(string jobApplicationId)
         {
             var applicationDetails = this.jobApplicationRepository
@@ -97,6 +119,15 @@
                  .FirstOrDefault();
 
             return applicationDetails;
+        }
+
+        public int GetJobApplicationStatusId(string jobApplicationId)
+        {
+            return this.jobApplicationRepository
+                 .AllAsNoTracking()
+                 .Where(ja => ja.Id == jobApplicationId)
+                 .Select(ja => ja.ApplicationStatusId)
+                 .FirstOrDefault();
         }
 
         public string GetJobOfferIdForApplication(string jobApplicationId)
@@ -116,6 +147,15 @@
                  .AllAsNoTracking()
                  .Any(ja => ja.CandidateId == candidateId
                    && ja.JobOfferId == jobOfferId);
+        }
+
+        public bool IsUserRelatedToJobApplication(string jobApplicationId, string userId)
+        {
+            return this.jobApplicationRepository
+                 .AllAsNoTracking()
+                 .Any(ja => ja.Id == jobApplicationId
+                  && (ja.Candidate.ApplicationUserId == userId
+                  || ja.JobOffer.Employer.ApplicationUserId == userId));
         }
     }
 }

@@ -1,13 +1,16 @@
 ﻿namespace RecruitMe.Web.ViewModels.JobApplications
 {
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
+
     using AutoMapper;
     using RecruitMe.Data.Models;
+    using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
     public class DetailsViewModel : IMapFrom<JobApplication>, IMapFrom<JobApplicationDocument>, IHaveCustomMappings
     {
+        public string Id { get; set; }
+
         public string JobOfferTitle { get; set; }
 
         public string CandidateName { get; set; }
@@ -18,7 +21,11 @@
 
         public string Message { get; set; }
 
+        public string ApplicationStatusName { get; set; }
+
         public IList<JobApplicationDocumentsViewModel> Documents { get; set; }
+
+        public IEnumerable<JobApplicationStatusDetailsView> JobApplicationStatusChangeList { get; set; }
 
         public void CreateMappings(IProfileExpression configuration)
         {

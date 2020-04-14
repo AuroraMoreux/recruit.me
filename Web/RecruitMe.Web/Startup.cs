@@ -89,6 +89,7 @@
             services.AddTransient<ISkillsService, SkillsService>();
             services.AddTransient<IJobOffersService, JobOffersService>();
             services.AddTransient<IJobApplicationService, JobApplicationService>();
+            services.AddTransient<IJobApplicationStatusesService, JobApplicationStatusesService>();
 
             Account account = new Account(this.configuration["CloudinaryDetails:CloudName"], this.configuration["CloudinaryDetails:ApiKey"], this.configuration["CloudinaryDetails:ApiSecret"]);
             Cloudinary cloudinary = new Cloudinary(account);

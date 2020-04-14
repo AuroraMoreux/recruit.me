@@ -107,5 +107,6 @@
         }
 
         // TODO: add skills and languages to the models
+        // TODO: add job applications review screen
     }
 }

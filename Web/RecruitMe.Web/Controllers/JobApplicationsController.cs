@@ -4,26 +4,33 @@
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using RecruitMe.Common;
+    using RecruitMe.Data.Models;
     using RecruitMe.Services.Data;
+    using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.JobApplications;
 
     public class JobApplicationsController : BaseController
     {
+        private readonly UserManager<ApplicationUser> userManager;
         private readonly IJobApplicationService jobApplicationService;
         private readonly IJobOffersService jobOffersService;
         private readonly ICandidatesService candidatesService;
         private readonly IEmployersService employersService;
         private readonly IDocumentsService documentsService;
+        private readonly IJobApplicationStatusesService jobApplicationStatusesService;
 
-        public JobApplicationsController(IJobApplicationService jobApplicationService, IJobOffersService jobOffersService, ICandidatesService candidatesService, IEmployersService employersService, IDocumentsService documentsService)
+        public JobApplicationsController(UserManager<ApplicationUser> userManager, IJobApplicationService jobApplicationService, IJobOffersService jobOffersService, ICandidatesService candidatesService, IEmployersService employersService, IDocumentsService documentsService, IJobApplicationStatusesService jobApplicationStatusesService)
         {
+            this.userManager = userManager;
             this.jobApplicationService = jobApplicationService;
             this.jobOffersService = jobOffersService;
             this.candidatesService = candidatesService;
             this.employersService = employersService;
             this.documentsService = documentsService;
+            this.jobApplicationStatusesService = jobApplicationStatusesService;
         }
 
         [Authorize(Roles = GlobalConstants.CandidateRoleName)]
@@ -84,26 +91,41 @@
             }
         }
 
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        [Authorize]
         public IActionResult Details(string id)
         {
-            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
-            var jobApplicationJobOfferId = this.jobApplicationService.GetJobOfferIdForApplication(id);
-            var isJobOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(jobApplicationJobOfferId, employerId);
+            string userId = this.userManager.GetUserId(this.User);
 
-            if (!isJobOfferPostedByEmployer)
+            var isUserRelatedToApplication = this.jobApplicationService.IsUserRelatedToJobApplication(id, userId);
+            if (!isUserRelatedToApplication)
             {
                 return this.Forbid();
             }
 
             var jobApplicationDetails = this.jobApplicationService.GetJobApplicationDetails<DetailsViewModel>(id);
+            jobApplicationDetails.JobApplicationStatusChangeList = this.jobApplicationStatusesService.GetAll<JobApplicationStatusDetailsView>();
             return this.View(jobApplicationDetails);
         }
 
-        public IActionResult Download()
+        public async Task<IActionResult> StatusChange(int statusId, string jobApplicationId)
         {
-            // TODO
-            return this.View();
+            var currentStatusId = this.jobApplicationService.GetJobApplicationStatusId(jobApplicationId);
+
+            if (currentStatusId == statusId)
+            {
+                return this.RedirectToAction(nameof(this.Details), new { id = jobApplicationId });
+            }
+            else
+            {
+                var newStatus = await this.jobApplicationService.ChangeJobApplicationStatus(jobApplicationId, statusId);
+
+                if (newStatus == currentStatusId)
+                {
+                    return this.View("Error");
+                }
+            }
+
+            return this.RedirectToAction(nameof(this.Details), new { id = jobApplicationId });
         }
     }
 }

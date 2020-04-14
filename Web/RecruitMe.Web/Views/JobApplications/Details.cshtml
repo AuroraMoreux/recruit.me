@@ -1,6 +1,10 @@
 ﻿@model RecruitMe.Web.ViewModels.JobApplications.DetailsViewModel
+@using RecruitMe.Common
 @{
     ViewData["Title"] = $"Application Details for Position {Model.JobOfferTitle}";
+    var acceptStatusId = Model.JobApplicationStatusChangeList.Where(jas => jas.Name.ToLower().Contains("accepted")).Select(jas => jas.Id).FirstOrDefault();
+    var rejectStatusId = Model.JobApplicationStatusChangeList.Where(jas => jas.Name.ToLower().Contains("rejected")).Select(jas => jas.Id).FirstOrDefault();
+    var retractStatusId = Model.JobApplicationStatusChangeList.Where(jas => jas.Name.ToLower().Contains("retracted")).Select(jas => jas.Id).FirstOrDefault();
 
 }
 
@@ -9,6 +13,7 @@
 <div class="card">
     <div class="card-body">
         <h5 class="card-title" style="display:inline-block">Candidate Contact Information:</h5>
+        <h6 class="card-title float-right" style="display:inline-block">Application Status: <span id="applicationStatus"> @Model.ApplicationStatusName</span></h6>
         <p class="card-text"><strong>Name: </strong>@Model.CandidateName</p>
         <p class="card-text"><strong>Email: </strong>@Model.CandidateApplicationUserEmail; <strong>Phone Number: </strong>@Model.CandidatePhoneNumber</p>
     </div>
@@ -37,11 +42,45 @@
                         <td>@Model.Documents[i].DocumentName</td>
                         <td>@Model.Documents[i].DocumentDocumentCategoryName</td>
                         <td>
-                            <a class="btn btn-primary btn-sm" asp-controller="JobApplications" asp-action="Download" asp-route-id="@Model.Documents[i].DocumentId">Download</a>
+                            <a class="btn btn-primary btn-sm" asp-controller="Documents" asp-action="Download" asp-route-id="@Model.Documents[i].DocumentId" asp-route-jobApplicationId ="@Model.Id">Download</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
+        <hr />
+        @if (this.User.IsInRole(GlobalConstants.EmployerRoleName) && Model.ApplicationStatusName.ToLower().Contains("review"))
+        {
+            <div class="text-center">
+                <a class="btn btn-success align-center" asp-controller="JobApplications" asp-action="StatusChange" asp-route-statusId="@acceptStatusId" asp-route-jobApplicationId="@Model.Id">Accept</a>
+                <a class="btn btn-danger align-center" asp-controller="JobApplications" asp-action="StatusChange" asp-route-statusId="@rejectStatusId"asp-route-jobApplicationId="@Model.Id">Reject</a>
+            </div>
+        }
+        @if (this.User.IsInRole(GlobalConstants.CandidateRoleName) && Model.ApplicationStatusName.ToLower().Contains("review"))
+        {
+            <div class="text-center">
+                <a class="btn btn-success align-center" asp-controller="JobApplications" asp-action="StatusChange" asp-route-statusId="@retractStatusId"asp-route-jobApplicationId="@Model.Id">Retract</a>
+            </div>
+        }
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var statusElement = $("#applicationStatus");
+            if (statusElement.text().indexOf("Review") >= 0) {
+                statusElement.addClass("text-warning");
+            }
+            else if (statusElement.text().indexOf("Accepted") >= 0) {
+                statusElement.addClass("text-success");
+            }
+            else if (statusElement.text().indexOf("Rejected") >= 0 || statusElement.text().indexOf("Retracted") >= 0) {
+                statusElement.addClass("text-danger");
+            }
+            else {
+                statusElement.classList.add("text-secondary");
+            }
+        });
+    </script>
+}

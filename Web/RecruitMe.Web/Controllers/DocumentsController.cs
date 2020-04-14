@@ -22,6 +22,7 @@
         private readonly ICandidatesService candidatesService;
         private readonly IFileExtensionsService fileExtensionsService;
         private readonly IDocumentCategoriesService documentCategoriesService;
+        private readonly IJobApplicationService jobApplicationService;
         private readonly IMimeMappingService mimeMappingService;
         private readonly UserManager<ApplicationUser> userManager;
 
@@ -33,6 +34,7 @@
             ICandidatesService candidatesService,
             IFileExtensionsService fileExtensionsService,
             IDocumentCategoriesService documentCategoriesService,
+            IJobApplicationService jobApplicationService,
             IMimeMappingService mimeMappingService,
             UserManager<ApplicationUser> userManager)
         {
@@ -40,6 +42,7 @@
             this.candidatesService = candidatesService;
             this.fileExtensionsService = fileExtensionsService;
             this.documentCategoriesService = documentCategoriesService;
+            this.jobApplicationService = jobApplicationService;
             this.mimeMappingService = mimeMappingService;
             this.userManager = userManager;
 
@@ -142,14 +145,26 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Download(string id)
+        public async Task<IActionResult> Download(string id, string jobApplicationId = null)
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-            bool isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
-
-            if (!isOwner)
+            if (jobApplicationId == null)
             {
-                return this.Forbid();
+                string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+                bool isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
+                if (!isOwner)
+                {
+                    return this.Forbid();
+                }
+            }
+            else
+            {
+                string userId = this.userManager.GetUserId(this.User);
+
+                var isUserRelatedToJobApplication = this.jobApplicationService.IsUserRelatedToJobApplication(jobApplicationId, userId);
+                if (!isUserRelatedToJobApplication)
+                {
+                    return this.Forbid();
+                }
             }
 
             byte[] fileAsByteArray = await this.documentsService.Download(id);
