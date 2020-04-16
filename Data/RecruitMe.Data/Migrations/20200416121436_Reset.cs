@@ -4,7 +4,7 @@
 
     using Microsoft.EntityFrameworkCore.Migrations;
 
-    public partial class RedoDb : Migration
+    public partial class Reset : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,10 +52,8 @@
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    IsCandidate = table.Column<bool>(nullable: false),
-                    CandidateId = table.Column<string>(nullable: true),
-                    IsEmployer = table.Column<bool>(nullable: false),
                     EmployerId = table.Column<string>(nullable: true),
+                    CandidateId = table.Column<string>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -87,11 +85,11 @@
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -105,11 +103,11 @@
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -123,11 +121,11 @@
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -141,11 +139,11 @@
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -159,11 +157,11 @@
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -177,11 +175,11 @@
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -195,11 +193,11 @@
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -213,11 +211,11 @@
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -335,17 +333,17 @@
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(maxLength: 50, nullable: false),
-                    ApplicationUserId = table.Column<string>(nullable: false),
-                    PhoneNumber = table.Column<string>(maxLength: 12, nullable: true),
-                    ContactAddress = table.Column<string>(maxLength: 80, nullable: true),
-                    Education = table.Column<string>(nullable: true),
-                    ProfilePicture = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(maxLength: 50, nullable: false),
+                    ProfilePictureUrl = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(maxLength: 12, nullable: true),
+                    ContactAddress = table.Column<string>(maxLength: 80, nullable: true),
+                    Education = table.Column<string>(nullable: true),
+                    ApplicationUserId = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -363,24 +361,24 @@
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(nullable: false),
-                    ApplicationUserId = table.Column<string>(nullable: false),
                     UniqueIdentificationCode = table.Column<string>(nullable: false),
-                    IsPublicSector = table.Column<bool>(nullable: false),
-                    IsHiringAgency = table.Column<bool>(nullable: false),
-                    JobSectorId = table.Column<int>(nullable: false),
                     PhoneNumber = table.Column<string>(maxLength: 12, nullable: true),
                     Address = table.Column<string>(maxLength: 80, nullable: true),
                     ContactPersonNames = table.Column<string>(maxLength: 100, nullable: false),
                     ContactPersonEmail = table.Column<string>(nullable: false),
                     ContactPersonPhoneNumber = table.Column<string>(maxLength: 12, nullable: true),
                     ContactPersonPosition = table.Column<string>(nullable: true),
+                    LogoUrl = table.Column<string>(nullable: true),
                     WebsiteAddress = table.Column<string>(nullable: true),
-                    Logo = table.Column<string>(nullable: true),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    ModifiedOn = table.Column<DateTime>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    DeletedOn = table.Column<DateTime>(nullable: true),
+                    IsPublicSector = table.Column<bool>(nullable: false),
+                    IsHiringAgency = table.Column<bool>(nullable: false),
+                    ApplicationUserId = table.Column<string>(nullable: false),
+                    JobSectorId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -404,9 +402,9 @@
                 name: "CandidateLanguages",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
                     CandidateId = table.Column<string>(nullable: false),
                     LanguageId = table.Column<int>(nullable: false),
+                    Id = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -414,7 +412,7 @@
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CandidateLanguages", x => x.Id);
+                    table.PrimaryKey("PK_CandidateLanguages", x => new { x.CandidateId, x.LanguageId });
                     table.ForeignKey(
                         name: "FK_CandidateLanguages_Candidates_CandidateId",
                         column: x => x.CandidateId,
@@ -434,9 +432,9 @@
                 name: "CandidateSkills",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
                     CandidateId = table.Column<string>(nullable: false),
                     SkillId = table.Column<int>(nullable: false),
+                    Id = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -444,7 +442,7 @@
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CandidateSkills", x => x.Id);
+                    table.PrimaryKey("PK_CandidateSkills", x => new { x.CandidateId, x.SkillId });
                     table.ForeignKey(
                         name: "FK_CandidateSkills_Candidates_CandidateId",
                         column: x => x.CandidateId,
@@ -465,16 +463,16 @@
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(maxLength: 30, nullable: false),
-                    CandidateId = table.Column<string>(nullable: false),
-                    DocumentCategoryId = table.Column<int>(nullable: false),
-                    FileExtensionId = table.Column<int>(nullable: false),
-                    Size = table.Column<long>(nullable: false),
-                    Url = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    DocumentCategoryId = table.Column<int>(nullable: false),
+                    Size = table.Column<long>(nullable: false),
+                    Url = table.Column<string>(nullable: false),
+                    CandidateId = table.Column<string>(nullable: false),
+                    FileExtensionId = table.Column<int>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -506,23 +504,22 @@
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Title = table.Column<string>(maxLength: 100, nullable: false),
-                    EmployerId = table.Column<string>(nullable: false),
-                    JobSectorId = table.Column<int>(nullable: false),
-                    JobTypeId = table.Column<int>(nullable: false),
-                    JobLevelId = table.Column<int>(nullable: false),
-                    IsFullTime = table.Column<bool>(nullable: false),
-                    IsRemote = table.Column<bool>(nullable: false),
-                    Description = table.Column<string>(nullable: false),
-                    OfficeAddress = table.Column<string>(nullable: true),
-                    City = table.Column<string>(nullable: false),
-                    Salary = table.Column<decimal>(nullable: false),
-                    ValidFrom = table.Column<DateTime>(nullable: false),
-                    ValidUntil = table.Column<DateTime>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Title = table.Column<string>(maxLength: 150, nullable: false),
+                    Description = table.Column<string>(nullable: false),
+                    IsFullTime = table.Column<bool>(nullable: false),
+                    IsRemote = table.Column<bool>(nullable: false),
+                    OfficeAddress = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: false),
+                    Salary = table.Column<decimal>(nullable: true),
+                    ValidFrom = table.Column<DateTime>(nullable: false),
+                    ValidUntil = table.Column<DateTime>(nullable: false),
+                    EmployerId = table.Column<string>(nullable: false),
+                    JobLevelId = table.Column<int>(nullable: false),
+                    JobSectorId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -547,13 +544,6 @@
                         principalTable: "JobSectors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_JobOffers_JobTypes_JobTypeId",
-                        column: x => x.JobTypeId,
-                        principalSchema: "enum",
-                        principalTable: "JobTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -561,13 +551,14 @@
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    CandidateId = table.Column<string>(nullable: false),
-                    JobOfferId = table.Column<string>(nullable: false),
-                    ApplicationStatusId = table.Column<int>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
+                    Message = table.Column<string>(nullable: true),
+                    CandidateId = table.Column<string>(nullable: false),
+                    JobOfferId = table.Column<string>(nullable: false),
+                    ApplicationStatusId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -594,12 +585,12 @@
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobOfferLanguages",
+                name: "JobOfferJobTypes",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
                     JobOfferId = table.Column<string>(nullable: false),
-                    LanguageId = table.Column<int>(nullable: false),
+                    JobTypeId = table.Column<int>(nullable: false),
+                    Id = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -607,7 +598,37 @@
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobOfferLanguages", x => x.Id);
+                    table.PrimaryKey("PK_JobOfferJobTypes", x => new { x.JobOfferId, x.JobTypeId });
+                    table.ForeignKey(
+                        name: "FK_JobOfferJobTypes_JobOffers_JobOfferId",
+                        column: x => x.JobOfferId,
+                        principalTable: "JobOffers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_JobOfferJobTypes_JobTypes_JobTypeId",
+                        column: x => x.JobTypeId,
+                        principalSchema: "enum",
+                        principalTable: "JobTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobOfferLanguages",
+                columns: table => new
+                {
+                    JobOfferId = table.Column<string>(nullable: false),
+                    LanguageId = table.Column<int>(nullable: false),
+                    Id = table.Column<string>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobOfferLanguages", x => new { x.JobOfferId, x.LanguageId });
                     table.ForeignKey(
                         name: "FK_JobOfferLanguages_JobOffers_JobOfferId",
                         column: x => x.JobOfferId,
@@ -627,9 +648,9 @@
                 name: "JobOfferSkills",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
                     JobOfferId = table.Column<string>(nullable: false),
                     SkillId = table.Column<int>(nullable: false),
+                    Id = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
@@ -637,7 +658,7 @@
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobOfferSkills", x => x.Id);
+                    table.PrimaryKey("PK_JobOfferSkills", x => new { x.JobOfferId, x.SkillId });
                     table.ForeignKey(
                         name: "FK_JobOfferSkills_JobOffers_JobOfferId",
                         column: x => x.JobOfferId,
@@ -649,6 +670,35 @@
                         column: x => x.SkillId,
                         principalSchema: "enum",
                         principalTable: "Skills",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobApplicationDocuments",
+                columns: table => new
+                {
+                    JobApplicationId = table.Column<string>(nullable: false),
+                    DocumentId = table.Column<string>(nullable: false),
+                    Id = table.Column<string>(nullable: true),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobApplicationDocuments", x => new { x.JobApplicationId, x.DocumentId });
+                    table.ForeignKey(
+                        name: "FK_JobApplicationDocuments_Documents_DocumentId",
+                        column: x => x.DocumentId,
+                        principalTable: "Documents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_JobApplicationDocuments_JobApplications_JobApplicationId",
+                        column: x => x.JobApplicationId,
+                        principalTable: "JobApplications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -703,11 +753,6 @@
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CandidateLanguages_CandidateId",
-                table: "CandidateLanguages",
-                column: "CandidateId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CandidateLanguages_IsDeleted",
                 table: "CandidateLanguages",
                 column: "IsDeleted");
@@ -727,11 +772,6 @@
                 name: "IX_Candidates_IsDeleted",
                 table: "Candidates",
                 column: "IsDeleted");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CandidateSkills_CandidateId",
-                table: "CandidateSkills",
-                column: "CandidateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CandidateSkills_IsDeleted",
@@ -780,6 +820,16 @@
                 column: "JobSectorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_JobApplicationDocuments_DocumentId",
+                table: "JobApplicationDocuments",
+                column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobApplicationDocuments_IsDeleted",
+                table: "JobApplicationDocuments",
+                column: "IsDeleted");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JobApplications_ApplicationStatusId",
                 table: "JobApplications",
                 column: "ApplicationStatusId");
@@ -800,14 +850,19 @@
                 column: "JobOfferId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobOfferLanguages_IsDeleted",
-                table: "JobOfferLanguages",
+                name: "IX_JobOfferJobTypes_IsDeleted",
+                table: "JobOfferJobTypes",
                 column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobOfferLanguages_JobOfferId",
+                name: "IX_JobOfferJobTypes_JobTypeId",
+                table: "JobOfferJobTypes",
+                column: "JobTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobOfferLanguages_IsDeleted",
                 table: "JobOfferLanguages",
-                column: "JobOfferId");
+                column: "IsDeleted");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobOfferLanguages_LanguageId",
@@ -835,19 +890,9 @@
                 column: "JobSectorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobOffers_JobTypeId",
-                table: "JobOffers",
-                column: "JobTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_JobOfferSkills_IsDeleted",
                 table: "JobOfferSkills",
                 column: "IsDeleted");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_JobOfferSkills_JobOfferId",
-                table: "JobOfferSkills",
-                column: "JobOfferId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobOfferSkills_SkillId",
@@ -932,10 +977,10 @@
                 name: "CandidateSkills");
 
             migrationBuilder.DropTable(
-                name: "Documents");
+                name: "JobApplicationDocuments");
 
             migrationBuilder.DropTable(
-                name: "JobApplications");
+                name: "JobOfferJobTypes");
 
             migrationBuilder.DropTable(
                 name: "JobOfferLanguages");
@@ -948,6 +993,24 @@
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Documents");
+
+            migrationBuilder.DropTable(
+                name: "JobApplications");
+
+            migrationBuilder.DropTable(
+                name: "JobTypes",
+                schema: "enum");
+
+            migrationBuilder.DropTable(
+                name: "Languages",
+                schema: "enum");
+
+            migrationBuilder.DropTable(
+                name: "Skills",
+                schema: "enum");
 
             migrationBuilder.DropTable(
                 name: "DocumentCategories",
@@ -965,25 +1028,13 @@
                 name: "Candidates");
 
             migrationBuilder.DropTable(
-                name: "Languages",
-                schema: "enum");
-
-            migrationBuilder.DropTable(
                 name: "JobOffers");
-
-            migrationBuilder.DropTable(
-                name: "Skills",
-                schema: "enum");
 
             migrationBuilder.DropTable(
                 name: "Employers");
 
             migrationBuilder.DropTable(
                 name: "JobLevels",
-                schema: "enum");
-
-            migrationBuilder.DropTable(
-                name: "JobTypes",
                 schema: "enum");
 
             migrationBuilder.DropTable(

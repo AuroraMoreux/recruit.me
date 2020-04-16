@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.Configuration;
+    using RecruitMe.Common;
     using RecruitMe.Data.Common.Repositories;
     using RecruitMe.Data.Models;
     using RecruitMe.Data.Models.EnumModels;
@@ -74,15 +75,14 @@
                 })
                 .FirstOrDefault();
 
-            // TODO: define global email templates
             StringBuilder sb = new StringBuilder();
-            sb.Append($"Hello, {jobOfferDetails.ContactPersonNames}, <br /> A new job application has been received for the following job offer: <strong>{jobOfferDetails.Title}</strong><br /><br /><strong>Candidate contact details:</strong><br /><strong>Name:</strong> {input.CandidateDetails.FirstName + " " + input.CandidateDetails.LastName}<br /><strong>Email:</strong> {input.CandidateDetails.ApplicationUserEmail}");
+            sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedOpening, jobOfferDetails.ContactPersonNames, jobOfferDetails.Title, input.CandidateDetails.FirstName + " " + input.CandidateDetails.LastName, input.CandidateDetails.ApplicationUserEmail));
             if (input.CandidateDetails.PhoneNumber != null)
             {
-                sb.Append($"<br /><strong>Phone Number:</strong> {input.CandidateDetails.PhoneNumber}");
+                sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedCandidatePhoneNumber, input.CandidateDetails.PhoneNumber));
             }
 
-            sb.Append($"<br /> You can review the application details <a href='{HtmlEncoder.Default.Encode(jobOfferBaseUrl + jobApplication.Id)}'>here</a>");
+            sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedClosing, HtmlEncoder.Default.Encode(jobOfferBaseUrl + jobApplication.Id)));
 
             await this.emailSender.SendEmailAsync(this.configuration["DefaultAdminCredentials:Email"], this.configuration["DefaultAdminCredentials:Username"], jobOfferDetails.ContactPersonEmail, $"New Job Application received for Job Offer {jobOfferDetails.Title}", sb.ToString());
 
@@ -91,12 +91,12 @@
 
         public async Task<int> ChangeJobApplicationStatus(string jobApplicationId, int statusId)
         {
-            var jobApplication = this.jobApplicationRepository
+            JobApplication jobApplication = this.jobApplicationRepository
                 .All()
                 .Where(ja => ja.Id == jobApplicationId)
                 .FirstOrDefault();
 
-            var statusExists = this.applicationStatusRepository
+            bool statusExists = this.applicationStatusRepository
                 .AllAsNoTracking()
                 .Any(jas => jas.Id == statusId);
 
@@ -112,7 +112,7 @@
 
         public T GetJobApplicationDetails<T>(string jobApplicationId)
         {
-            var applicationDetails = this.jobApplicationRepository
+            T applicationDetails = this.jobApplicationRepository
                  .AllAsNoTracking()
                  .Where(ja => ja.Id == jobApplicationId)
                  .To<T>()
@@ -132,7 +132,7 @@
 
         public string GetJobOfferIdForApplication(string jobApplicationId)
         {
-            var applicationJobOfferId = this.jobApplicationRepository
+            string applicationJobOfferId = this.jobApplicationRepository
                  .AllAsNoTracking()
                  .Where(ja => ja.Id == jobApplicationId)
                  .Select(ja => ja.JobOfferId)

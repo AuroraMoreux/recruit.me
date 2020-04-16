@@ -27,6 +27,10 @@
     <Compile Remove="Migrations\20200411143920_LinkMappingTableForJobOfferTypes.Designer.cs" />
     <Compile Remove="Migrations\20200411144055_LinkMappingTableForJobOfferTypes.cs" />
     <Compile Remove="Migrations\20200411144055_LinkMappingTableForJobOfferTypes.Designer.cs" />
+    <Compile Remove="Migrations\20200416113322_Test.cs" />
+    <Compile Remove="Migrations\20200416113322_Test.Designer.cs" />
+    <Compile Remove="Migrations\20200416113726_Test.cs" />
+    <Compile Remove="Migrations\20200416113726_Test.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

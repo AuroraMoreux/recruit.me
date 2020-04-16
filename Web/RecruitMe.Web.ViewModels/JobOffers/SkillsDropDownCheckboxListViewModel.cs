@@ -5,7 +5,6 @@
 
     public class SkillsDropDownCheckboxListViewModel : IMapFrom<Skill>, IMapTo<Skill>
     {
-        // TODO: Split in partial view
         public int Id { get; set; }
 
         public string Name { get; set; }

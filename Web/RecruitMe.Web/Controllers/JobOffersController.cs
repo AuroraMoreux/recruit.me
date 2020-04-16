@@ -33,7 +33,15 @@
         private readonly IEnumerable<LanguagesDropDownCheckboxListViewModel> languages;
         private readonly IEnumerable<SkillsDropDownCheckboxListViewModel> skills;
 
-        public JobOffersController(UserManager<ApplicationUser> userManager, IJobOffersService jobOffersService, IEmployersService employersService, IJobSectorsService jobSectorsService, IJobLevelsService jobLevelsService, IJobTypesService jobTypesService, ILanguagesService languagesService, ISkillsService skillsService)
+        public JobOffersController(
+            UserManager<ApplicationUser> userManager,
+            IJobOffersService jobOffersService,
+            IEmployersService employersService,
+            IJobSectorsService jobSectorsService,
+            IJobLevelsService jobLevelsService,
+            IJobTypesService jobTypesService,
+            ILanguagesService languagesService,
+            ISkillsService skillsService)
         {
             this.userManager = userManager;
             this.jobOffersService = jobOffersService;
@@ -83,6 +91,12 @@
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public IActionResult Post()
         {
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Employers");
+            }
+
             PostViewModel model = new PostViewModel
             {
                 JobSectors = this.jobSectors,
@@ -98,11 +112,15 @@
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public async Task<IActionResult> Post(PostViewModel input)
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            if (user.EmployerId == null)
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Employers");
+            }
+            bool isOfferTitleDuplicate = this.jobOffersService.IsOfferTitleDuplicate(employerId, input.Title);
+            if (isOfferTitleDuplicate)
+            {
+                this.ModelState.AddModelError(string.Empty, GlobalConstants.JobOfferWithSameNameAlreadyExists);
             }
 
             if (!this.ModelState.IsValid)
@@ -116,7 +134,6 @@
                 return this.View(input);
             }
 
-            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             string jobOfferId = await this.jobOffersService.AddOffer(input, employerId);
 
             if (jobOfferId == null)
@@ -124,7 +141,97 @@
                 return this.View("Error");
             }
 
-            return this.View(nameof(this.All));
+            this.TempData["JobOfferPosted"] = GlobalConstants.JobOfferSuccessfullyPosted;
+            return this.RedirectToAction(nameof(this.All));
+        }
+
+        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        public IActionResult Edit(string id)
+        {
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Employers");
+            }
+
+            var isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(id, employerId);
+            if (!isOfferPostedByEmployer)
+            {
+                return this.Forbid();
+            }
+
+            var jobOffer = this.jobOffersService.GetOfferDetails<EditJobOfferDetailsModel>(id);
+            EditViewModel viewModel = new EditViewModel
+            {
+                JobOfferDetails = jobOffer,
+                JobSectors = this.jobSectors,
+                JobLevels = this.jobLevels,
+                JobTypesOptions = this.jobTypes,
+                Languages = this.languages,
+                Skills = this.skills,
+            };
+            return this.View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        public async Task<IActionResult> Edit(EditViewModel input)
+        {
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Employers");
+            }
+
+            var isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(input.JobOfferDetails.Id, employerId);
+            if (!isOfferPostedByEmployer)
+            {
+                return this.Forbid();
+            }
+
+            if (!this.ModelState.IsValid)
+            {
+                input.JobOfferDetails.JobTypesIds = input.JobTypesOptions.Where(jto => jto.Selected == true).Select(jto => jto.Id).ToList();
+                input.JobSectors = this.jobSectors;
+                input.JobLevels = this.jobLevels;
+                input.JobTypesOptions = this.jobTypes;
+                input.Languages = this.languages;
+                input.Skills = this.skills;
+                return this.View(input);
+            }
+
+            string jobOfferId = await this.jobOffersService.UpdateOffer(input, employerId);
+
+            if (jobOfferId == null)
+            {
+                return this.View("Error");
+            }
+
+            this.TempData["JobOfferUpdated"] = GlobalConstants.JobOfferSuccessfullyUpdated;
+
+            return this.RedirectToAction(nameof(this.All));
+        }
+
+        [HttpPost]
+        [Authorize(Roles =GlobalConstants.EmployerRoleName)]
+        public async Task<IActionResult> Delete(string id)
+        {
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Employers");
+            }
+
+            var isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(id, employerId);
+            if (!isOfferPostedByEmployer)
+            {
+                return this.Forbid();
+            }
+
+            await this.jobOffersService.DeleteOffer(id);
+
+            this.TempData["JobOfferDeleted"] = GlobalConstants.JobOfferSuccessfullyUpdated;
+            return this.RedirectToAction(nameof(this.All));
         }
     }
 }

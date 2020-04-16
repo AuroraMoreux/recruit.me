@@ -10,14 +10,14 @@ using RecruitMe.Data;
 namespace RecruitMe.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200412121722_AddMessageToJobApplication")]
-    partial class AddMessageToJobApplication
+    [Migration("20200416121436_Reset")]
+    partial class Reset
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 

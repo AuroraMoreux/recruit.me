@@ -2,13 +2,14 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+
     using AutoMapper;
     using Ganss.XSS;
-    using RecruitMe.Common;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
+    using RecruitMe.Web.Infrastructure.ValidationAttributes;
 
-    public class ApplyViewModel : IMapTo<JobApplication>,IHaveCustomMappings
+    public class ApplyViewModel : IMapTo<JobApplication>, IHaveCustomMappings
     {
         [MaxLength(2000)]
         public string Message { get; set; }
@@ -26,14 +27,14 @@
 
         public JobApplicationJobOfferDetailsViewModel JobOfferDetails { get; set; }
 
-        [MinLength(1, ErrorMessage = GlobalConstants.AtLeastOneDocumentRequired)] // TODO: write custom validator - at least 1, max 5
+        [ArrayLength("Documents", 5)]
         public IEnumerable<string> DocumentIds { get; set; }
 
         public IEnumerable<CandidateDocumentsDropDownViewModel> Documents { get; set; }
 
         public void CreateMappings(IProfileExpression configuration)
         {
-            configuration.CreateMap<ApplyViewModel,JobApplication>()
+            configuration.CreateMap<ApplyViewModel, JobApplication>()
                .ForMember(ja => ja.Message, options =>
                {
                    options.MapFrom(avm => avm.SanitizedMessage);

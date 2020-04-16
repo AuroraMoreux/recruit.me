@@ -11,10 +11,12 @@
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
     using RecruitMe.Web.Infrastructure.ValidationAttributes;
-    using RecruitMe.Web.ViewModels.Employers;
 
-    public class PostViewModel : IMapTo<JobOffer>, IHaveCustomMappings, IValidatableObject
+    public class EditJobOfferDetailsModel : IMapFrom<JobOffer>, IMapTo<JobOffer>, IHaveCustomMappings, IValidatableObject
     {
+        [Required]
+        public string Id { get; set; }
+
         [Required]
         [MaxLength(150)]
         public string Title { get; set; }
@@ -66,23 +68,34 @@
         public List<int> LanguagesIds { get; set; }
 
         [Display(Name = "Job Types")]
-        public List<JobTypesCheckboxViewModel> JobTypesOptions { get; set; }
-
-        public IEnumerable<JobSectorsDropDownViewModel> JobSectors { get; set; }
-
-        public IEnumerable<JobLevelsCheckboxViewModel> JobLevels { get; set; }
-
-        public IEnumerable<SkillsDropDownCheckboxListViewModel> Skills { get; set; }
-
-        public IEnumerable<LanguagesDropDownCheckboxListViewModel> Languages { get; set; }
+        public List<int> JobTypesIds { get; set; }
 
         public void CreateMappings(IProfileExpression configuration)
         {
-            configuration.CreateMap<PostViewModel, JobOffer>()
-                 .ForMember(jo => jo.Description, options =>
-                    {
-                        options.MapFrom(pvm => pvm.SanitizedDescription);
-                    });
+            configuration.CreateMap<EditJobOfferDetailsModel, JobOffer>()
+                .ForMember(jo => jo.Description, options =>
+                {
+                    options.MapFrom(ejodm => ejodm.SanitizedDescription);
+                })
+                .ForMember(jo => jo.Salary, options =>
+                {
+                    options.MapFrom(ejodm => Math.Round(ejodm.Salary, 2));
+                });
+
+            configuration.CreateMap<JobOffer, EditJobOfferDetailsModel>()
+                .ForMember(ejodm => ejodm.SkillsIds, options =>
+                   {
+                       options.MapFrom(jo => jo.Skills.Select(jos => jos.SkillId).ToList());
+                   })
+                .ForMember(ejodm => ejodm.LanguagesIds, options =>
+                {
+                    options.MapFrom(jo => jo.Languages.Select(jos => jos.LanguageId).ToList());
+                })
+                .ForMember(ejodm => ejodm.JobTypesIds, options =>
+                   {
+                       options.MapFrom(jo => jo.JobTypes.Select(jojt => jojt.JobTypeId).ToList());
+
+                   });
         }
 
         public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
@@ -95,11 +108,6 @@
             if (this.ValidFrom < DateTime.UtcNow.Date)
             {
                 yield return new ValidationResult(errorMessage: GlobalConstants.ValidFromDateMustBeAfterCurrentDate, memberNames: new[] { "ValidFrom" });
-            }
-
-            if (this.JobTypesOptions.Count(jto => jto.Selected) == 0)
-            {
-                yield return new ValidationResult(errorMessage: GlobalConstants.SelectionListCannotBeNull, memberNames: new[] { "JobTypesOptions" });
             }
         }
     }

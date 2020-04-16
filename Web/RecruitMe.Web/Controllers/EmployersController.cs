@@ -20,7 +20,10 @@
 
         private IEnumerable<JobSectorsDropDownViewModel> jobSectors;
 
-        public EmployersController(UserManager<ApplicationUser> userManager, IEmployersService employerService, IJobSectorsService jobSectorsService)
+        public EmployersController(
+            UserManager<ApplicationUser> userManager,
+            IEmployersService employerService,
+            IJobSectorsService jobSectorsService)
         {
             this.userManager = userManager;
             this.employerService = employerService;
@@ -75,7 +78,7 @@
                 user.EmployerId = employerId;
                 await this.userManager.UpdateAsync(user);
                 this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyCreated;
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             return this.View("Error");
@@ -114,7 +117,7 @@
             if (employerId != null)
             {
                 this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             return this.View("Error");

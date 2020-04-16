@@ -16,7 +16,9 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICandidatesService candidatesService;
 
-        public CandidatesController(UserManager<ApplicationUser> userManager, ICandidatesService candidatesService)
+        public CandidatesController(
+            UserManager<ApplicationUser> userManager,
+            ICandidatesService candidatesService)
         {
             this.userManager = userManager;
             this.candidatesService = candidatesService;

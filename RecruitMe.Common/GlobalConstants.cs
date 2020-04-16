@@ -34,6 +34,18 @@
 
         public const string CandidateAlreadyApplied = "You have already submitted an application for this offer";
 
+        public const string SelectionListCannotBeNull = "Please select at least one option from the list";
+
+        public const string SelectionShouldNotBeLessThanMinLength = "You must select at least {0} options for {1}";
+
+        public const string SelectionShouldNotExceedMaxLength = "You can only select up to {0} options for {1}";
+
+        public const string ValidFromDateMustBeAfterCurrentDate = @"The ""Valid from"" date must be greater than the current date";
+
+        public const string ValidUntilDateMustBeCreaterThanValidFromDate = @"The ""Valid until"" date must be greater than the ""Valid from"" date";
+
+        public const string JobOfferWithSameNameAlreadyExists = "You already have a Job Offer with the same title that is currently active";
+
         // Notifications
         public const string UserSuccessfullyCreated = "User created a new account with password.";
 
@@ -44,5 +56,20 @@
         public const string ProfileSuccessfullyUpdated = "Your profile has been successfully updated";
 
         public const string JobApplicationSuccessfullySubmitted = "Your application was submitted successfully";
+
+        public const string JobOfferSuccessfullyPosted = "The job offer was successfully posted";
+
+        public const string JobOfferSuccessfullyUpdated = "The job offer was successfully updated";
+
+        public const string JobOfferSuccessfullyDeleted= "The job offer was successfully deleted";
+
+        // Email Templates
+        public const string NewAccountConfirmation = "Please confirm your account by<a href='{0}'> clicking here</a>.";
+
+        public const string NewJobApplicationReceivedOpening = "Hello, {0}, <br /> A new job application has been received for the following job offer: <strong>{1}</strong><br /><br /><strong>Candidate contact details:</strong><br /><strong>Name:</strong> {2}<br /><strong>Email:</strong> {3}";
+
+        public const string NewJobApplicationReceivedCandidatePhoneNumber = "<br /><strong>Phone Number:</strong> {0}";
+
+        public const string NewJobApplicationReceivedClosing = "<br /> You can review the application details <a href='{0}'>here</a>";
     }
 }

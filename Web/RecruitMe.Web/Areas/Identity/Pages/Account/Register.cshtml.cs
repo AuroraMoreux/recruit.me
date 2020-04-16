@@ -116,7 +116,7 @@ namespace RecruitMe.Web.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: this.Request.Scheme);
 
-                    string htmlMessage = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+                    string htmlMessage = string.Format(GlobalConstants.NewAccountConfirmation, HtmlEncoder.Default.Encode(callbackUrl));
                     await this.emailSender.SendEmailAsync(this.configuration["DefaultAdminCredentials:Email"], this.configuration["DefaultAdminCredentials:Username"], this.Input.Email, "Confirm your email", htmlMessage);
 
                     return this.RedirectToPage("RegisterConfirmation", new { email = this.Input.Email });

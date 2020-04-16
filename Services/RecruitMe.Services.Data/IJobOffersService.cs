@@ -14,5 +14,11 @@
         T GetOfferDetails<T>(string jobOfferId);
 
         bool IsJobOfferPostedByEmployer(string jobOfferId, string employerId);
+
+        bool IsOfferTitleDuplicate(string employerId, string jobOfferTitle);
+
+        Task<string> UpdateOffer(EditViewModel model, string employerId);
+
+        Task DeleteOffer(string jobOfferId);
     }
 }
