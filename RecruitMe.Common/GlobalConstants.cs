@@ -3,7 +3,7 @@
     public static class GlobalConstants
     {
         // Variables
-        public const string SystemName = "Recruit.Me";
+        public const string SystemName = "RecruitMe";
 
         public const string AdministratorRoleName = "Administrator";
 
