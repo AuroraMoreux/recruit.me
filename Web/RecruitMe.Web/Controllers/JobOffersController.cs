@@ -117,6 +117,7 @@
             {
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
+
             bool isOfferTitleDuplicate = this.jobOffersService.IsOfferTitleDuplicate(employerId, input.Title);
             if (isOfferTitleDuplicate)
             {
@@ -148,19 +149,19 @@
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public IActionResult Edit(string id)
         {
-            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            var isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(id, employerId);
+            bool isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(id, employerId);
             if (!isOfferPostedByEmployer)
             {
                 return this.Forbid();
             }
 
-            var jobOffer = this.jobOffersService.GetOfferDetails<EditJobOfferDetailsModel>(id);
+            EditJobOfferDetailsModel jobOffer = this.jobOffersService.GetOfferDetails<EditJobOfferDetailsModel>(id);
             EditViewModel viewModel = new EditViewModel
             {
                 JobOfferDetails = jobOffer,
@@ -177,13 +178,13 @@
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public async Task<IActionResult> Edit(EditViewModel input)
         {
-            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            var isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(input.JobOfferDetails.Id, employerId);
+            bool isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(input.JobOfferDetails.Id, employerId);
             if (!isOfferPostedByEmployer)
             {
                 return this.Forbid();
@@ -222,7 +223,7 @@
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            var isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(id, employerId);
+            bool isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(id, employerId);
             if (!isOfferPostedByEmployer)
             {
                 return this.Forbid();

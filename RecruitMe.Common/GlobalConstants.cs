@@ -61,7 +61,7 @@
 
         public const string JobOfferSuccessfullyUpdated = "The job offer was successfully updated";
 
-        public const string JobOfferSuccessfullyDeleted= "The job offer was successfully deleted";
+        public const string JobOfferSuccessfullyDeleted = "The job offer was successfully deleted";
 
         // Email Templates
         public const string NewAccountConfirmation = "Please confirm your account by<a href='{0}'> clicking here</a>.";
