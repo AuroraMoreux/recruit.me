@@ -46,6 +46,10 @@
 
         public const string JobOfferWithSameNameAlreadyExists = "You already have a Job Offer with the same title that is currently active";
 
+        public const string InvalidInputType = "Invalid input type";
+
+        public const string SalaryToValueMustBeGreater = @"The ""Salary To"" amount must be greater than the ""Salary From"" amount";
+
         // Notifications
         public const string UserSuccessfullyCreated = "User created a new account with password.";
 

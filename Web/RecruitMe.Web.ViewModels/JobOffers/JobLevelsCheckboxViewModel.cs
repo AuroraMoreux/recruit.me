@@ -3,7 +3,7 @@
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
-    public class JobLevelsCheckboxViewModel : IMapFrom<JobLevel>, IMapTo<JobLevel>
+    public class JobLevelsDropDownViewModel : IMapFrom<JobLevel>, IMapTo<JobLevel>
     {
         public int Id { get; set; }
 

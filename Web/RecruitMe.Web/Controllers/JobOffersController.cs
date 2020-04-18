@@ -28,8 +28,8 @@
         private readonly ISkillsService skillsService;
 
         private readonly IEnumerable<JobSectorsDropDownViewModel> jobSectors;
-        private readonly IEnumerable<JobLevelsCheckboxViewModel> jobLevels;
-        private readonly List<JobTypesCheckboxViewModel> jobTypes;
+        private readonly IEnumerable<JobLevelsDropDownViewModel> jobLevels;
+        private readonly List<JobTypesDropDownCheckboxListViewModel> jobTypes;
         private readonly IEnumerable<LanguagesDropDownCheckboxListViewModel> languages;
         private readonly IEnumerable<SkillsDropDownCheckboxListViewModel> skills;
 
@@ -53,20 +53,43 @@
             this.skillsService = skillsService;
 
             this.jobSectors = this.jobSectorsService.GetAll<JobSectorsDropDownViewModel>();
-            this.jobLevels = this.jobLevelsService.GetAll<JobLevelsCheckboxViewModel>();
-            this.jobTypes = this.jobTypesService.GetAll<JobTypesCheckboxViewModel>().ToList();
+            this.jobLevels = this.jobLevelsService.GetAll<JobLevelsDropDownViewModel>();
+            this.jobTypes = this.jobTypesService.GetAll<JobTypesDropDownCheckboxListViewModel>().ToList();
             this.languages = this.languagesService.GetAll<LanguagesDropDownCheckboxListViewModel>();
             this.skills = this.skillsService.GetAll<SkillsDropDownCheckboxListViewModel>();
         }
 
         [Authorize]
-        public IActionResult All(int page = 1, int perPage = OffersPerPageDefaultCount)
+        public IActionResult All([FromQuery]FilterModel filters, string dateSortOrder, int page = 1, int perPage = OffersPerPageDefaultCount)
         {
-            IEnumerable<JobOffersViewModel> jobOffers = this.jobOffersService.GetAllValidOffers<JobOffersViewModel>();
+            if (!this.ModelState.IsValid)
+            {
+                return this.RedirectToAction(nameof(this.Search));
+            }
 
-            int pagesCount = (int)Math.Ceiling(jobOffers.Count() / (decimal)perPage);
+            int totalJobOffersCount = this.jobOffersService.GetCount();
+            IEnumerable<JobOffersViewModel> filteredJobOffers = this.jobOffersService.GetAllValidFilteredOffers<JobOffersViewModel>(filters);
 
-            List<JobOffersViewModel> paginatedOffers = jobOffers
+            if (filteredJobOffers.Count() != totalJobOffersCount)
+            {
+                this.ViewData["IsFromSearch"] = "Search Results";
+            }
+
+            switch (dateSortOrder)
+            {
+                case "date_asc":
+                    filteredJobOffers = filteredJobOffers.OrderBy(jo => jo.CreatedOn);
+                    this.ViewData["DateSortParam"] = "date";
+                    break;
+                default:
+                    filteredJobOffers = filteredJobOffers.OrderByDescending(jo => jo.CreatedOn);
+                    this.ViewData["DateSortParam"] = "date_asc";
+                    break;
+            }
+
+            int pagesCount = (int)Math.Ceiling(filteredJobOffers.Count() / (decimal)perPage);
+
+            List<JobOffersViewModel> paginatedOffers = filteredJobOffers
              .Skip(perPage * (page - 1))
              .Take(perPage)
              .ToList();
@@ -82,9 +105,24 @@
         }
 
         [Authorize]
+        public IActionResult Search()
+        {
+            FilterModel filterModel = new FilterModel
+            {
+                Levels = this.jobLevels,
+                Sectors = this.jobSectors,
+                Types = this.jobTypes,
+                Skills = this.skills,
+                Languages = this.languages,
+            };
+
+            return this.View(filterModel);
+        }
+
+        [Authorize]
         public IActionResult Details(string id)
         {
-            JobOfferDetailsViewModel jobOfferDetails = this.jobOffersService.GetOfferDetails<JobOfferDetailsViewModel>(id);
+            JobOfferDetailsViewModel jobOfferDetails = this.jobOffersService.GetDetails<JobOfferDetailsViewModel>(id);
             return this.View(jobOfferDetails);
         }
 
@@ -118,7 +156,7 @@
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            bool isOfferTitleDuplicate = this.jobOffersService.IsOfferTitleDuplicate(employerId, input.Title);
+            bool isOfferTitleDuplicate = this.jobOffersService.IsTitleDuplicate(employerId, input.Title);
             if (isOfferTitleDuplicate)
             {
                 this.ModelState.AddModelError(string.Empty, GlobalConstants.JobOfferWithSameNameAlreadyExists);
@@ -135,7 +173,7 @@
                 return this.View(input);
             }
 
-            string jobOfferId = await this.jobOffersService.AddOffer(input, employerId);
+            string jobOfferId = await this.jobOffersService.Add(input, employerId);
 
             if (jobOfferId == null)
             {
@@ -155,13 +193,13 @@
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            bool isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(id, employerId);
+            bool isOfferPostedByEmployer = this.jobOffersService.IsOfferPostedByEmployer(id, employerId);
             if (!isOfferPostedByEmployer)
             {
                 return this.Forbid();
             }
 
-            EditJobOfferDetailsModel jobOffer = this.jobOffersService.GetOfferDetails<EditJobOfferDetailsModel>(id);
+            EditJobOfferDetailsModel jobOffer = this.jobOffersService.GetDetails<EditJobOfferDetailsModel>(id);
             EditViewModel viewModel = new EditViewModel
             {
                 JobOfferDetails = jobOffer,
@@ -184,7 +222,7 @@
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            bool isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(input.JobOfferDetails.Id, employerId);
+            bool isOfferPostedByEmployer = this.jobOffersService.IsOfferPostedByEmployer(input.JobOfferDetails.Id, employerId);
             if (!isOfferPostedByEmployer)
             {
                 return this.Forbid();
@@ -192,7 +230,6 @@
 
             if (!this.ModelState.IsValid)
             {
-                input.JobOfferDetails.JobTypesIds = input.JobTypesOptions.Where(jto => jto.Selected == true).Select(jto => jto.Id).ToList();
                 input.JobSectors = this.jobSectors;
                 input.JobLevels = this.jobLevels;
                 input.JobTypesOptions = this.jobTypes;
@@ -201,7 +238,7 @@
                 return this.View(input);
             }
 
-            string jobOfferId = await this.jobOffersService.UpdateOffer(input, employerId);
+            string jobOfferId = await this.jobOffersService.Update(input, employerId);
 
             if (jobOfferId == null)
             {
@@ -214,7 +251,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles =GlobalConstants.EmployerRoleName)]
+        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public async Task<IActionResult> Delete(string id)
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
@@ -223,13 +260,13 @@
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            bool isOfferPostedByEmployer = this.jobOffersService.IsJobOfferPostedByEmployer(id, employerId);
+            bool isOfferPostedByEmployer = this.jobOffersService.IsOfferPostedByEmployer(id, employerId);
             if (!isOfferPostedByEmployer)
             {
                 return this.Forbid();
             }
 
-            await this.jobOffersService.DeleteOffer(id);
+            await this.jobOffersService.Delete(id);
 
             this.TempData["JobOfferDeleted"] = GlobalConstants.JobOfferSuccessfullyUpdated;
             return this.RedirectToAction(nameof(this.All));

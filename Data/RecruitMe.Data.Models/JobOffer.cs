@@ -25,15 +25,10 @@
         [Required]
         public string Description { get; set; }
 
-        [Required]
-        public bool IsFullTime { get; set; }
-
-        [Required]
-        public bool IsRemote { get; set; }
-
         public string OfficeAddress { get; set; }
 
         [Required]
+        [MaxLength(80)]
         public string City { get; set; }
 
         public decimal? Salary { get; set; }

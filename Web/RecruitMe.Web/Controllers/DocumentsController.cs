@@ -160,7 +160,7 @@
             {
                 string userId = this.userManager.GetUserId(this.User);
 
-                var isUserRelatedToJobApplication = this.jobApplicationService.IsUserRelatedToJobApplication(jobApplicationId, userId);
+                bool isUserRelatedToJobApplication = this.jobApplicationService.IsUserRelatedToJobApplication(jobApplicationId, userId);
                 if (!isUserRelatedToJobApplication)
                 {
                     return this.Forbid();

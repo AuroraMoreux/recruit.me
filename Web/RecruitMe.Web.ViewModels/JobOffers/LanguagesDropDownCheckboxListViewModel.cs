@@ -4,7 +4,7 @@
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
-    public class LanguagesDropDownCheckboxListViewModel : IMapFrom<Language>, IMapTo<Language>,IMapFrom<JobOfferLanguage>,IMapTo<JobOfferLanguage>
+    public class LanguagesDropDownCheckboxListViewModel : IMapFrom<Language>, IMapTo<Language>, IMapFrom<JobOfferLanguage>, IMapTo<JobOfferLanguage>
     {
         public int Id { get; set; }
 

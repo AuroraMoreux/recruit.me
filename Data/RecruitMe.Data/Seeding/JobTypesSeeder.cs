@@ -16,7 +16,7 @@
                 return;
             }
 
-            List<string> types = new List<string> { "Permanent", "Replacement", "Seasonal", "Internship" };
+            List<string> types = new List<string> { "Permanent", "Replacement", "Seasonal", "Internship", "Remote", "Full-Time" };
 
             foreach (string type in types)
             {

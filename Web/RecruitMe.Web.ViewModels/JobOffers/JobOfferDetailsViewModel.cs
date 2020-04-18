@@ -15,10 +15,6 @@
 
         public string Description { get; set; }
 
-        public bool IsFullTime { get; set; }
-
-        public bool IsRemote { get; set; }
-
         public string OfficeAddress { get; set; }
 
         public string City { get; set; }

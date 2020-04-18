@@ -28,6 +28,7 @@
         public decimal Salary { get; set; }
 
         [Required]
+        [MaxLength(80)]
         public string City { get; set; }
 
         [Display(Name = "Office Address")]
@@ -42,14 +43,6 @@
         public DateTime ValidUntil { get; set; }
 
         [Required]
-        [Display(Name = "Part-Time")]
-        public bool IsFullTime { get; set; }
-
-        [Required]
-        [Display(Name = "Remote")]
-        public bool IsRemote { get; set; }
-
-        [Required]
         [Display(Name = "Job Sector")]
         public int JobSectorId { get; set; }
 
@@ -57,20 +50,23 @@
         [Display(Name = "Job Level")]
         public int JobLevelId { get; set; }
 
-        [ArrayLength("Required Skills", 10)]
         [Display(Name = "Required Skills")]
+        [IntArrayLength("Required Skills", 10, 1)]
         public List<int> SkillsIds { get; set; }
 
-        [ArrayLength("Required Languages", 5)]
         [Display(Name = "Required Languages")]
+        [IntArrayLength("Required Languages", 5, 1)]
         public List<int> LanguagesIds { get; set; }
 
         [Display(Name = "Job Types")]
-        public List<JobTypesCheckboxViewModel> JobTypesOptions { get; set; }
+        [IntArrayLength("Job Type", 5, 1)]
+        public List<int> JobTypesIds { get; set; }
+
+        public List<JobTypesDropDownCheckboxListViewModel> JobTypesOptions { get; set; }
 
         public IEnumerable<JobSectorsDropDownViewModel> JobSectors { get; set; }
 
-        public IEnumerable<JobLevelsCheckboxViewModel> JobLevels { get; set; }
+        public IEnumerable<JobLevelsDropDownViewModel> JobLevels { get; set; }
 
         public IEnumerable<SkillsDropDownCheckboxListViewModel> Skills { get; set; }
 
@@ -95,11 +91,6 @@
             if (this.ValidFrom < DateTime.UtcNow.Date)
             {
                 yield return new ValidationResult(errorMessage: GlobalConstants.ValidFromDateMustBeAfterCurrentDate, memberNames: new[] { "ValidFrom" });
-            }
-
-            if (this.JobTypesOptions.Count(jto => jto.Selected) == 0)
-            {
-                yield return new ValidationResult(errorMessage: GlobalConstants.SelectionListCannotBeNull, memberNames: new[] { "JobTypesOptions" });
             }
         }
     }

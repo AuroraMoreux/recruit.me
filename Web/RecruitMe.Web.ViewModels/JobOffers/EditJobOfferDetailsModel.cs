@@ -44,14 +44,6 @@
         public DateTime ValidUntil { get; set; }
 
         [Required]
-        [Display(Name = "Part-Time")]
-        public bool IsFullTime { get; set; }
-
-        [Required]
-        [Display(Name = "Remote")]
-        public bool IsRemote { get; set; }
-
-        [Required]
         [Display(Name = "Job Sector")]
         public int JobSectorId { get; set; }
 
@@ -59,15 +51,16 @@
         [Display(Name = "Job Level")]
         public int JobLevelId { get; set; }
 
-        [ArrayLength("Required Skills", 10)]
         [Display(Name = "Required Skills")]
+        [IntArrayLength("Required Skills", 10, 1)]
         public List<int> SkillsIds { get; set; }
 
-        [ArrayLength("Required Languages", 5)]
         [Display(Name = "Required Languages")]
+        [IntArrayLength("Required Languages", 5, 1)]
         public List<int> LanguagesIds { get; set; }
 
         [Display(Name = "Job Types")]
+        [IntArrayLength("Job Type", 5, 1)]
         public List<int> JobTypesIds { get; set; }
 
         public void CreateMappings(IProfileExpression configuration)
@@ -94,7 +87,6 @@
                 .ForMember(ejodm => ejodm.JobTypesIds, options =>
                    {
                        options.MapFrom(jo => jo.JobTypes.Select(jojt => jojt.JobTypeId).ToList());
-
                    });
         }
 

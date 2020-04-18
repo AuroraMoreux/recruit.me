@@ -81,57 +81,26 @@
                     <input id="ValidTo" type="date" value="@DateTime.UtcNow.Date.ToString("dd-MM-yyyy")" asp-for="ValidUntil" class="form-control" />
                     <span asp-validation-for="ValidUntil" class="text-danger"></span>
                 </div>
-                <input type="submit" value="Publish" class="btn btn-primary" />
+                <input type="submit" value="Publish" class="btn btn-primary" style="margin-left: 1.5rem;margin-top:1.5rem"/>
+                <a asp-action="All" asp-controller="JobOffers" class="btn btn-danger" style="margin-left: 1.5rem;margin-top:1.5rem">Back</a>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="SkillsIds"></label>
-                    <select multiple size="7" asp-for="SkillsIds" asp-items="skills" class="form-control"></select>
+                    <select multiple size="5" asp-for="SkillsIds" asp-items="skills" class="form-control"></select>
                     <span asp-validation-for="SkillsIds" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="LanguagesIds"></label>
-                    <select multiple size="7" asp-for="LanguagesIds" asp-items="languages" class="form-control"></select>
+                    <select multiple size="5" asp-for="LanguagesIds" asp-items="languages" class="form-control"></select>
                     <span asp-validation-for="LanguagesIds" class="text-danger"></span>
                 </div>
-                <div class="row">
-                    <div class="form-group col-6" id="jobTypes">
-                        <label asp-for="JobTypesOptions"></label>
-                        <ul>
-                            @for (int i = 0; i < jobTypes.Count(); i++)
-                            {
-                                <li>
-                                    <input type="checkbox" asp-for="JobTypesOptions[i].Selected" />
-                                    <label asp-for="JobTypesOptions[i].Selected">@Model.JobTypesOptions[i].Name</label>
-                                    <input type="hidden" asp-for="JobTypesOptions[i].Id" />
-                                    <input type="hidden" asp-for="JobTypesOptions[i].Name" />
-                                </li>
-                            }
-                            <span asp-validation-for="JobTypesOptions" class="text-danger"></span>
-                        </ul>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label>Job Options</label>
-                            <br />
-                            <ul>
-                                <li>
-                                    <input type="checkbox" asp-for="IsFullTime" />
-                                    <label asp-for="IsFullTime"></label>
-                                    <span asp-validation-for="IsFullTime" class="text-danger"></span>
-                                </li>
-                                <li>
-                                    <input type="checkbox" asp-for="IsRemote" />
-                                    <label asp-for="IsRemote"></label>
-                                    <span asp-validation-for="IsRemote" class="text-danger"></span>
-                                </li>
-                            </ul>
-
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label asp-for="JobTypesIds"></label>
+                    <select multiple size="5" asp-for="JobTypesIds" asp-items="jobTypes" class="form-control"></select>
+                    <span asp-validation-for="JobTypesIds" class="text-danger"></span>
                 </div>
             </div>
         </div>
-        <hr />
     </form>
 </div>

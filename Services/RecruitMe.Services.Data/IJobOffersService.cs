@@ -7,18 +7,20 @@
 
     public interface IJobOffersService
     {
-        Task<string> AddOffer(PostViewModel model, string employerId);
+        Task<string> Add(PostViewModel model, string employerId);
 
-        IEnumerable<T> GetAllValidOffers<T>();
+        IEnumerable<T> GetAllValidFilteredOffers<T>(FilterModel filters);
 
-        T GetOfferDetails<T>(string jobOfferId);
+        T GetDetails<T>(string jobOfferId);
 
-        bool IsJobOfferPostedByEmployer(string jobOfferId, string employerId);
+        bool IsOfferPostedByEmployer(string jobOfferId, string employerId);
 
-        bool IsOfferTitleDuplicate(string employerId, string jobOfferTitle);
+        bool IsTitleDuplicate(string employerId, string jobOfferTitle);
 
-        Task<string> UpdateOffer(EditViewModel model, string employerId);
+        Task<string> Update(EditViewModel model, string employerId);
 
-        Task DeleteOffer(string jobOfferId);
+        Task Delete(string jobOfferId);
+
+        int GetCount();
     }
 }

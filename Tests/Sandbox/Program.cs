@@ -1,8 +1,10 @@
 ﻿namespace Sandbox
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using CommandLine;
@@ -52,9 +54,12 @@
             Stopwatch sw = Stopwatch.StartNew();
 
             ISettingsService settingsService = serviceProvider.GetService<ISettingsService>();
-            Console.WriteLine($"Count of settings: {settingsService.GetCount()}");
 
-            Console.WriteLine(sw.Elapsed);
+            List<string> list = new List<string>() { "hello", "hi ya", "new string" };
+
+            List<string> filteredResults = list.Where(i => i.Contains(string.Empty)).ToList();
+
+            Console.WriteLine(string.Join(", ", filteredResults));
             return await Task.FromResult(0);
         }
 

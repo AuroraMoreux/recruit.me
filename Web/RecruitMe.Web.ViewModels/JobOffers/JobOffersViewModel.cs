@@ -31,16 +31,6 @@
             get
             {
                 StringBuilder sb = new StringBuilder();
-                if (this.IsFullTime)
-                {
-                    sb.Append("Full-Time; ");
-                }
-
-                if (this.IsRemote)
-                {
-                    sb.Append("Remote; ");
-                }
-
                 if (this.Salary.HasValue)
                 {
                     sb.Append($"Salary: {this.Salary.Value:f2}€; ");
@@ -55,10 +45,6 @@
             }
         }
 
-        public bool IsFullTime { get; set; }
-
-        public bool IsRemote { get; set; }
-
         public decimal? Salary { get; set; }
 
         public IEnumerable<string> JobTypes { get; set; }
@@ -72,7 +58,7 @@
                    })
                 .ForMember(jovm => jovm.CreatedOn, options =>
                    {
-                       options.MapFrom(jo => jo.CreatedOn.Date);
+                       options.MapFrom(jo => jo.CreatedOn);
                    });
         }
     }

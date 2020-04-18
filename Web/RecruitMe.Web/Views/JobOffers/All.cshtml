@@ -5,8 +5,15 @@
 
     var jobOffers = this.Model.JobOffers.ToList();
 }
-<h1>@ViewData["Title"]</h1>
-
+@if (this.ViewData["IsFromSearch"] != null)
+{
+    <h1 style="display:inline">@ViewData["IsFromSearch"]</h1>
+}
+else
+{
+    <h1 style="display:inline">@ViewData["Title"]</h1>
+    <a class="btn btn-primary float-right" asp-action="Search" asp-controller="JobOffers">Search Offers</a>
+}
 @if (this.TempData["SuccessfulApplication"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -37,22 +44,29 @@
     </div>
 }
 
-<div class="table-responsive-sm">
-    <table class="table table-hover">
+<div class="table-responsive">
+    <table class="table table-hover table-responsive">
         <thead>
             <tr>
                 <th scope="col">Job Title</th>
                 <th scope="col">Employer</th>
                 <th scope="col">Position Level</th>
                 <th scope="col">Location</th>
-                <th scope="col">Published On</th>
+                <th scope="col">Published On <a style="margin: 5px" asp-action="All" asp-controller="JobOffers" asp-route-dateSortOrder="@ViewData["DateSortParam"]"><icon class="fas fa-sort"></icon></a></th>
                 <th scope="col">Sector</th>
                 <th scope="col">Position Specifics</th>
 
                 <th style="text-align:center">
-                    @if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
+                    @if (ViewData["IsFromSearch"] != null)
                     {
-                        <a class=" btn btn-sm btn-success" asp-controller="JobOffers" asp-action="Post">Post New Job Offer</a>
+                        <a class="btn btn-warning" asp-controller="JobOffers" asp-action="Search">Back to Search</a>
+                    }
+                    else
+                    {
+                        @if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
+                        {
+                            <a class="btn btn-success" asp-controller="JobOffers" asp-action="Post">Post New Job Offer</a>
+                        }
                     }
                 </th>
             </tr>
@@ -61,15 +75,15 @@
             @for (int i = 0; i < jobOffers.Count; i++)
             {
                 <tr>
-                    <td>@jobOffers[i].Title</td>
+                    <td class="text-break">@jobOffers[i].Title</td>
                     <td>@jobOffers[i].EmployerName</td>
                     <td>@jobOffers[i].JobLevelName</td>
                     <td>@jobOffers[i].City</td>
-                    <td>@jobOffers[i].CreatedOn.ToString("dd-MM-yyyy")</td>
+                    <td>@jobOffers[i].CreatedOn.Date.ToString("dd-MM-yyyy")</td>
                     <td>@jobOffers[i].JobSectorName</td>
                     <td>@jobOffers[i].JobDetails</td>
                     <td>
-                        <a class="btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffers[i].Id">View Details</a>
+                        <a class="btn btn-info text-nowrap" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffers[i].Id">View Details</a>
                     </td>
                 </tr>
             }

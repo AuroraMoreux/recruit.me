@@ -27,7 +27,7 @@
 
         public JobApplicationJobOfferDetailsViewModel JobOfferDetails { get; set; }
 
-        [ArrayLength("Documents", 5)]
+        [StringArrayLength("Documents", 5, 1)]
         public IEnumerable<string> DocumentIds { get; set; }
 
         public IEnumerable<CandidateDocumentsDropDownViewModel> Documents { get; set; }

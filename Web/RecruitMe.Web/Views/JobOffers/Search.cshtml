@@ -1,0 +1,98 @@
+﻿@model RecruitMe.Web.ViewModels.JobOffers.FilterModel
+
+@{
+    ViewData["Title"] = "Filter Offers";
+    var jobLevels = Model.Levels.Select(jl => new SelectListItem(jl.Name, jl.Id.ToString()));
+    var jobSectors = Model.Sectors.Select(js => new SelectListItem(js.Name, js.Id.ToString()));
+    var jobTypes = Model.Types.Select(jt => new SelectListItem(jt.Name, jt.Id.ToString())).ToList();
+    var languages = Model.Languages.Select(l => new SelectListItem(l.Name, l.Id.ToString())).ToList();
+    var skills = Model.Skills.Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList();
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="container-fluid">
+    <form id="inputForm" class="container" asp-controller="JobOffers" asp-action="All" method="get">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Keywords"></label>
+                    <input asp-for="Keywords" class="form-control" />
+                    <span asp-validation-for="Keywords" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Employer"></label>
+                    <input asp-for="Employer" class="form-control" />
+                    <span asp-validation-for="Employer" class="text-danger"></span>
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="City"></label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SalaryFrom"></label>
+                    <input asp-for="SalaryFrom" class="form-control" />
+                    <span asp-validation-for="SalaryFrom" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SalaryTo"></label>
+                    <input asp-for="SalaryTo" class="form-control" />
+                    <span asp-validation-for="SalaryTo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    @*<input type="checkbox" asp-for="IsFullTime" />
+                    <label asp-for="IsFullTime" style="margin-right: 35px"></label>
+                    <span asp-validation-for="IsFullTime" class="text-danger"></span>
+                    <input type="checkbox" asp-for="IsRemote" />
+                    <label asp-for="IsRemote"></label>
+                    <span asp-validation-for="IsRemote" class="text-danger"></span>*@
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="PublishedFromDate"></label>
+                    <input id="ValidFrom" type="date" value="@DateTime.UtcNow.Date.ToString("dd-MM-yyyy")" asp-for="PublishedFromDate" class="form-control" />
+                    <span asp-validation-for="PublishedFromDate" class="text-danger"></span>
+
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PublishedToDate"></label>
+                    <input id="ValidTo" type="date" value="@DateTime.UtcNow.Date.ToString("dd-MM-yyyy")" asp-for="PublishedToDate" class="form-control" />
+                    <span asp-validation-for="PublishedToDate" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Levels"></label>
+                    <select multiple size="3" asp-for="LevelsIds" asp-items="jobLevels" class="form-control"></select>
+                    <span asp-validation-for="Levels" class="text-danger"></span>
+                </div>
+                <input type="submit" value="Search" class="btn btn-primary" style="margin-left: 1.5rem;margin-top:1.5rem" />
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="Sectors"></label>
+                    <select multiple asp-for="SectorsIds" asp-items="jobSectors" class="form-control"></select>
+                    <span asp-validation-for="Sectors" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Types"></label>
+                    <select multiple asp-for="TypesIds" asp-items="jobTypes" class="form-control"></select>
+                    <span asp-validation-for="Types" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Languages"></label>
+                    <select multiple size="5" asp-for="LanguagesIds" asp-items="languages" class="form-control"></select>
+                    <span asp-validation-for="Languages" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Skills"></label>
+                    <select multiple size="5" asp-for="SkillsIds" asp-items="skills" class="form-control"></select>
+                    <span asp-validation-for="Skills" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

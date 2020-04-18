@@ -5,13 +5,13 @@
 
     using RecruitMe.Common;
 
-    public class ArrayLengthAttribute : ValidationAttribute
+    public class IntArrayLengthAttribute : ValidationAttribute
     {
-        public ArrayLengthAttribute(string fieldName, int maxLength, int minLength = 1)
+        public IntArrayLengthAttribute(string fieldName, int maxLength, int minLength = 0)
         {
-            if (minLength < 1)
+            if (minLength < 0)
             {
-                minLength = 1;
+                minLength = 0;
             }
 
             this.FieldName = fieldName;
@@ -27,12 +27,12 @@
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value == null)
-            {
-                return new ValidationResult(GlobalConstants.SelectionListCannotBeNull);
-            }
-
             List<int> selection = value as List<int>;
+
+            if (selection == null)
+            {
+                selection = new List<int>();
+            }
 
             if (selection.Count < this.MinLength)
             {
