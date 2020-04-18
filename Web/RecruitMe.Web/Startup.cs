@@ -2,7 +2,7 @@
 {
     using System;
     using System.Reflection;
-
+    using System.Threading.Tasks;
     using CloudinaryDotNet;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -13,7 +13,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-
+    using RecruitMe.Common;
     using RecruitMe.Data;
     using RecruitMe.Data.Common;
     using RecruitMe.Data.Common.Repositories;
@@ -136,6 +136,19 @@
                         endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();
+
+                        endpoints.MapGet("/Identity/Account/Manage/TwoFactorAuthentication", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapPost("/Identity/Account/Manage/TwoFactorAuthentication", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapGet("/Identity/Account/Manage/PersonalData", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapPost("/Identity/Account/Manage/PersonalData", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapGet("/Identity/Account/Manage/EnableAuthenticator", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapPost("/Identity/Account/Manage/EnableAuthenticator", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapGet("/Identity/Account/Manage/DownloadPersonalData", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapPost("/Identity/Account/Manage/DownloadPersonalData", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapGet("/Identity/Account/Manage/DeletePersonalData", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapPost("/Identity/Account/Manage/DeletePersonalData", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapGet("/Identity/Account/Manage/ResetAuthenticator", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
+                        endpoints.MapPost("/Identity/Account/Manage/ResetAuthenticator", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
                     });
         }
     }

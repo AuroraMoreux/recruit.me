@@ -11,6 +11,8 @@
 
         public const string EmployerRoleName = "Employer";
 
+        public const string IdentityRedirectPath = "/Identity/Account/Manage";
+
         // Validation Errors
         public const string UserAlreadyExists = "The provided email address is already registered";
 

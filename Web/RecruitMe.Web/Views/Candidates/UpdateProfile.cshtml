@@ -4,7 +4,8 @@
     var allowedFileExtensions = string.Join(", ", this.Model.ImageExtensions);
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 style="display:inline-block">@ViewData["Title"]</h1>
+<a class="btn btn-primary float-right" asp-area="Identity" asp-controller="Account" asp-action="Manage">Manage Account</a>
 
 <div class="container-fluid">
     <form class="container" asp-controller="Candidates" asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
