@@ -12,9 +12,7 @@
     using RecruitMe.Data;
     using RecruitMe.Data.Models.EnumModels;
 
-    [Area("Administration")]
-    [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
-    public class JobTypesController : Controller
+    public class JobTypesController : AdministrationController
     {
         private readonly ApplicationDbContext context;
 

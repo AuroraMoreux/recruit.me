@@ -16,13 +16,24 @@
                 return;
             }
 
-            List<string> extensions = new List<string> { ".docx", ".doc", ".pdf", ".jpg", ".jpeg", ".png", ".eml", ".msg" };
+            Dictionary<string, string> extensions = new Dictionary<string, string>
+            {
+                { ".docx", "File" },
+                { ".doc", "File" },
+                { ".pdf", "File" },
+                { ".eml", "File" },
+                { ".msg", "File" },
+                { ".jpg", "Image" },
+                { ".jpeg", "Image" },
+                { ".png", "Image" },
+            };
 
-            foreach (string extension in extensions)
+            foreach (string key in extensions.Keys)
             {
                 await dbContext.FileExtensions.AddAsync(new FileExtension
                 {
-                    Name = extension,
+                    Name = key,
+                    FileType = extensions[key],
                 });
             }
         }

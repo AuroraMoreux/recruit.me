@@ -1,5 +1,6 @@
 ﻿namespace RecruitMe.Services.Data
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -32,25 +33,42 @@
                 employer.LogoUrl = logoUrl;
             }
 
+            employer.CreatedOn = DateTime.UtcNow;
             await this.employersRepository.AddAsync(employer);
             await this.employersRepository.SaveChangesAsync();
 
             return employer.Id;
         }
 
+        public int GetCount()
+        {
+            return this.employersRepository
+                .AllAsNoTracking()
+                .Count();
+        }
+
         public string GetEmployerIdByUsername(string username)
         {
             return this.employersRepository
-                 .All()
+                 .AllAsNoTracking()
                  .Where(e => e.ApplicationUser.UserName == username)
                  .Select(e => e.Id)
                  .FirstOrDefault();
         }
 
+        public int GetNewEmployersCount()
+        {
+            DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            return this.employersRepository
+                .AllAsNoTracking()
+                .Where(e => e.ApplicationUser.CreatedOn >= yesterdaysDate)
+                .Count();
+        }
+
         public T GetProfileDetails<T>(string employerId)
         {
             T employer = this.employersRepository
-                 .All()
+                 .AllAsNoTracking()
                  .Where(e => e.Id == employerId)
                  .To<T>()
                  .FirstOrDefault();
@@ -88,8 +106,8 @@
                 employer.LogoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
             }
 
+            employer.ModifiedOn = DateTime.UtcNow;
             this.employersRepository.Update(employer);
-
             await this.employersRepository.SaveChangesAsync();
 
             return employer.Id;

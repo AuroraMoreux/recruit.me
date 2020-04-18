@@ -1,52 +1,57 @@
 ﻿@model RecruitMe.Web.ViewModels.Candidates.CreateCandidateProfileInputModel
 @{
     ViewData["Title"] = "Create Profile";
+    var allowedFileExtensions = string.Join(", ", this.Model.ImageExtensions);
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<div class="col-md-4">
-    <form asp-controller="Candidates" asp-action="CreateProfile" method="post" enctype="multipart/form-data">
-
+<div class="container-fluid">
+    <form class="container"asp-controller="Candidates" asp-action="CreateProfile" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="@Model.ProfilePicture"></label> -
+                    <label><small><strong>Allowed file extensions:</strong> @allowedFileExtensions; </small></label>
+                    <label><small><strong>Max Size allowed:</strong> 10MB</small></label>
+                    <input asp-for="@Model.ProfilePicture" class="form-control" />
+                    <span asp-validation-for="@Model.ProfilePicture" class="text-danger"></span>
+                </div>
 
-        <div class="form-group">
-            <label asp-for="@Model.ProfilePicture">Upload a profile picture...</label>
-            <input asp-for="@Model.ProfilePicture" class="form-control" />
-            <span asp-validation-for="@Model.ProfilePicture" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="@Model.FirstName"></label>
+                    <input asp-for="@Model.FirstName" class="form-control" />
+                    <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.LastName"></label>
+                    <input asp-for="@Model.LastName" class="form-control" />
+                    <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+                </div>
+                <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
+            </div>
+            <div class="col-6">
+
+                <div class="form-group">
+                    <label asp-for="@Model.PhoneNumber"></label>
+                    <input asp-for="@Model.PhoneNumber" class="form-control" />
+                    <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.ContactAddress"></label>
+                    <input asp-for="@Model.ContactAddress" class="form-control" />
+                    <span asp-validation-for="@Model.ContactAddress" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.Education"></label>
+                    <input asp-for="@Model.Education" class="form-control" />
+                    <span asp-validation-for="@Model.Education" class="text-danger"></span>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label asp-for="@Model.FirstName"></label>
-            <input asp-for="@Model.FirstName" class="form-control" />
-            <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="@Model.LastName"></label>
-            <input asp-for="@Model.LastName" class="form-control" />
-            <span asp-validation-for="@Model.LastName" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="@Model.PhoneNumber"></label>
-            <input asp-for="@Model.PhoneNumber" class="form-control" />
-            <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="@Model.ContactAddress"></label>
-            <input asp-for="@Model.ContactAddress" class="form-control" />
-            <span asp-validation-for="@Model.ContactAddress" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="@Model.Education"></label>
-            <input asp-for="@Model.Education" class="form-control" />
-            <span asp-validation-for="@Model.Education" class="text-danger"></span>
-        </div>
-
-        <hr />
-        <input type="submit" value="Send" class="btn btn-primary" />
     </form>
 </div>

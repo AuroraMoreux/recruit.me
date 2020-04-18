@@ -18,7 +18,7 @@
     {
         [Display(Name = "Upload file")]
         [FileValidatior]
-        [Required(ErrorMessage = GlobalConstants.DocumentFileCannotBeNull)]
+        [Required(ErrorMessage = GlobalConstants.FileCannotBeNull)]
         public IFormFile File { get; set; }
 
         public long Size => this.File.Length / 1024;

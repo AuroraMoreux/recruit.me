@@ -6,10 +6,14 @@
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
+    using RecruitMe.Web.Infrastructure.ValidationAttributes;
     using RecruitMe.Web.ValidationAttributes;
+    using RecruitMe.Web.ViewModels.Candidates;
 
     public class CreateEmployerProfileInputModel : IMapTo<Employer>
     {
+        public IEnumerable<string> ImageExtensions { get; set; }
+
         public string ApplicationUserId { get; set; }
 
         [Required]
@@ -48,6 +52,8 @@
         [Display(Name = "Contact Person Position")]
         public string ContactPersonPosition { get; set; }
 
+        [FileValidatior]
+        [Display(Name = "Upload Logo")]
         public IFormFile Logo { get; set; }
 
         [Url]

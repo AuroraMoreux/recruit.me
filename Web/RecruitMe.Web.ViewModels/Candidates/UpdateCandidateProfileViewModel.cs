@@ -1,13 +1,17 @@
 ﻿namespace RecruitMe.Web.ViewModels.Candidates
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
+    using RecruitMe.Web.Infrastructure.ValidationAttributes;
 
     public class UpdateCandidateProfileViewModel : IMapFrom<Candidate>, IMapTo<Candidate>
     {
+        public IEnumerable<string> ImageExtensions { get; set; }
+
         public string ApplicationUserId { get; set; }
 
         [MaxLength(50)]
@@ -30,6 +34,8 @@
         [Display(Name = "Education")]
         public string Education { get; set; }
 
+        [Display(Name = "Upload Profile Picture")]
+        [FileValidatior]
         public IFormFile ProfilePicture { get; set; }
     }
 }

@@ -60,7 +60,7 @@
         }
 
         [Authorize]
-        public IActionResult All([FromQuery]FilterModel filters, string dateSortOrder, int page = 1, int perPage = OffersPerPageDefaultCount)
+        public async Task<IActionResult> All([FromQuery]FilterModel filters, string dateSortOrder, int page = 1, int perPage = OffersPerPageDefaultCount)
         {
             if (!this.ModelState.IsValid)
             {
@@ -68,7 +68,7 @@
             }
 
             int totalJobOffersCount = this.jobOffersService.GetCount();
-            IEnumerable<JobOffersViewModel> filteredJobOffers = this.jobOffersService.GetAllValidFilteredOffers<JobOffersViewModel>(filters);
+            IEnumerable<JobOffersViewModel> filteredJobOffers = await this.jobOffersService.GetAllValidFilteredOffers<JobOffersViewModel>(filters);
 
             if (filteredJobOffers.Count() != totalJobOffersCount)
             {

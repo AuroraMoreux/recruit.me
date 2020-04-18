@@ -1,6 +1,7 @@
 ﻿@model RecruitMe.Web.ViewModels.Candidates.UpdateCandidateProfileViewModel
 @{
     ViewData["Title"] = "Update Profile";
+    var allowedFileExtensions = string.Join(", ", this.Model.ImageExtensions);
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -11,43 +12,44 @@
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
-                    <label asp-for="@Model.ProfilePicture">Upload a new profile picture...</label>
-                    <input asp-for="@Model.ProfilePicture" class="form-control" />
-                    <span asp-validation-for="@Model.ProfilePicture" class="text-danger"></span>
+                    <label asp-for="ProfilePicture"></label> -
+                    <label><small><strong>Allowed file extensions:</strong> @allowedFileExtensions; </small></label>
+                    <label><small><strong>Max Size allowed:</strong> 10MB</small></label>
+                    <input value="Upload Picture" asp-for="ProfilePicture" class="form-control" />
+                    <span asp-validation-for="ProfilePicture" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="@Model.FirstName"></label>
-                    <input asp-for="@Model.FirstName" class="form-control" />
-                    <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+                    <label asp-for="FirstName"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="@Model.LastName"></label>
-                    <input asp-for="@Model.LastName" class="form-control" />
-                    <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+                    <label asp-for="LastName"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="PhoneNumber"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="@Model.PhoneNumber"></label>
-                    <input asp-for="@Model.PhoneNumber" class="form-control" />
-                    <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                    <label asp-for="ContactAddress"></label>
+                    <input asp-for="ContactAddress" class="form-control" />
+                    <span asp-validation-for="ContactAddress" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="@Model.ContactAddress"></label>
-                    <input asp-for="@Model.ContactAddress" class="form-control" />
-                    <span asp-validation-for="@Model.ContactAddress" class="text-danger"></span>
+                    <label asp-for="Education"></label>
+                    <input asp-for="Education" class="form-control" />
+                    <span asp-validation-for="Education" class="text-danger"></span>
                 </div>
-
-                <div class="form-group">
-                    <label asp-for="@Model.Education"></label>
-                    <input asp-for="@Model.Education" class="form-control" />
-                    <span asp-validation-for="@Model.Education" class="text-danger"></span>
-                </div>
-
-                <hr />
-                <input type="submit" value="Send" class="btn btn-primary" />
             </div>
         </div>
     </form>

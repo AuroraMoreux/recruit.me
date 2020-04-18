@@ -34,7 +34,6 @@
                 new JobTypesSeeder(),
                 new LanguagesSeeder(),
                 new RolesSeeder(),
-                new SettingsSeeder(),
                 new SkillsSeeder(),
             };
 

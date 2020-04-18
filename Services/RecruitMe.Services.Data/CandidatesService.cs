@@ -43,7 +43,7 @@
         public string GetCandidateIdByUsername(string username)
         {
             string candidateId = this.candidatesRepository
-                  .All()
+                  .AllAsNoTracking()
                   .Where(c => c.ApplicationUser.UserName == username)
                   .Select(c => c.Id)
                   .FirstOrDefault();
@@ -51,10 +51,26 @@
             return candidateId;
         }
 
+        public int GetCount()
+        {
+            return this.candidatesRepository
+                .AllAsNoTracking()
+                .Count();
+        }
+
+        public int GetNewCandidatesCount()
+        {
+            DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            return this.candidatesRepository
+                .AllAsNoTracking()
+                .Where(c => c.ApplicationUser.CreatedOn >= yesterdaysDate)
+                .Count();
+        }
+
         public T GetProfileDetails<T>(string candidateId)
         {
             T candidate = this.candidatesRepository
-                 .All()
+                 .AllAsNoTracking()
                  .Where(e => e.Id == candidateId)
                  .To<T>()
                  .FirstOrDefault();

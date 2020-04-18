@@ -29,11 +29,6 @@
         {
             List<int> selection = value as List<int>;
 
-            if (selection == null)
-            {
-                selection = new List<int>();
-            }
-
             if (selection.Count < this.MinLength)
             {
                 return new ValidationResult(string.Format(GlobalConstants.SelectionShouldNotBeLessThanMinLength, this.MinLength, this.FieldName));

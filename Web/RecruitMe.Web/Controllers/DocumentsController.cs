@@ -12,6 +12,7 @@
     using RecruitMe.Data.Models;
     using RecruitMe.Services;
     using RecruitMe.Services.Data;
+    using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.Documents;
 
     public class DocumentsController : BaseController
@@ -50,7 +51,7 @@
             this.allowedCategories = this.documentCategoriesService.GetAll<CategoriesDropDownViewModel>();
         }
 
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
+        [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public IActionResult All(int page = 1, int perPage = DocumentsPerPageDefaultCount)
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
@@ -73,12 +74,12 @@
             return this.View(viewModel);
         }
 
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
+        [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public IActionResult Upload()
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
 
-            if (candidateId == null)
+            if (candidateId == null && !this.User.IsInRole(GlobalConstants.AdministratorRoleName))
             {
                 return this.RedirectToAction("CreateProfile", "Candidates");
             }
@@ -93,7 +94,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
+        [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Upload(UploadInputModel input)
         {
             if (!this.ModelState.IsValid)
@@ -113,7 +114,7 @@
 
             if (!this.allowedExtensions.Any(ae => input.File.FileName.EndsWith(ae)))
             {
-                this.ModelState.AddModelError(string.Empty, GlobalConstants.DocumentFileExtensionNotSupported);
+                this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
                 return this.View(input);
             }
 

@@ -12,9 +12,7 @@
     using RecruitMe.Data;
     using RecruitMe.Data.Models.EnumModels;
 
-    [Area("Administration")]
-    [Authorize(Roles = GlobalConstants.AdministratorRoleName)]
-    public class FileExtensionsController : Controller
+    public class FileExtensionsController : AdministrationController
     {
         private readonly ApplicationDbContext context;
 
@@ -43,7 +41,7 @@
         // POST: Administration/FileExtensions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] FileExtension fileExtension)
+        public async Task<IActionResult> Create([Bind("Name,IsDeleted,FileType")] FileExtension fileExtension)
         {
             if (!this.ModelState.IsValid)
             {
@@ -86,7 +84,7 @@
         // POST: Administration/FileExtensions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] FileExtension fileExtension)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id,FileType")] FileExtension fileExtension)
         {
             if (id != fileExtension.Id)
             {

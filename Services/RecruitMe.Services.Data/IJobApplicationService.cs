@@ -19,5 +19,9 @@
         int GetJobApplicationStatusId(string jobApplicationId);
 
         Task<int> ChangeJobApplicationStatus(string jobApplicationId, int statusId);
+
+        int GetCount();
+
+        int GetNewApplicationsCount();
     }
 }

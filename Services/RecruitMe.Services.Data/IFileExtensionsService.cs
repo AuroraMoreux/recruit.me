@@ -7,5 +7,7 @@
     public interface IFileExtensionsService
     {
         IEnumerable<string> GetAll();
+
+        IEnumerable<string> GetImageExtensions();
     }
 }

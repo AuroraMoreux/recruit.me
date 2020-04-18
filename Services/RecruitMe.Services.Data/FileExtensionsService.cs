@@ -20,7 +20,19 @@
         public IEnumerable<string> GetAll()
         {
             var names = this.extensionsRepository
-                .All()
+                .AllAsNoTracking()
+                .OrderBy(e => e.Name)
+                .Select(e => e.Name)
+                .ToList();
+
+            return names;
+        }
+
+        public IEnumerable<string> GetImageExtensions()
+        {
+            var names = this.extensionsRepository
+                .AllAsNoTracking()
+                .Where(e => e.FileType.ToLower() == "image")
                 .OrderBy(e => e.Name)
                 .Select(e => e.Name)
                 .ToList();

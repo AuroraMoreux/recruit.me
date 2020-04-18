@@ -75,7 +75,7 @@
 
             // Application services
             services.AddTransient<IEmailSender>(x => new SendGridEmailSender(this.configuration["SendGridKey"]));
-            services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<IApplicationUsersService, ApplicationUsersService>();
             services.AddTransient<ICandidatesService, CandidatesService>();
             services.AddTransient<IEmployersService, EmployersService>();
             services.AddTransient<IJobSectorsService, JobSectorsService>();

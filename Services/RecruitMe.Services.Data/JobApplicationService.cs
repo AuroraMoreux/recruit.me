@@ -110,6 +110,13 @@
             return jobApplication.ApplicationStatusId;
         }
 
+        public int GetCount()
+        {
+            return this.jobApplicationRepository
+                 .AllAsNoTracking()
+                 .Count();
+        }
+
         public T GetJobApplicationDetails<T>(string jobApplicationId)
         {
             T applicationDetails = this.jobApplicationRepository
@@ -139,6 +146,15 @@
                  .FirstOrDefault();
 
             return applicationJobOfferId;
+        }
+
+        public int GetNewApplicationsCount()
+        {
+            DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            return this.jobApplicationRepository
+                .AllAsNoTracking()
+                .Where(ja => ja.CreatedOn >= yesterdaysDate)
+                .Count();
         }
 
         public bool HasCandidateAppliedForOffer(string candidateId, string jobOfferId)

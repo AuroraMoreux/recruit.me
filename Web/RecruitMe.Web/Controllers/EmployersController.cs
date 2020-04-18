@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Web.Controllers
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -17,19 +18,23 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IEmployersService employerService;
         private readonly IJobSectorsService jobSectorsService;
-
+        private readonly IFileExtensionsService fileExtensionsService;
         private IEnumerable<JobSectorsDropDownViewModel> jobSectors;
+        private IEnumerable<string> allowedExtensions;
 
         public EmployersController(
             UserManager<ApplicationUser> userManager,
             IEmployersService employerService,
-            IJobSectorsService jobSectorsService)
+            IJobSectorsService jobSectorsService,
+            IFileExtensionsService fileExtensionsService)
         {
             this.userManager = userManager;
             this.employerService = employerService;
             this.jobSectorsService = jobSectorsService;
-
+            this.fileExtensionsService = fileExtensionsService;
             this.jobSectors = this.jobSectorsService.GetAll<JobSectorsDropDownViewModel>();
+
+            this.allowedExtensions = this.fileExtensionsService.GetImageExtensions();
         }
 
         [HttpGet]
@@ -41,17 +46,17 @@
         }
 
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
-        public async Task<IActionResult> CreateProfile()
+        public IActionResult CreateProfile()
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            if (user.EmployerId != null)
+            string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId != null)
             {
                 return this.RedirectToAction(nameof(this.UpdateProfile));
             }
 
             CreateEmployerProfileInputModel model = new CreateEmployerProfileInputModel
             {
+                ImageExtensions = this.fileExtensionsService.GetImageExtensions(),
                 JobSectors = this.jobSectors,
             };
 
@@ -64,6 +69,15 @@
         {
             if (!this.ModelState.IsValid)
             {
+                input.ImageExtensions = this.fileExtensionsService.GetImageExtensions();
+                input.JobSectors = this.jobSectors;
+                return this.View(input);
+            }
+
+            if (!this.allowedExtensions.Any(ae => input.Logo.FileName.EndsWith(ae)))
+            {
+                this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
+                input.ImageExtensions = this.allowedExtensions;
                 input.JobSectors = this.jobSectors;
                 return this.View(input);
             }
@@ -85,18 +99,17 @@
         }
 
         [Authorize(Roles = GlobalConstants.EmployerRoleName)]
-        public async Task<IActionResult> UpdateProfile()
+        public IActionResult UpdateProfile()
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            if (user.EmployerId == null)
+            string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            UpdateEmployerProfileViewModel details = this.employerService.GetProfileDetails<UpdateEmployerProfileViewModel>(user.EmployerId);
+            UpdateEmployerProfileViewModel details = this.employerService.GetProfileDetails<UpdateEmployerProfileViewModel>(employerId);
             details.JobSectors = this.jobSectors;
-
+            details.ImageExtensions = this.fileExtensionsService.GetImageExtensions();
             return this.View(details);
         }
 
@@ -106,6 +119,15 @@
         {
             if (!this.ModelState.IsValid)
             {
+                input.ImageExtensions = this.fileExtensionsService.GetImageExtensions();
+                input.JobSectors = this.jobSectors;
+                return this.View(input);
+            }
+
+            if (!this.allowedExtensions.Any(ae => input.Logo.FileName.EndsWith(ae)))
+            {
+                this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
+                input.ImageExtensions = this.allowedExtensions;
                 input.JobSectors = this.jobSectors;
                 return this.View(input);
             }

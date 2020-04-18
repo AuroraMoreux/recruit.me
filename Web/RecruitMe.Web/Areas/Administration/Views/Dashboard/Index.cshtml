@@ -4,4 +4,88 @@
 }
 
 <h1>@this.ViewData["Title"]</h1>
-Settings: @this.Model.SettingsCount
+
+<div class="row">
+    <div class="col-6">
+        <h3>Application Statistics: </h3>
+        <table class="table table-responsive table-hover">
+            <thead>
+                <tr>
+                    <th>Entity</th>
+                    <th>Records From Past 24h</th>
+                    <th>Total Records Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Application Users
+                    </td>
+                    <td class="text-center">
+                        @Model.UsersRegisteredToday
+                    </td>
+                    <td class="text-center">
+                        @Model.TotalUsersCount
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Candidates
+                    </td>
+                    <td class="text-center">
+                        @Model.CandidatesRegisteredToday
+                    </td>
+                    <td class="text-center">
+                        @Model.TotalCandidatesCount
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Employers
+                    </td>
+                    <td class="text-center">
+                        @Model.EmployersRegisteredToday
+                    </td>
+                    <td class="text-center">
+                        @Model.TotalEmployersCount
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Job Offers
+                    </td>
+                    <td class="text-center">
+                        @Model.JobOffersPostedToday
+                    </td>
+                    <td class="text-center">
+                        @Model.TotalJobOffersCount
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Job Applications
+                    </td>
+                    <td class="text-center">
+                        @Model.JobApplicationsSubmittedToday
+                    </td>
+                    <td class="text-center">
+                        @Model.TotalJobApplicationsCount
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-6">
+        <h3> Manage Application Lists:</h3>
+        <hr />
+        <a asp-area="Administration" asp-controller="DocumentCategories" asp-action="Index">Document Categories</a> |
+        <a asp-area="Administration" asp-controller="FileExtensions" asp-action="Index">File Extensions</a> |
+        <a asp-area="Administration" asp-controller="JobApplicationStatuses" asp-action="Index">Job Application Statuses</a> |
+        <a asp-area="Administration" asp-controller="JobLevels" asp-action="Index">Job Levels</a> |
+        <a asp-area="Administration" asp-controller="JobSectors" asp-action="Index">Job Sectors</a> |
+        <a asp-area="Administration" asp-controller="JobTypes" asp-action="Index">Job Types</a> |
+        <a asp-area="Administration" asp-controller="Languages" asp-action="Index">Languages</a> |
+        <a asp-area="Administration" asp-controller="Skills" asp-action="Index">Skills</a>
+    </div>
+</div>

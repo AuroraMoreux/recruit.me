@@ -13,5 +13,9 @@
         Task<string> UpdateProfileAsync(string candidateId, UpdateCandidateProfileViewModel model);
 
         string GetCandidateIdByUsername(string username);
+
+        int GetCount();
+
+        int GetNewCandidatesCount();
     }
 }

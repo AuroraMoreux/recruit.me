@@ -78,101 +78,106 @@
             return offer.Id;
         }
 
-        public IEnumerable<T> GetAllValidFilteredOffers<T>(FilterModel filters)
+        public async Task<IEnumerable<T>> GetAllValidFilteredOffers<T>(FilterModel filters)
         {
-            DateTime requestTime = DateTime.UtcNow;
+            List<T> offers = await Task.Run(() =>
+           {
+               DateTime requestTime = DateTime.UtcNow;
 
-            // build the query
-            IQueryable<JobOffer> baseQuery = this.jobOffersRepository
-                .AllAsNoTracking()
-                .Where(jo => jo.ValidFrom <= requestTime
-                && jo.ValidUntil >= requestTime);
+               // build the query
+               IQueryable<JobOffer> baseQuery = this.jobOffersRepository
+                     .AllAsNoTracking()
+                     .Where(jo => jo.ValidFrom <= requestTime
+                     && jo.ValidUntil >= requestTime);
 
-            // nullable value filters
-            string keywords = filters.Keywords != null ? filters.Keywords.ToLower() : string.Empty;
-            string employerName = filters.Employer != null ? filters.Employer.ToLower() : string.Empty;
-            string city = filters.City != null ? filters.City.ToLower() : string.Empty;
-            baseQuery = baseQuery
+               // nullable value filters
+               string keywords = filters.Keywords != null ? filters.Keywords.ToLower() : string.Empty;
+               string employerName = filters.Employer != null ? filters.Employer.ToLower() : string.Empty;
+               string city = filters.City != null ? filters.City.ToLower() : string.Empty;
+               baseQuery = baseQuery
 
-                .Where(jo => (jo.Title.ToLower().Contains(keywords)
-                    || jo.Description.ToLower().Contains(keywords))
-                    && jo.Employer.Name.ToLower().Contains(employerName)
-                    && jo.City.ToLower().Contains(city));
+                   .Where(jo => (jo.Title.ToLower().Contains(keywords)
+                       || jo.Description.ToLower().Contains(keywords))
+                       && jo.Employer.Name.ToLower().Contains(employerName)
+                       && jo.City.ToLower().Contains(city));
 
-            // range filters
-            DateTime publishedFromDate = filters.PublishedFromDate != null ? filters.PublishedFromDate.Value.Date : DateTime.MinValue.Date;
-            DateTime publishedToDate = filters.PublishedToDate != null ? filters.PublishedToDate.Value.Date : DateTime.MaxValue.Date;
-            decimal salaryFrom = filters.SalaryFrom != null ? filters.SalaryFrom.Value : 0m;
-            decimal salaryTo = filters.SalaryTo != null ? filters.SalaryTo.Value : decimal.MaxValue;
+               // range filters
+               DateTime publishedFromDate = filters.PublishedFromDate != null ? filters.PublishedFromDate.Value.Date : DateTime.MinValue.Date;
+               DateTime publishedToDate = filters.PublishedToDate != null ? filters.PublishedToDate.Value.Date : DateTime.MaxValue.Date;
+               decimal salaryFrom = filters.SalaryFrom != null ? filters.SalaryFrom.Value : 0m;
+               decimal salaryTo = filters.SalaryTo != null ? filters.SalaryTo.Value : decimal.MaxValue;
 
-            baseQuery = baseQuery
-                .Where(jo => jo.ValidFrom >= publishedFromDate
-                    && jo.ValidUntil <= publishedToDate
-                    && jo.Salary >= salaryFrom
-                    && jo.Salary <= salaryTo);
+               baseQuery = baseQuery
+                   .Where(jo => jo.ValidFrom >= publishedFromDate
+                       && jo.ValidUntil <= publishedToDate
+                       && jo.Salary >= salaryFrom
+                       && jo.Salary <= salaryTo);
 
-            // select options filters
-            if (filters.LevelsIds.Count > 0)
-            {
-                List<string> jobOffersIdsWithSelectedLevels = this.jobOffersRepository
-                    .AllAsNoTracking()
-                    .Where(jo => filters.LevelsIds.Contains(jo.JobLevelId))
-                    .Select(jo => jo.Id)
-                    .ToList();
+               // select options filters
+               if (filters.LevelsIds.Count > 0)
+               {
+                   List<string> jobOffersIdsWithSelectedLevels = this.jobOffersRepository
+                       .AllAsNoTracking()
+                       .Where(jo => filters.LevelsIds.Contains(jo.JobLevelId))
+                       .Select(jo => jo.Id)
+                       .ToList();
 
-                baseQuery = baseQuery
-                    .Where(jo => jobOffersIdsWithSelectedLevels.Contains(jo.Id));
-            }
+                   baseQuery = baseQuery
+                       .Where(jo => jobOffersIdsWithSelectedLevels.Contains(jo.Id));
+               }
 
-            if (filters.SectorsIds.Count > 0)
-            {
-                List<string> jobOffersIdsWithSelectedSectors = this.jobOffersRepository
-                    .AllAsNoTracking()
-                    .Where(jo => filters.SectorsIds.Contains(jo.JobLevelId))
-                    .Select(jo => jo.Id)
-                    .ToList();
+               if (filters.SectorsIds.Count > 0)
+               {
+                   List<string> jobOffersIdsWithSelectedSectors = this.jobOffersRepository
+                       .AllAsNoTracking()
+                       .Where(jo => filters.SectorsIds.Contains(jo.JobLevelId))
+                       .Select(jo => jo.Id)
+                       .ToList();
 
-                baseQuery = baseQuery
-                    .Where(jo => jobOffersIdsWithSelectedSectors.Contains(jo.Id));
-            }
+                   baseQuery = baseQuery
+                       .Where(jo => jobOffersIdsWithSelectedSectors.Contains(jo.Id));
+               }
 
-            if (filters.TypesIds.Count > 0)
-            {
-                List<string> jobOffersIdsWithSelectedTypes = this.jobOfferJobTypeRepository
-                    .AllAsNoTracking()
-                    .Where(jojt => filters.TypesIds.Contains(jojt.JobTypeId))
-                    .Select(jo => jo.JobOfferId)
-                    .ToList();
+               if (filters.TypesIds.Count > 0)
+               {
+                   List<string> jobOffersIdsWithSelectedTypes = this.jobOfferJobTypeRepository
+                       .AllAsNoTracking()
+                       .Where(jojt => filters.TypesIds.Contains(jojt.JobTypeId))
+                       .Select(jo => jo.JobOfferId)
+                       .ToList();
 
-                baseQuery = baseQuery
-                    .Where(jo => jobOffersIdsWithSelectedTypes.Contains(jo.Id));
-            }
+                   baseQuery = baseQuery
+                       .Where(jo => jobOffersIdsWithSelectedTypes.Contains(jo.Id));
+               }
 
-            if (filters.LanguagesIds.Count > 0)
-            {
-                List<string> jobOffersIdsWithSelectedLanguages = this.jobOfferLanguagesRepository
-                    .AllAsNoTracking()
-                    .Where(jl => filters.LanguagesIds.Contains(jl.LanguageId))
-                    .Select(jo => jo.JobOfferId)
-                    .ToList();
+               if (filters.LanguagesIds.Count > 0)
+               {
+                   List<string> jobOffersIdsWithSelectedLanguages = this.jobOfferLanguagesRepository
+                       .AllAsNoTracking()
+                       .Where(jl => filters.LanguagesIds.Contains(jl.LanguageId))
+                       .Select(jo => jo.JobOfferId)
+                       .ToList();
 
-                baseQuery = baseQuery
-                    .Where(jo => jobOffersIdsWithSelectedLanguages.Contains(jo.Id));
-            }
+                   baseQuery = baseQuery
+                       .Where(jo => jobOffersIdsWithSelectedLanguages.Contains(jo.Id));
+               }
 
-            if (filters.SkillsIds.Count > 0)
-            {
-                List<string> jobOffersIdsWithSelectedskills = this.jobOfferSkillsRepository
-                    .AllAsNoTracking()
-                    .Where(js => filters.SkillsIds.Contains(js.SkillId))
-                    .Select(jo => jo.JobOfferId)
-                    .ToList();
+               if (filters.SkillsIds.Count > 0)
+               {
+                   List<string> jobOffersIdsWithSelectedskills = this.jobOfferSkillsRepository
+                       .AllAsNoTracking()
+                       .Where(js => filters.SkillsIds.Contains(js.SkillId))
+                       .Select(jo => jo.JobOfferId)
+                       .ToList();
 
-                baseQuery = baseQuery
-                    .Where(jo => jobOffersIdsWithSelectedskills.Contains(jo.Id));
-            }
+                   baseQuery = baseQuery
+                       .Where(jo => jobOffersIdsWithSelectedskills.Contains(jo.Id));
+               }
 
-            List<T> offers = baseQuery.To<T>().ToList();
+               List<T> filteredOffers = baseQuery.To<T>().ToList();
+               return filteredOffers;
+           });
+
             return offers;
         }
 
@@ -357,6 +362,15 @@
             return this.jobOffersRepository
                  .AllAsNoTracking()
                  .Count();
+        }
+
+        public int GetNewOffersCount()
+        {
+            DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            return this.jobOffersRepository
+                .AllAsNoTracking()
+                .Where(jo => jo.CreatedOn >= yesterdaysDate)
+                .Count();
         }
     }
 }

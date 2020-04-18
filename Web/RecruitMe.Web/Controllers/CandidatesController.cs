@@ -1,5 +1,7 @@
 ﻿namespace RecruitMe.Web.Controllers
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Authorization;
@@ -15,13 +17,19 @@
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICandidatesService candidatesService;
+        private readonly IFileExtensionsService fileExtensionsService;
+        private IEnumerable<string> allowedExtensions;
 
         public CandidatesController(
             UserManager<ApplicationUser> userManager,
-            ICandidatesService candidatesService)
+            ICandidatesService candidatesService,
+            IFileExtensionsService fileExtensionsService)
         {
             this.userManager = userManager;
             this.candidatesService = candidatesService;
+            this.fileExtensionsService = fileExtensionsService;
+
+            this.allowedExtensions = this.fileExtensionsService.GetImageExtensions();
         }
 
         [HttpGet]
@@ -33,16 +41,19 @@
         }
 
         [Authorize(Roles = GlobalConstants.CandidateRoleName)]
-        public async Task<IActionResult> CreateProfile()
+        public IActionResult CreateProfile()
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
-            if (user.CandidateId != null)
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            if (candidateId != null)
             {
                 return this.RedirectToAction(nameof(this.UpdateProfile));
             }
 
-            return this.View();
+            CreateCandidateProfileInputModel viewModel = new CreateCandidateProfileInputModel
+            {
+                ImageExtensions = this.allowedExtensions,
+            };
+            return this.View(viewModel);
         }
 
         [HttpPost]
@@ -51,6 +62,14 @@
         {
             if (!this.ModelState.IsValid)
             {
+                input.ImageExtensions = this.allowedExtensions;
+                return this.View(input);
+            }
+
+            if (!this.allowedExtensions.Any(ae => input.ProfilePicture.FileName.EndsWith(ae)))
+            {
+                this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
+                input.ImageExtensions = this.allowedExtensions;
                 return this.View(input);
             }
 
@@ -72,17 +91,17 @@
         }
 
         [Authorize(Roles = GlobalConstants.CandidateRoleName)]
-        public async Task<IActionResult> UpdateProfile()
+        public IActionResult UpdateProfile()
         {
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
 
-            if (user.CandidateId == null)
+            if (candidateId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            UpdateCandidateProfileViewModel details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(user.EmployerId);
-
+            UpdateCandidateProfileViewModel details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(candidateId);
+            details.ImageExtensions = this.allowedExtensions;
             return this.View(details);
         }
 
@@ -92,6 +111,14 @@
         {
             if (!this.ModelState.IsValid)
             {
+                input.ImageExtensions = this.allowedExtensions;
+                return this.View(input);
+            }
+
+            if (!this.allowedExtensions.Any(ae => input.ProfilePicture.FileName.EndsWith(ae)))
+            {
+                this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
+                input.ImageExtensions = this.allowedExtensions;
                 return this.View(input);
             }
 

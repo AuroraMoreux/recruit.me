@@ -13,7 +13,6 @@
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
-                    <label asp-for="File">Upload a file...</label>
                     <label>Allowed file extensions: @allowedFileExtensions</label>
                     <label>Max Size allowed: 10MB</label>
                     <input asp-for="File" class="form-control" />
@@ -26,7 +25,7 @@
                     <span asp-validation-for="DocumentCategoryId" class="text-danger"></span>
                 </div>
 
-                <input type="submit" value="Send" class="btn btn-primary" />
+                <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
                 <hr />
             </div>
         </div>

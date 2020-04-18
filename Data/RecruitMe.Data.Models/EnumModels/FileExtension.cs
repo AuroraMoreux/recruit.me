@@ -18,6 +18,9 @@
         [Required]
         public string Name { get; set; }
 
+        [Required]
+        public string FileType { get; set; }
+
         public virtual ICollection<Document> Documents { get; set; }
     }
 }

@@ -9,7 +9,7 @@
     {
         Task<string> Add(PostViewModel model, string employerId);
 
-        IEnumerable<T> GetAllValidFilteredOffers<T>(FilterModel filters);
+        Task<IEnumerable<T>> GetAllValidFilteredOffers<T>(FilterModel filters);
 
         T GetDetails<T>(string jobOfferId);
 
@@ -22,5 +22,7 @@
         Task Delete(string jobOfferId);
 
         int GetCount();
+
+        int GetNewOffersCount();
     }
 }

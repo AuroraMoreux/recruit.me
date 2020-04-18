@@ -28,7 +28,7 @@
         public IEnumerable<T> GetAllDocumentsForCandidate<T>(string candidateId)
         {
             List<T> documents = this.documentRepository
-                .All()
+                .AllAsNoTracking()
                 .Where(d => d.CandidateId == candidateId)
                 .OrderBy(d => d.CreatedOn)
                 .To<T>()
@@ -44,7 +44,7 @@
             string documentUrl = await CloudinaryService.UploadRawFileAsync(this.cloudinary, model.File, candidateId + $"_{document.Name}");
 
             document.Url = documentUrl;
-
+            document.CreatedOn = DateTime.UtcNow;
             await this.documentRepository.AddAsync(document);
             await this.documentRepository.SaveChangesAsync();
             return document.Id;
@@ -53,7 +53,7 @@
         public bool DocumentNameAlreadyExists(string fileName)
         {
             return this.documentRepository
-                 .All()
+                 .AllAsNoTracking()
                  .Any(d => d.Name == fileName);
         }
 
@@ -71,7 +71,7 @@
         public bool IsCandidateOwnerOfDocument(string candidateId, string documentId)
         {
             return this.documentRepository
-                .All()
+                .AllAsNoTracking()
                 .Any(d => d.Id == documentId
                        && d.CandidateId == candidateId);
         }
@@ -79,7 +79,7 @@
         public async Task<byte[]> Download(string documentId)
         {
             string documentUrl = this.documentRepository
-                .All()
+                .AllAsNoTracking()
                 .Where(d => d.Id == documentId)
                 .Select(d => d.Url)
                 .FirstOrDefault();
@@ -92,7 +92,7 @@
         public string GetDocumentNameById(string documentId)
         {
             string documentName = this.documentRepository
-                  .All()
+                  .AllAsNoTracking()
                   .Where(d => d.Id == documentId)
                   .Select(d => d.Name)
                   .FirstOrDefault();

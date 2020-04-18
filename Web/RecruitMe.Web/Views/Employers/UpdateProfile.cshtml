@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Update Profile";
     var jobSectors = this.Model.JobSectors.Select(js => new SelectListItem(js.Name, js.Id.ToString()));
+    var allowedFileExtensions = string.Join(", ", this.Model.ImageExtensions);
+
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -12,7 +14,9 @@
         <div class="row">
             <div class="col-6">
                 <div class="form-group">
-                    <label asp-for="Logo">Upload a new logo...</label>
+                    <label asp-for="Logo"></label> -
+                    <label><small><strong>Allowed file extensions:</strong> @allowedFileExtensions; </small></label>
+                    <label><small><strong>Max Size allowed:</strong> 10MB</small></label>
                     <input asp-for="Logo" class="form-control" />
                     <span asp-validation-for="Logo" class="text-danger"></span>
                 </div>
@@ -92,6 +96,6 @@
                 </div>
             </div>
         </div>
-        <input type="submit" value="Send" class="btn btn-primary" />
+        <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
     </form>
 </div>
