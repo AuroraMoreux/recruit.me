@@ -49,7 +49,7 @@
 
             if (candidateDetails == null || candidateDocumentDetails == null || jobOfferDetails == null)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             ApplyViewModel viewModel = new ApplyViewModel
@@ -91,7 +91,7 @@
 
             if (jobApplicationId == null)
             {
-                return this.View("Error");
+                return this.RedirectToAction("Error", "Home");
             }
             else
             {
@@ -114,7 +114,7 @@
 
             if (jobApplicationDetails == null)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             jobApplicationDetails.JobApplicationStatusChangeList = this.jobApplicationStatusesService.GetAll<JobApplicationStatusDetailsView>();

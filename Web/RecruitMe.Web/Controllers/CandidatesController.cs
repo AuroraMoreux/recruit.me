@@ -106,7 +106,7 @@
             UpdateCandidateProfileViewModel details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(candidateId);
             if (details == null)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             details.ImageExtensions = this.allowedExtensions;

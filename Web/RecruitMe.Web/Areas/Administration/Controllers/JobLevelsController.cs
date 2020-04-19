@@ -6,12 +6,12 @@
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
+    using RecruitMe.Common;
     using RecruitMe.Services.Data;
     using RecruitMe.Web.ViewModels.Administration.JobLevels;
 
     public class JobLevelsController : AdministrationController
     {
-        private const int ItemsPerPageCount = 8;
         private readonly IJobLevelsService jobLevelsService;
 
         public JobLevelsController(IJobLevelsService jobLevelsService)
@@ -20,7 +20,7 @@
         }
 
         // GET: Administration/JobLevels
-        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
+        public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             IEnumerable<JobLevelViewModel> levels = this.jobLevelsService.GetAllWithDeleted<JobLevelViewModel>();
             int pagesCount = (int)Math.Ceiling(levels.Count() / (decimal)perPage);

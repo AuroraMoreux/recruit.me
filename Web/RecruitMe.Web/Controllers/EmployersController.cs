@@ -114,7 +114,7 @@
             UpdateEmployerProfileViewModel details = this.employerService.GetProfileDetails<UpdateEmployerProfileViewModel>(employerId);
             if (details == null)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             details.JobSectors = this.jobSectors;

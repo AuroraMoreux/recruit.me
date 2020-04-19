@@ -17,8 +17,6 @@
 
     public class DocumentsController : BaseController
     {
-        private const int DocumentsPerPageDefaultCount = 10;
-
         private readonly IDocumentsService documentsService;
         private readonly ICandidatesService candidatesService;
         private readonly IFileExtensionsService fileExtensionsService;
@@ -52,7 +50,7 @@
         }
 
         [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
-        public IActionResult All(int page = 1, int perPage = DocumentsPerPageDefaultCount)
+        public IActionResult All(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             IEnumerable<DocumentsViewModel> documents = this.documentsService.GetAllDocumentsForCandidate<DocumentsViewModel>(candidateId);
@@ -156,7 +154,7 @@
 
             if (deletionResult == false)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             this.TempData["Success"] = GlobalConstants.DocumentSuccessfullyDeleted;
@@ -195,7 +193,7 @@
             byte[] fileAsByteArray = await this.documentsService.Download(id);
             if (fileAsByteArray == null)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             string fileName = this.documentsService.GetDocumentNameById(id);

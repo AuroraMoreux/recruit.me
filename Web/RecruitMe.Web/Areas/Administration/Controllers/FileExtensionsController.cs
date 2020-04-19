@@ -6,12 +6,12 @@
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
+    using RecruitMe.Common;
     using RecruitMe.Services.Data;
     using RecruitMe.Web.ViewModels.Administration.FileExtensions;
 
     public class FileExtensionsController : AdministrationController
     {
-        private const int ItemsPerPageCount = 8;
         private readonly IFileExtensionsService fileExtensionsService;
 
         public FileExtensionsController(IFileExtensionsService fileExtensionsService)
@@ -20,7 +20,7 @@
         }
 
         // GET: Administration/FileExtensions
-        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
+        public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             IEnumerable<ExtensionsViewModel> extensions = this.fileExtensionsService.GetAllWithDeleted<ExtensionsViewModel>();
             int pagesCount = (int)Math.Ceiling(extensions.Count() / (decimal)perPage);

@@ -6,12 +6,12 @@
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Mvc;
+    using RecruitMe.Common;
     using RecruitMe.Services.Data;
     using RecruitMe.Web.ViewModels.Administration.Skills;
 
     public class SkillsController : AdministrationController
     {
-        private const int ItemsPerPageCount = 8;
         private readonly ISkillsService skillsService;
 
         public SkillsController(ISkillsService skillsService)
@@ -20,7 +20,7 @@
         }
 
         // GET: Administration/Skills
-        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
+        public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             IEnumerable<SkillsViewModel> skills = this.skillsService.GetAllWithDeleted<SkillsViewModel>();
 

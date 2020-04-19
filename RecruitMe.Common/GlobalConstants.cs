@@ -13,6 +13,8 @@
 
         public const string IdentityRedirectPath = "/Identity/Account/Manage";
 
+        public const int ItemsPerPage = 8;
+
         // Validation Errors
         public const string UserAlreadyExists = "The provided email address is already registered";
 

@@ -18,8 +18,6 @@
     [Authorize]
     public class JobOffersController : BaseController
     {
-        private const int OffersPerPageDefaultCount = 10;
-
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IJobOffersService jobOffersService;
         private readonly IEmployersService employersService;
@@ -61,7 +59,7 @@
             this.skills = this.skillsService.GetAll<SkillsDropDownCheckboxListViewModel>();
         }
 
-        public async Task<IActionResult> All([FromQuery]FilterModel filters, string dateSortOrder, int page = 1, int perPage = OffersPerPageDefaultCount)
+        public async Task<IActionResult> All([FromQuery]FilterModel filters, string dateSortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             if (!this.ModelState.IsValid)
             {
@@ -130,7 +128,7 @@
 
             if (jobOfferDetails == null)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             return this.View(jobOfferDetails);
@@ -213,7 +211,7 @@
 
             if (jobOffer == null)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             EditViewModel viewModel = new EditViewModel
@@ -285,7 +283,7 @@
             bool deleteResult = await this.jobOffersService.Delete(id);
             if (deleteResult == false)
             {
-                return this.RedirectToAction("Error", "Home");
+                return this.NotFound();
             }
 
             this.TempData["Success"] = GlobalConstants.JobOfferSuccessfullyUpdated;
