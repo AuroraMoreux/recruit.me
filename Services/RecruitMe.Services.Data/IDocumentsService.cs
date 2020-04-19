@@ -15,7 +15,7 @@
 
         bool DocumentNameAlreadyExists(string fileName);
 
-        Task Delete(string documentId);
+        Task<bool> Delete(string documentId);
 
         Task<byte[]> Download(string documentId);
 

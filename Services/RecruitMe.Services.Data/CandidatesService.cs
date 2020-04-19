@@ -17,7 +17,9 @@
         private readonly IDeletableEntityRepository<Candidate> candidatesRepository;
         private readonly Cloudinary cloudinary;
 
-        public CandidatesService(IDeletableEntityRepository<Candidate> candidatesRepository, Cloudinary cloudinary)
+        public CandidatesService(
+            IDeletableEntityRepository<Candidate> candidatesRepository,
+            Cloudinary cloudinary)
         {
             this.candidatesRepository = candidatesRepository;
             this.cloudinary = cloudinary;
@@ -30,25 +32,34 @@
             if (model.ProfilePicture != null)
             {
                 string pictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
+                if (pictureUrl == null)
+                {
+                    return null;
+                }
+
                 candidate.ProfilePictureUrl = pictureUrl;
             }
 
             candidate.CreatedOn = DateTime.UtcNow;
-            await this.candidatesRepository.AddAsync(candidate);
-            await this.candidatesRepository.SaveChangesAsync();
-
-            return candidate.Id;
+            try
+            {
+                await this.candidatesRepository.AddAsync(candidate);
+                await this.candidatesRepository.SaveChangesAsync();
+                return candidate.Id;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public string GetCandidateIdByUsername(string username)
         {
-            string candidateId = this.candidatesRepository
+            return this.candidatesRepository
                   .AllAsNoTracking()
                   .Where(c => c.ApplicationUser.UserName == username)
                   .Select(c => c.Id)
                   .FirstOrDefault();
-
-            return candidateId;
         }
 
         public int GetCount()
@@ -69,13 +80,11 @@
 
         public T GetProfileDetails<T>(string candidateId)
         {
-            T candidate = this.candidatesRepository
+            return this.candidatesRepository
                  .AllAsNoTracking()
                  .Where(e => e.Id == candidateId)
                  .To<T>()
                  .FirstOrDefault();
-
-            return candidate;
         }
 
         public async Task<string> UpdateProfileAsync(string candidateId, UpdateCandidateProfileViewModel model)
@@ -95,17 +104,34 @@
             candidate.ContactAddress = model.ContactAddress;
             candidate.Education = model.Education;
 
-            if (candidate.ProfilePictureUrl != null)
+            if (model.ProfilePicture != null)
             {
-                CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + PictureNameAddIn);
-                candidate.ProfilePictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
+                if (candidate.ProfilePictureUrl != null)
+                {
+                    CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + PictureNameAddIn);
+                }
+
+                string pictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
+
+                if (pictureUrl == null)
+                {
+                    return null;
+                }
+
+                candidate.ProfilePictureUrl = pictureUrl;
             }
 
             candidate.ModifiedOn = DateTime.UtcNow;
-            this.candidatesRepository.Update(candidate);
-            await this.candidatesRepository.SaveChangesAsync();
-
-            return candidate.Id;
+            try
+            {
+                this.candidatesRepository.Update(candidate);
+                await this.candidatesRepository.SaveChangesAsync();
+                return candidate.Id;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

@@ -5,31 +5,39 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using RecruitMe.Common;
-    using RecruitMe.Data;
-    using RecruitMe.Data.Models.EnumModels;
+    using RecruitMe.Services.Data;
+    using RecruitMe.Web.ViewModels.Administration.Skills;
 
     public class SkillsController : AdministrationController
     {
-        private readonly ApplicationDbContext context;
+        private const int ItemsPerPageCount = 8;
+        private readonly ISkillsService skillsService;
 
-        public SkillsController(ApplicationDbContext context)
+        public SkillsController(ISkillsService skillsService)
         {
-            this.context = context;
+            this.skillsService = skillsService;
         }
 
         // GET: Administration/Skills
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
         {
-            List<Skill> skills = await this.context
-                .Skills
-                .IgnoreQueryFilters()
-                .ToListAsync();
+            IEnumerable<SkillsViewModel> skills = this.skillsService.GetAllWithDeleted<SkillsViewModel>();
 
-            return this.View(skills);
+            int pagesCount = (int)Math.Ceiling(skills.Count() / (decimal)perPage);
+
+            var paginatedSkills = skills
+               .Skip(perPage * (page - 1))
+               .Take(perPage)
+               .ToList();
+
+            AllSkillsViewModel viewModel = new AllSkillsViewModel
+            {
+                Skills = paginatedSkills,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+            return this.View(viewModel);
         }
 
         // GET: Administration/Skills/Create
@@ -41,38 +49,27 @@
         // POST: Administration/Skills/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] Skill skill)
+        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] CreateViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(skill);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (skill.IsDeleted)
+            int result = await this.skillsService.Create(input);
+
+            if (result < 0)
             {
-                skill.DeletedOn = currentTime;
+                return this.RedirectToAction("Error", "Home");
             }
 
-            skill.CreatedOn = currentTime;
-            this.context.Add(skill);
-            await this.context.SaveChangesAsync();
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/Skills/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return this.NotFound();
-            }
-
-            Skill skill = await this.context
-                .Skills
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(s => s.Id == id);
-
+            EditViewModel skill = this.skillsService.GetDetails<EditViewModel>(id);
             if (skill == null)
             {
                 return this.NotFound();
@@ -84,59 +81,32 @@
         // POST: Administration/Skills/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] Skill skill)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] EditViewModel input)
         {
-            if (id != skill.Id)
+            if (id != input.Id)
             {
                 return this.NotFound();
             }
 
             if (!this.ModelState.IsValid)
             {
-                return this.View(skill);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (skill.IsDeleted)
-            {
-                skill.DeletedOn = currentTime;
-            }
-            else if (!skill.IsDeleted)
-            {
-                skill.DeletedOn = null;
-            }
+            int result = await this.skillsService.Update(input);
 
-            skill.ModifiedOn = currentTime;
-            try
+            if (result < 0)
             {
-                this.context.Update(skill);
-                await this.context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!this.SkillExists(skill.Id))
-                {
-                    return this.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return this.RedirectToAction("Error", "Home");
             }
 
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/Skills/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return this.NotFound();
-            }
-
-            Skill skill = await this.context.Skills
-                .FirstOrDefaultAsync(m => m.Id == id);
+            DeleteViewModel skill = this.skillsService.GetDetails<DeleteViewModel>(id);
             if (skill == null)
             {
                 return this.NotFound();
@@ -149,21 +119,15 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            Skill skill = await this.context.Skills.FindAsync(id);
-            skill.DeletedOn = DateTime.UtcNow;
-            this.context.Skills.Remove(skill);
-            await this.context.SaveChangesAsync();
-            return this.RedirectToAction(nameof(this.Index));
-        }
+            bool isDeleted = this.skillsService.Delete(id);
+            if (!isDeleted)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
-        private bool SkillExists(int id)
-        {
-            return this.context
-                .Skills
-                .IgnoreQueryFilters()
-                .Any(e => e.Id == id);
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

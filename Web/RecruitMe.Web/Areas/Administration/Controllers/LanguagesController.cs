@@ -5,31 +5,39 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using RecruitMe.Common;
-    using RecruitMe.Data;
-    using RecruitMe.Data.Models.EnumModels;
+    using RecruitMe.Services.Data;
+    using RecruitMe.Web.ViewModels.Administration.Languages;
 
     public class LanguagesController : AdministrationController
     {
-        private readonly ApplicationDbContext context;
+        private const int ItemsPerPageCount = 8;
+        private readonly ILanguagesService languagesService;
 
-        public LanguagesController(ApplicationDbContext context)
+        public LanguagesController(ILanguagesService languagesService)
         {
-            this.context = context;
+            this.languagesService = languagesService;
         }
 
         // GET: Administration/Languages
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
         {
-            List<Language> languages = await this.context
-                .Languages
-                .IgnoreQueryFilters()
-                .ToListAsync();
+            IEnumerable<LanguagesViewModel> languages = this.languagesService.GetAllWithDeleted<LanguagesViewModel>();
+            int pagesCount = (int)Math.Ceiling(languages.Count() / (decimal)perPage);
 
-            return this.View(languages);
+            var paginatedaLanguages = languages
+               .Skip(perPage * (page - 1))
+               .Take(perPage)
+               .ToList();
+
+            AllLanguagesViewModel viewModel = new AllLanguagesViewModel
+            {
+                Languages = paginatedaLanguages,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+
+            return this.View(viewModel);
         }
 
         // GET: Administration/Languages/Create
@@ -41,38 +49,27 @@
         // POST: Administration/Languages/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] Language language)
+        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] CreateViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(language);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (language.IsDeleted)
+            int result = await this.languagesService.Create(input);
+
+            if (result < 0)
             {
-                language.DeletedOn = currentTime;
+                return this.RedirectToAction("Error", "Home");
             }
 
-            language.CreatedOn = currentTime;
-            this.context.Add(language);
-            await this.context.SaveChangesAsync();
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/Languages/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return this.NotFound();
-            }
-
-            Language language = await this.context
-                .Languages
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(l => l.Id == id);
-
+            EditViewModel language = this.languagesService.GetDetails<EditViewModel>(id);
             if (language == null)
             {
                 return this.NotFound();
@@ -84,59 +81,32 @@
         // POST: Administration/Languages/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] Language language)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] EditViewModel input)
         {
-            if (id != language.Id)
+            if (id != input.Id)
             {
                 return this.NotFound();
             }
 
             if (!this.ModelState.IsValid)
             {
-                return this.View(language);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (language.IsDeleted)
-            {
-                language.DeletedOn = currentTime;
-            }
-            else if (!language.IsDeleted)
-            {
-                language.DeletedOn = null;
-            }
+            int result = await this.languagesService.Update(input);
 
-            language.ModifiedOn = currentTime;
-            try
+            if (result < 0)
             {
-                this.context.Update(language);
-                await this.context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!this.LanguageExists(language.Id))
-                {
-                    return this.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return this.RedirectToAction("Error", "Home");
             }
 
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/Languages/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return this.NotFound();
-            }
-
-            Language language = await this.context.Languages
-                .FirstOrDefaultAsync(m => m.Id == id);
+            DeleteViewModel language = this.languagesService.GetDetails<DeleteViewModel>(id);
             if (language == null)
             {
                 return this.NotFound();
@@ -149,21 +119,15 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public  IActionResult DeleteConfirmed(int id)
         {
-            Language language = await this.context.Languages.FindAsync(id);
-            language.DeletedOn = DateTime.UtcNow;
-            this.context.Languages.Remove(language);
-            await this.context.SaveChangesAsync();
-            return this.RedirectToAction(nameof(this.Index));
-        }
+            bool isDeleted = this.languagesService.Delete(id);
+            if (!isDeleted)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
-        private bool LanguageExists(int id)
-        {
-            return this.context
-                .Languages
-                .IgnoreQueryFilters()
-                .Any(e => e.Id == id);
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

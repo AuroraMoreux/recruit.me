@@ -79,7 +79,7 @@
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
 
-            if (candidateId == null && !this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+            if (candidateId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Candidates");
             }
@@ -97,6 +97,12 @@
         [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Upload(UploadInputModel input)
         {
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            if (candidateId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Candidates");
+            }
+
             if (!this.ModelState.IsValid)
             {
                 input.FileExtensions = this.allowedExtensions;
@@ -118,21 +124,27 @@
                 return this.View(input);
             }
 
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             string documentId = await this.documentsService.Upload(input, candidateId);
 
             if (documentId == null)
             {
-                return this.View("Error");
+                return this.RedirectToAction("Error", "Home");
             }
 
+            this.TempData["Success"] = GlobalConstants.DocumentSuccessfullyUploaded;
             return this.RedirectToAction(nameof(this.All));
         }
 
         [HttpGet]
+        [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Delete(string id)
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            if (candidateId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Candidates");
+            }
+
             bool isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
 
             if (!isOwner)
@@ -140,17 +152,29 @@
                 return this.Forbid();
             }
 
-            await this.documentsService.Delete(id);
+            bool deletionResult = await this.documentsService.Delete(id);
 
+            if (deletionResult == false)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
+
+            this.TempData["Success"] = GlobalConstants.DocumentSuccessfullyDeleted;
             return this.RedirectToAction(nameof(this.All));
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Download(string id, string jobApplicationId = null)
         {
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            if (candidateId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Candidates");
+            }
+
             if (jobApplicationId == null)
             {
-                string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
                 bool isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
                 if (!isOwner)
                 {
@@ -169,6 +193,11 @@
             }
 
             byte[] fileAsByteArray = await this.documentsService.Download(id);
+            if (fileAsByteArray == null)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
+
             string fileName = this.documentsService.GetDocumentNameById(id);
             string contentType = this.mimeMappingService.Map(fileName);
 

@@ -53,21 +53,26 @@
         public const string SalaryToValueMustBeGreater = @"The ""Salary To"" amount must be greater than the ""Salary From"" amount";
 
         // Notifications
-        public const string UserSuccessfullyCreated = "User created a new account with password.";
+        public const string UserSuccessfullyCreated = "User account successfully created";
 
-        public const string UserSuccessfullyAddedToRole = "User has successfully been added to a user role";
+        public const string UserSuccessfullyAddedToRole = "User has been successfully added to a user role";
 
         public const string ProfileSuccessfullyCreated = "Your profile has been successfully created";
 
         public const string ProfileSuccessfullyUpdated = "Your profile has been successfully updated";
 
-        public const string JobApplicationSuccessfullySubmitted = "Your application was submitted successfully";
+        public const string JobApplicationSuccessfullySubmitted = "Your application has been submitted successfully";
+        public const string JobApplicationStatusSuccessfullyChanged = "Application status successfully changed";
 
-        public const string JobOfferSuccessfullyPosted = "The job offer was successfully posted";
+        public const string JobOfferSuccessfullyPosted = "The job offer has been successfully posted";
 
-        public const string JobOfferSuccessfullyUpdated = "The job offer was successfully updated";
+        public const string JobOfferSuccessfullyUpdated = "The job offer has been successfully updated";
 
-        public const string JobOfferSuccessfullyDeleted = "The job offer was successfully deleted";
+        public const string JobOfferSuccessfullyDeleted = "The job offer has been successfully deleted";
+
+        public const string DocumentSuccessfullyUploaded = "The document has been successfully uploaded";
+
+        public const string DocumentSuccessfullyDeleted = "The document has been successfully deleted";
 
         // Email Templates
         public const string NewAccountConfirmation = "Please confirm your account by<a href='{0}'> clicking here</a>.";

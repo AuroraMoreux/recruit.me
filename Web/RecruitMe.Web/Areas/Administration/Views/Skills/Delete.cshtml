@@ -1,4 +1,4 @@
-﻿@model RecruitMe.Data.Models.EnumModels.Skill
+﻿@model RecruitMe.Web.ViewModels.Administration.Skills.DeleteViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -11,35 +11,35 @@
     <h4>Skill</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+        <dt class="col-sm-2">
+            <label asp-for="Name"></label>
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+        <dd class="col-sm-10">
+            @Model.Name
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
+        <dt class="col-sm-2">
+            <label asp-for="IsDeleted"></label>
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted)
+        <dd class="col-sm-10">
+            @(Model.IsDeleted == true ? "Yes" : "No")
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedOn)
+        <dt class="col-sm-2">
+            <label asp-for="DeletedOn"></label>
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedOn)
+        <dd class="col-sm-10">
+            @Model.DeletedOn
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedOn)
+        <dt class="col-sm-2">
+            <label asp-for="CreatedOn"></label>
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedOn)
+        <dd class="col-sm-10">
+            @Model.CreatedOn
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedOn)
+        <dt class="col-sm-2">
+            <label asp-for="ModifiedOn"></label>
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedOn)
+        <dd class="col-sm-10">
+            @Model.ModifiedOn
         </dd>
     </dl>
     

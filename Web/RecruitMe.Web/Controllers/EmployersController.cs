@@ -11,8 +11,10 @@
     using RecruitMe.Common;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Data;
+    using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.Employers;
 
+    [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
     public class EmployersController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -37,7 +39,7 @@
             this.allowedExtensions = this.fileExtensionsService.GetImageExtensions();
         }
 
-        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             this.HttpContext.Session.SetString("UserRole", GlobalConstants.EmployerRoleName);
@@ -45,7 +47,6 @@
             return this.View();
         }
 
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public IActionResult CreateProfile()
         {
             string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
@@ -64,9 +65,13 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public async Task<IActionResult> CreateProfile(CreateEmployerProfileInputModel input)
         {
+            if (this.employerService.GetEmployerIdByUsername(this.User.Identity.Name) != null)
+            {
+                return this.RedirectToAction(nameof(this.UpdateProfile));
+            }
+
             if (!this.ModelState.IsValid)
             {
                 input.ImageExtensions = this.fileExtensionsService.GetImageExtensions();
@@ -87,18 +92,17 @@
 
             string employerId = await this.employerService.CreateProfileAsync(input);
 
-            if (employerId != null)
+            if (employerId == null)
             {
-                user.EmployerId = employerId;
-                await this.userManager.UpdateAsync(user);
-                this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyCreated;
-                return this.RedirectToAction(nameof(this.Index));
+                return this.RedirectToAction("Error", "Home");
             }
 
-            return this.View("Error");
+            user.EmployerId = employerId;
+            await this.userManager.UpdateAsync(user);
+            this.TempData["Success"] = GlobalConstants.ProfileSuccessfullyCreated;
+            return this.RedirectToAction(nameof(this.Index));
         }
 
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public IActionResult UpdateProfile()
         {
             string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
@@ -108,15 +112,25 @@
             }
 
             UpdateEmployerProfileViewModel details = this.employerService.GetProfileDetails<UpdateEmployerProfileViewModel>(employerId);
+            if (details == null)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
+
             details.JobSectors = this.jobSectors;
             details.ImageExtensions = this.fileExtensionsService.GetImageExtensions();
             return this.View(details);
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
         public async Task<IActionResult> UpdateProfile(UpdateEmployerProfileViewModel input)
         {
+            string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
+            {
+                return this.RedirectToAction(nameof(this.CreateProfile));
+            }
+
             if (!this.ModelState.IsValid)
             {
                 input.ImageExtensions = this.fileExtensionsService.GetImageExtensions();
@@ -132,17 +146,15 @@
                 return this.View(input);
             }
 
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            input.ApplicationUserId = user.Id;
-            string employerId = await this.employerService.UpdateProfileAsync(user.EmployerId, input);
+            string updateResult = await this.employerService.UpdateProfileAsync(employerId, input);
 
-            if (employerId != null)
+            if (employerId == null)
             {
-                this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
-                return this.RedirectToAction(nameof(this.Index));
+                return this.RedirectToAction("Error", "Home");
             }
 
-            return this.View("Error");
+            this.TempData["Success"] = GlobalConstants.ProfileSuccessfullyUpdated;
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

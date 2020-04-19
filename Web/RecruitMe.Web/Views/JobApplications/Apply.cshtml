@@ -7,10 +7,10 @@
 
 <h1>@ViewData["Title"]</h1>
 
-@if (this.TempData["InfoMessage"] != null)
+@if (this.TempData["Success"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["InfoMessage"]
+        @TempData["Success"]
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -66,7 +66,7 @@
             <div class="form-group">
                 <label>Select documents to attach: </label>
                 <a class="btn btn-primary btn-sm float-right" target="_blank" asp-controller="Documents" asp-action="Upload">Add new Document</a><br />
-                <small class="form-text text-muted float-right"style="display:block">Changes will appear after reload</small>
+                <small class="form-text text-muted float-right" style="display:block">Changes will appear after reload</small>
                 <select asp-for="DocumentIds" multiple asp-items="documents" class="form-control"></select>
                 <span asp-validation-for="DocumentIds" class="text-danger"></span>
             </div>

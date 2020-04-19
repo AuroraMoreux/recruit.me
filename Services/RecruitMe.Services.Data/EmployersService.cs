@@ -16,7 +16,9 @@
         private readonly IDeletableEntityRepository<Employer> employersRepository;
         private readonly Cloudinary cloudinary;
 
-        public EmployersService(IDeletableEntityRepository<Employer> employersRepository, Cloudinary cloudinary)
+        public EmployersService(
+            IDeletableEntityRepository<Employer> employersRepository,
+            Cloudinary cloudinary)
         {
             this.employersRepository = employersRepository;
             this.cloudinary = cloudinary;
@@ -30,14 +32,25 @@
             {
                 string logoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
 
+                if (logoUrl == null)
+                {
+                    return null;
+                }
+
                 employer.LogoUrl = logoUrl;
             }
 
             employer.CreatedOn = DateTime.UtcNow;
-            await this.employersRepository.AddAsync(employer);
-            await this.employersRepository.SaveChangesAsync();
-
-            return employer.Id;
+            try
+            {
+                await this.employersRepository.AddAsync(employer);
+                await this.employersRepository.SaveChangesAsync();
+                return employer.Id;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public int GetCount()
@@ -67,13 +80,11 @@
 
         public T GetProfileDetails<T>(string employerId)
         {
-            T employer = this.employersRepository
+            return this.employersRepository
                  .AllAsNoTracking()
                  .Where(e => e.Id == employerId)
                  .To<T>()
                  .FirstOrDefault();
-
-            return employer;
         }
 
         public async Task<string> UpdateProfileAsync(string employerId, UpdateEmployerProfileViewModel model)
@@ -100,17 +111,33 @@
             employer.UniqueIdentificationCode = model.UniqueIdentificationCode;
             employer.WebsiteAddress = model.WebsiteAddress;
 
-            if (employer.LogoUrl != null)
+            if (model.Logo != null)
             {
-                CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + LogoNameAddIn);
-                employer.LogoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
+                if (employer.LogoUrl != null)
+                {
+                    CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + LogoNameAddIn);
+                }
+
+                string logoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
+                if (logoUrl == null)
+                {
+                    return null;
+                }
+
+                employer.LogoUrl = logoUrl;
             }
 
             employer.ModifiedOn = DateTime.UtcNow;
-            this.employersRepository.Update(employer);
-            await this.employersRepository.SaveChangesAsync();
-
-            return employer.Id;
+            try
+            {
+                this.employersRepository.Update(employer);
+                await this.employersRepository.SaveChangesAsync();
+                return employer.Id;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

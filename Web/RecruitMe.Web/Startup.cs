@@ -3,6 +3,7 @@
     using System;
     using System.Reflection;
     using System.Threading.Tasks;
+
     using CloudinaryDotNet;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -137,6 +138,10 @@
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();
 
+                        endpoints.MapGet("/Identity/Account/Manage/", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Manage/Email", true)));
+                        endpoints.MapPost("/Identity/Account/Manage/", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Manage/Email", true)));
+                        endpoints.MapGet("/Identity/Account/Manage/Index", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Manage/Email", true)));
+                        endpoints.MapPost("/Identity/Account/Manage/Index", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Manage/Email", true)));
                         endpoints.MapGet("/Identity/Account/Manage/TwoFactorAuthentication", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
                         endpoints.MapPost("/Identity/Account/Manage/TwoFactorAuthentication", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));
                         endpoints.MapGet("/Identity/Account/Manage/PersonalData", context => Task.Factory.StartNew(() => context.Response.Redirect(GlobalConstants.IdentityRedirectPath, true)));

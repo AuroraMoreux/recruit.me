@@ -5,31 +5,39 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using RecruitMe.Common;
-    using RecruitMe.Data;
-    using RecruitMe.Data.Models.EnumModels;
+    using RecruitMe.Services.Data;
+    using RecruitMe.Web.ViewModels.Administration.FileExtensions;
 
     public class FileExtensionsController : AdministrationController
     {
-        private readonly ApplicationDbContext context;
+        private const int ItemsPerPageCount = 8;
+        private readonly IFileExtensionsService fileExtensionsService;
 
-        public FileExtensionsController(ApplicationDbContext context)
+        public FileExtensionsController(IFileExtensionsService fileExtensionsService)
         {
-            this.context = context;
+            this.fileExtensionsService = fileExtensionsService;
         }
 
         // GET: Administration/FileExtensions
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
         {
-            List<FileExtension> extensions = await this.context
-                 .FileExtensions
-                 .IgnoreQueryFilters()
-                 .ToListAsync();
+            IEnumerable<ExtensionsViewModel> extensions = this.fileExtensionsService.GetAllWithDeleted<ExtensionsViewModel>();
+            int pagesCount = (int)Math.Ceiling(extensions.Count() / (decimal)perPage);
 
-            return this.View(extensions);
+            List<ExtensionsViewModel> paginatedExtensions = extensions
+               .Skip(perPage * (page - 1))
+               .Take(perPage)
+               .ToList();
+
+            AllFileExtensionsViewModel viewModel = new AllFileExtensionsViewModel
+            {
+                Extensions = paginatedExtensions,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+
+            return this.View(viewModel);
         }
 
         // GET: Administration/FileExtensions/Create
@@ -41,129 +49,85 @@
         // POST: Administration/FileExtensions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,IsDeleted,FileType")] FileExtension fileExtension)
+        public async Task<IActionResult> Create([Bind("Name,IsDeleted,FileType")] CreateViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(fileExtension);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (fileExtension.IsDeleted)
+            int result = await this.fileExtensionsService.Create(input);
+
+            if (result < 0)
             {
-                fileExtension.DeletedOn = currentTime;
+                return this.RedirectToAction("Error", "Home");
             }
 
-            fileExtension.CreatedOn = currentTime;
-            this.context.Add(fileExtension);
-            await this.context.SaveChangesAsync();
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/FileExtensions/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
+            EditViewModel extension = this.fileExtensionsService.GetDetails<EditViewModel>(id);
+            if (extension == null)
             {
                 return this.NotFound();
             }
 
-            FileExtension fileExtension = await this.context
-                .FileExtensions
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(fe => fe.Id == id);
-
-            if (fileExtension == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(fileExtension);
+            return this.View(extension);
         }
 
         // POST: Administration/FileExtensions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id,FileType")] FileExtension fileExtension)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id,FileType")] EditViewModel input)
         {
-            if (id != fileExtension.Id)
+            if (id != input.Id)
             {
                 return this.NotFound();
             }
 
             if (!this.ModelState.IsValid)
             {
-                return this.View(fileExtension);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (fileExtension.IsDeleted)
-            {
-                fileExtension.DeletedOn = currentTime;
-            }
-            else if (!fileExtension.IsDeleted)
-            {
-                fileExtension.DeletedOn = null;
-            }
+            int result = await this.fileExtensionsService.Update(input);
 
-            fileExtension.ModifiedOn = currentTime;
-            try
+            if (result < 0)
             {
-                this.context.Update(fileExtension);
-                await this.context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!this.FileExtensionExists(fileExtension.Id))
-                {
-                    return this.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return this.RedirectToAction("Error", "Home");
             }
 
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/FileExtensions/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
+            DeleteViewModel extension = this.fileExtensionsService.GetDetails<DeleteViewModel>(id);
+            if (extension == null)
             {
                 return this.NotFound();
             }
 
-            FileExtension fileExtension = await this.context.FileExtensions
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (fileExtension == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(fileExtension);
+            return this.View(extension);
         }
 
         // POST: Administration/FileExtensions/Delete/5
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            FileExtension fileExtension = await this.context.FileExtensions.FindAsync(id);
-            fileExtension.DeletedOn = DateTime.UtcNow;
-            this.context.FileExtensions.Remove(fileExtension);
-            await this.context.SaveChangesAsync();
-            return this.RedirectToAction(nameof(this.Index));
-        }
+            bool isDeleted = this.fileExtensionsService.Delete(id);
+            if (!isDeleted)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
-        private bool FileExtensionExists(int id)
-        {
-            return this.context
-                .FileExtensions
-                .IgnoreQueryFilters()
-                .Any(e => e.Id == id);
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

@@ -5,31 +5,39 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using RecruitMe.Common;
-    using RecruitMe.Data;
-    using RecruitMe.Data.Models.EnumModels;
+    using RecruitMe.Services.Data;
+    using RecruitMe.Web.ViewModels.Administration.JobApplicationStatuses;
 
     public class JobApplicationStatusesController : AdministrationController
     {
-        private readonly ApplicationDbContext context;
+        private const int ItemsPerPageCount = 8;
+        private readonly IJobApplicationStatusesService jobApplicationStatusesService;
 
-        public JobApplicationStatusesController(ApplicationDbContext context)
+        public JobApplicationStatusesController(IJobApplicationStatusesService jobApplicationStatusesService)
         {
-            this.context = context;
+            this.jobApplicationStatusesService = jobApplicationStatusesService;
         }
 
         // GET: Administration/JobApplicationStatuses
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
         {
-            List<JobApplicationStatus> statuses = await this.context
-                 .ApplicationStatuses
-                 .IgnoreQueryFilters()
-                 .ToListAsync();
+            IEnumerable<JobApplicationStatusViewModel> statuses = this.jobApplicationStatusesService.GetAllWithDeleted<JobApplicationStatusViewModel>();
+            int pagesCount = (int)Math.Ceiling(statuses.Count() / (decimal)perPage);
 
-            return this.View(statuses);
+            var paginatedStatuses = statuses
+               .Skip(perPage * (page - 1))
+               .Take(perPage)
+               .ToList();
+
+            AllStatusesViewModel viewModel = new AllStatusesViewModel
+            {
+                Statuses = paginatedStatuses,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+
+            return this.View(viewModel);
         }
 
         // GET: Administration/JobApplicationStatuses/Create
@@ -41,129 +49,85 @@
         // POST: Administration/JobApplicationStatuses/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] JobApplicationStatus jobApplicationStatus)
+        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] CreateViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(jobApplicationStatus);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (jobApplicationStatus.IsDeleted)
+            int result = await this.jobApplicationStatusesService.Create(input);
+
+            if (result < 0)
             {
-                jobApplicationStatus.DeletedOn = currentTime;
+                return this.RedirectToAction("Error", "Home");
             }
 
-            jobApplicationStatus.CreatedOn = currentTime;
-            this.context.Add(jobApplicationStatus);
-            await this.context.SaveChangesAsync();
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/JobApplicationStatuses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
+            EditViewModel status = this.jobApplicationStatusesService.GetDetails<EditViewModel>(id);
+            if (status == null)
             {
                 return this.NotFound();
             }
 
-            JobApplicationStatus jobApplicationStatus = await this.context
-                .ApplicationStatuses
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(jas => jas.Id == id);
-
-            if (jobApplicationStatus == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(jobApplicationStatus);
+            return this.View(status);
         }
 
         // POST: Administration/JobApplicationStatuses/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] JobApplicationStatus jobApplicationStatus)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] EditViewModel input)
         {
-            if (id != jobApplicationStatus.Id)
+            if (id != input.Id)
             {
                 return this.NotFound();
             }
 
             if (!this.ModelState.IsValid)
             {
-                return this.View(jobApplicationStatus);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (jobApplicationStatus.IsDeleted)
-            {
-                jobApplicationStatus.DeletedOn = currentTime;
-            }
-            else if (!jobApplicationStatus.IsDeleted)
-            {
-                jobApplicationStatus.DeletedOn = null;
-            }
+            int result = await this.jobApplicationStatusesService.Update(input);
 
-            jobApplicationStatus.ModifiedOn = currentTime;
-            try
+            if (result < 0)
             {
-                this.context.Update(jobApplicationStatus);
-                await this.context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!this.JobApplicationStatusExists(jobApplicationStatus.Id))
-                {
-                    return this.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return this.RedirectToAction("Error", "Home");
             }
 
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/JobApplicationStatuses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
+            DeleteViewModel status = this.jobApplicationStatusesService.GetDetails<DeleteViewModel>(id);
+            if (status == null)
             {
                 return this.NotFound();
             }
 
-            JobApplicationStatus jobApplicationStatus = await this.context.ApplicationStatuses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (jobApplicationStatus == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(jobApplicationStatus);
+            return this.View(status);
         }
 
         // POST: Administration/JobApplicationStatuses/Delete/5
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            JobApplicationStatus jobApplicationStatus = await this.context.ApplicationStatuses.FindAsync(id);
-            jobApplicationStatus.DeletedOn = DateTime.UtcNow;
-            this.context.ApplicationStatuses.Remove(jobApplicationStatus);
-            await this.context.SaveChangesAsync();
-            return this.RedirectToAction(nameof(this.Index));
-        }
+            bool isDeleted = this.jobApplicationStatusesService.Delete(id);
+            if (!isDeleted)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
-        private bool JobApplicationStatusExists(int id)
-        {
-            return this.context
-                .ApplicationStatuses
-                .IgnoreQueryFilters()
-                .Any(e => e.Id == id);
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

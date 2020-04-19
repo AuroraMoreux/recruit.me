@@ -14,30 +14,10 @@ else
     <h1 style="display:inline">@ViewData["Title"]</h1>
     <a class="btn btn-primary float-right" asp-action="Search" asp-controller="JobOffers">Search Offers</a>
 }
-@if (this.TempData["SuccessfulApplication"] != null)
+@if (this.TempData["Success"] != null)
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessfulApplication"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
-
-@if (this.TempData["JobOfferUpdated"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["JobOfferUpdated"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
-
-@if (this.TempData["JobOfferPosted"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["JobOfferPosted"]
+        @TempData["Success"]
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -89,24 +69,32 @@ else
             }
         </tbody>
     </table>
-    @if (Model.PagesCount > 0)
-    {
-        <div class="text-center">
-            <ul class="pagination">
-                <li><a style="margin: 5px" href="~/JobOffers/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
-                @for (int i = 1; i <= Model.PagesCount; i++)
-                {
-                    if (i == Model.CurrentPage)
-                    {
-                        <li class="active"><a style="margin: 5px" href="~/JobOffers/All?page=@i">@i</a></li>
-                    }
-                    else
-                    {
-                        <li><a style="margin: 5px" href="~/JobOffers/All?page=@i">@i</a></li>
-                    }
-                }
-                <li><a style="margin: 5px" href="~/JobOffers/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
-            </ul>
-        </div>
-    }
+    <nav>
+        <ul class="pagination">
+            @if (this.Model.CurrentPage == 1)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/JobOffers/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+
+            @for (int i = 1; i <= Model.PagesCount; i++)
+            {
+                var active = i == this.Model.CurrentPage ? "active" : string.Empty;
+
+                <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/JobOffers/All?page=@i">@i</a></li>
+            }
+
+            @if (this.Model.CurrentPage == this.Model.PagesCount)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/JobOffers/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+        </ul>
+    </nav>
 </div>

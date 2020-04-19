@@ -18,7 +18,10 @@
         private readonly IDeletableEntityRepository<Document> documentRepository;
         private readonly Cloudinary cloudinary;
 
-        public DocumentsService(IFileDownloadService fileDownloadService, IDeletableEntityRepository<Document> documentRepository, Cloudinary cloudinary)
+        public DocumentsService(
+            IFileDownloadService fileDownloadService,
+            IDeletableEntityRepository<Document> documentRepository,
+            Cloudinary cloudinary)
         {
             this.fileDownloadService = fileDownloadService;
             this.documentRepository = documentRepository;
@@ -27,14 +30,12 @@
 
         public IEnumerable<T> GetAllDocumentsForCandidate<T>(string candidateId)
         {
-            List<T> documents = this.documentRepository
+            return this.documentRepository
                 .AllAsNoTracking()
                 .Where(d => d.CandidateId == candidateId)
                 .OrderBy(d => d.CreatedOn)
                 .To<T>()
                 .ToList();
-
-            return documents;
         }
 
         public async Task<string> Upload(UploadInputModel model, string candidateId)
@@ -42,12 +43,23 @@
             Document document = AutoMapperConfig.MapperInstance.Map<Document>(model);
             document.CandidateId = candidateId;
             string documentUrl = await CloudinaryService.UploadRawFileAsync(this.cloudinary, model.File, candidateId + $"_{document.Name}");
+            if (documentUrl == null)
+            {
+                return null;
+            }
 
             document.Url = documentUrl;
             document.CreatedOn = DateTime.UtcNow;
-            await this.documentRepository.AddAsync(document);
-            await this.documentRepository.SaveChangesAsync();
-            return document.Id;
+            try
+            {
+                await this.documentRepository.AddAsync(document);
+                await this.documentRepository.SaveChangesAsync();
+                return document.Id;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public bool DocumentNameAlreadyExists(string fileName)
@@ -57,15 +69,23 @@
                  .Any(d => d.Name == fileName);
         }
 
-        public async Task Delete(string documentId)
+        public async Task<bool> Delete(string documentId)
         {
             Document document = this.documentRepository
                 .All()
                 .FirstOrDefault(d => d.Id == documentId);
 
             CloudinaryService.DeleteFile(this.cloudinary, document.CandidateId + $"_{document.Name}");
-            this.documentRepository.Delete(document);
-            await this.documentRepository.SaveChangesAsync();
+            try
+            {
+                this.documentRepository.Delete(document);
+                await this.documentRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public bool IsCandidateOwnerOfDocument(string candidateId, string documentId)
@@ -73,7 +93,7 @@
             return this.documentRepository
                 .AllAsNoTracking()
                 .Any(d => d.Id == documentId
-                       && d.CandidateId == candidateId);
+                  && d.CandidateId == candidateId);
         }
 
         public async Task<byte[]> Download(string documentId)
@@ -91,13 +111,11 @@
 
         public string GetDocumentNameById(string documentId)
         {
-            string documentName = this.documentRepository
+            return this.documentRepository
                   .AllAsNoTracking()
                   .Where(d => d.Id == documentId)
                   .Select(d => d.Name)
                   .FirstOrDefault();
-
-            return documentName;
         }
     }
 }

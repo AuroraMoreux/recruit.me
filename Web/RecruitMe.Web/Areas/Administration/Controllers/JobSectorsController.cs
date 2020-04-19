@@ -5,31 +5,39 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using RecruitMe.Common;
-    using RecruitMe.Data;
-    using RecruitMe.Data.Models.EnumModels;
+    using RecruitMe.Services.Data;
+    using RecruitMe.Web.ViewModels.Administration.JobSectors;
 
     public class JobSectorsController : AdministrationController
     {
-        private readonly ApplicationDbContext context;
+        private const int ItemsPerPageCount = 8;
+        private readonly IJobSectorsService jobSectorsService;
 
-        public JobSectorsController(ApplicationDbContext context)
+        public JobSectorsController(IJobSectorsService jobSectorsService)
         {
-            this.context = context;
+            this.jobSectorsService = jobSectorsService;
         }
 
         // GET: Administration/JobSectors
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
         {
-            List<JobSector> sectors = await this.context
-                .JobSectors
-                .IgnoreQueryFilters()
-                .ToListAsync();
+            IEnumerable<JobSectorsViewModel> sectors = this.jobSectorsService.GetAllWithDeleted<JobSectorsViewModel>();
+            int pagesCount = (int)Math.Ceiling(sectors.Count() / (decimal)perPage);
 
-            return this.View(sectors);
+            List<JobSectorsViewModel> paginatedSectors = sectors
+               .Skip(perPage * (page - 1))
+               .Take(perPage)
+               .ToList();
+
+            AllJobSectorsViewModel viewModel = new AllJobSectorsViewModel
+            {
+                Sectors = paginatedSectors,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+
+            return this.View(viewModel);
         }
 
         // GET: Administration/JobSectors/Create
@@ -41,129 +49,85 @@
         // POST: Administration/JobSectors/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] JobSector jobSector)
+        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] CreateViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(jobSector);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (jobSector.IsDeleted)
+            int result = await this.jobSectorsService.Create(input);
+
+            if (result < 0)
             {
-                jobSector.DeletedOn = currentTime;
+                return this.RedirectToAction("Error", "Home");
             }
 
-            jobSector.CreatedOn = currentTime;
-            this.context.Add(jobSector);
-            await this.context.SaveChangesAsync();
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/JobSectors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
+            EditViewModel sector = this.jobSectorsService.GetDetails<EditViewModel>(id);
+            if (sector == null)
             {
                 return this.NotFound();
             }
 
-            JobSector jobSector = await this.context
-                .JobSectors
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(js => js.Id == id);
-
-            if (jobSector == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(jobSector);
+            return this.View(sector);
         }
 
         // POST: Administration/JobSectors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,DeletedOn,Id,CreatedOn,ModifiedOn")] JobSector jobSector)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,DeletedOn,Id,CreatedOn,ModifiedOn")] EditViewModel input)
         {
-            if (id != jobSector.Id)
+            if (id != input.Id)
             {
                 return this.NotFound();
             }
 
             if (!this.ModelState.IsValid)
             {
-                return this.View(jobSector);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (jobSector.IsDeleted)
-            {
-                jobSector.DeletedOn = currentTime;
-            }
-            else if (!jobSector.IsDeleted)
-            {
-                jobSector.DeletedOn = null;
-            }
+            int result = await this.jobSectorsService.Update(input);
 
-            jobSector.ModifiedOn = currentTime;
-            try
+            if (result < 0)
             {
-                this.context.Update(jobSector);
-                await this.context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!this.JobSectorExists(jobSector.Id))
-                {
-                    return this.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return this.RedirectToAction("Error", "Home");
             }
 
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/JobSectors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
+            DeleteViewModel sector = this.jobSectorsService.GetDetails<DeleteViewModel>(id);
+            if (sector == null)
             {
                 return this.NotFound();
             }
 
-            JobSector jobSector = await this.context.JobSectors
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (jobSector == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(jobSector);
+            return this.View(sector);
         }
 
         // POST: Administration/JobSectors/Delete/5
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            JobSector jobSector = await this.context.JobSectors.FindAsync(id);
-            jobSector.DeletedOn = DateTime.UtcNow;
-            this.context.JobSectors.Remove(jobSector);
-            await this.context.SaveChangesAsync();
-            return this.RedirectToAction(nameof(this.Index));
-        }
+            bool isDeleted = this.jobSectorsService.Delete(id);
+            if (!isDeleted)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
-        private bool JobSectorExists(int id)
-        {
-            return this.context
-                .JobSectors
-                .IgnoreQueryFilters()
-                .Any(e => e.Id == id);
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

@@ -13,7 +13,12 @@
         private readonly IJobOffersService jobOffersService;
         private readonly IJobApplicationService jobApplicationService;
 
-        public DashboardController(IApplicationUsersService applicationUsersService, ICandidatesService candidatesService, IEmployersService employersService, IJobOffersService jobOffersService, IJobApplicationService jobApplicationService)
+        public DashboardController(
+            IApplicationUsersService applicationUsersService,
+            ICandidatesService candidatesService,
+            IEmployersService employersService,
+            IJobOffersService jobOffersService,
+            IJobApplicationService jobApplicationService)
         {
             this.applicationUsersService = applicationUsersService;
             this.candidatesService = candidatesService;

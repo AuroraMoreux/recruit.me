@@ -30,7 +30,6 @@
         [MaxLength(80)]
         public string Address { get; set; }
 
-        // TODO: split it into a mini section, partial view possibly? or with a line
         [MaxLength(100)]
         [Display(Name = "Contact Person Names")]
         public string ContactPersonNames { get; set; }

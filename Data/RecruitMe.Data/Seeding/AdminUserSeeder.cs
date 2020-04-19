@@ -22,6 +22,8 @@
             await SeedUserAsync(userManager, configManager);
             await SeedRoleAsync(roleManager, GlobalConstants.AdministratorRoleName);
             await SeedUserToRoleAsync(dbContext, userManager, roleManager, configManager, GlobalConstants.AdministratorRoleName);
+            await SeedUserToRoleAsync(dbContext, userManager, roleManager, configManager, GlobalConstants.EmployerRoleName);
+            await SeedUserToRoleAsync(dbContext, userManager, roleManager, configManager, GlobalConstants.CandidateRoleName);
         }
 
         private static async Task SeedUserAsync(UserManager<ApplicationUser> userManager, IConfiguration configManager)

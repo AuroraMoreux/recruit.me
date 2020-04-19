@@ -25,7 +25,13 @@
         private readonly IEmailSender emailSender;
         private readonly IConfiguration configuration;
 
-        public JobApplicationService(IDeletableEntityRepository<JobApplication> jobApplicationRepository, IDeletableEntityRepository<JobApplicationDocument> jobApplicationDocumentsRepository, IDeletableEntityRepository<JobOffer> jobOfferRepository, IDeletableEntityRepository<JobApplicationStatus> applicationStatusRepository, IEmailSender emailSender, IConfiguration configuration)
+        public JobApplicationService(
+            IDeletableEntityRepository<JobApplication> jobApplicationRepository,
+            IDeletableEntityRepository<JobApplicationDocument> jobApplicationDocumentsRepository,
+            IDeletableEntityRepository<JobOffer> jobOfferRepository,
+            IDeletableEntityRepository<JobApplicationStatus> applicationStatusRepository,
+            IEmailSender emailSender,
+            IConfiguration configuration)
         {
             this.jobApplicationRepository = jobApplicationRepository;
             this.jobApplicationDocumentsRepository = jobApplicationDocumentsRepository;
@@ -47,8 +53,6 @@
 
             jobApplication.ApplicationStatusId = applicationStatusId;
             jobApplication.CreatedOn = DateTime.UtcNow;
-            await this.jobApplicationRepository.AddAsync(jobApplication);
-            await this.jobApplicationRepository.SaveChangesAsync();
 
             List<JobApplicationDocument> jobApplicationDocuments = new List<JobApplicationDocument>();
             foreach (string documentId in input.DocumentIds)
@@ -57,12 +61,22 @@
                 {
                     JobApplication = jobApplication,
                     DocumentId = documentId,
+                    CreatedOn = DateTime.UtcNow,
                 };
                 jobApplicationDocuments.Add(jobApplicationDocument);
             }
 
-            await this.jobApplicationDocumentsRepository.AddRangeAsync(jobApplicationDocuments);
-            await this.jobApplicationDocumentsRepository.SaveChangesAsync();
+            try
+            {
+                await this.jobApplicationRepository.AddAsync(jobApplication);
+                await this.jobApplicationRepository.SaveChangesAsync();
+                await this.jobApplicationDocumentsRepository.AddRangeAsync(jobApplicationDocuments);
+                await this.jobApplicationDocumentsRepository.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
             var jobOfferDetails = this.jobOfferRepository
                 .AllAsNoTracking()
@@ -100,14 +114,23 @@
                 .AllAsNoTracking()
                 .Any(jas => jas.Id == statusId);
 
-            if (statusExists)
+            if (!statusExists || jobApplication == null)
             {
-                jobApplication.ApplicationStatusId = statusId;
-                this.jobApplicationRepository.Update(jobApplication);
-                await this.jobApplicationRepository.SaveChangesAsync();
+                return -1;
             }
 
-            return jobApplication.ApplicationStatusId;
+            try
+            {
+                jobApplication.ApplicationStatusId = statusId;
+                jobApplication.ModifiedOn = DateTime.UtcNow;
+                this.jobApplicationRepository.Update(jobApplication);
+                await this.jobApplicationRepository.SaveChangesAsync();
+                return jobApplication.ApplicationStatusId;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
 
         public int GetCount()
@@ -119,13 +142,11 @@
 
         public T GetJobApplicationDetails<T>(string jobApplicationId)
         {
-            T applicationDetails = this.jobApplicationRepository
+            return this.jobApplicationRepository
                  .AllAsNoTracking()
                  .Where(ja => ja.Id == jobApplicationId)
                  .To<T>()
                  .FirstOrDefault();
-
-            return applicationDetails;
         }
 
         public int GetJobApplicationStatusId(string jobApplicationId)
@@ -139,13 +160,11 @@
 
         public string GetJobOfferIdForApplication(string jobApplicationId)
         {
-            string applicationJobOfferId = this.jobApplicationRepository
+            return this.jobApplicationRepository
                  .AllAsNoTracking()
                  .Where(ja => ja.Id == jobApplicationId)
                  .Select(ja => ja.JobOfferId)
                  .FirstOrDefault();
-
-            return applicationJobOfferId;
         }
 
         public int GetNewApplicationsCount()

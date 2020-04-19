@@ -19,7 +19,7 @@
 
         Task<string> Update(EditViewModel model, string employerId);
 
-        Task Delete(string jobOfferId);
+        Task<bool> Delete(string jobOfferId);
 
         int GetCount();
 

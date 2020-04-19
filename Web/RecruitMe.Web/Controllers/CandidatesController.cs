@@ -11,8 +11,10 @@
     using RecruitMe.Common;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Data;
+    using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.Candidates;
 
+    [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
     public class CandidatesController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -32,7 +34,7 @@
             this.allowedExtensions = this.fileExtensionsService.GetImageExtensions();
         }
 
-        [HttpGet]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             this.HttpContext.Session.SetString("UserRole", GlobalConstants.CandidateRoleName);
@@ -40,7 +42,6 @@
             return this.View();
         }
 
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public IActionResult CreateProfile()
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
@@ -57,9 +58,13 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public async Task<IActionResult> CreateProfile(CreateCandidateProfileInputModel input)
         {
+            if (this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name) != null)
+            {
+                return this.RedirectToAction(nameof(this.UpdateProfile));
+            }
+
             if (!this.ModelState.IsValid)
             {
                 input.ImageExtensions = this.allowedExtensions;
@@ -74,23 +79,21 @@
             }
 
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-
             input.ApplicationUserId = user.Id;
 
             string candidateId = await this.candidatesService.CreateProfileAsync(input);
 
-            if (candidateId != null)
+            if (candidateId == null)
             {
-                user.CandidateId = candidateId;
-                await this.userManager.UpdateAsync(user);
-                this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyCreated;
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction("Error", "Home");
             }
 
-            return this.View("Error");
+            user.CandidateId = candidateId;
+            await this.userManager.UpdateAsync(user);
+            this.TempData["Success"] = GlobalConstants.ProfileSuccessfullyCreated;
+            return this.RedirectToAction(nameof(this.Index));
         }
 
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public IActionResult UpdateProfile()
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
@@ -101,14 +104,24 @@
             }
 
             UpdateCandidateProfileViewModel details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(candidateId);
+            if (details == null)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
+
             details.ImageExtensions = this.allowedExtensions;
             return this.View(details);
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
         public async Task<IActionResult> UpdateProfile(UpdateCandidateProfileViewModel input)
         {
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            if (candidateId == null)
+            {
+                return this.RedirectToAction(nameof(this.CreateProfile));
+            }
+
             if (!this.ModelState.IsValid)
             {
                 input.ImageExtensions = this.allowedExtensions;
@@ -122,17 +135,15 @@
                 return this.View(input);
             }
 
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
-            input.ApplicationUserId = user.Id;
-            string candidateId = await this.candidatesService.UpdateProfileAsync(user.CandidateId, input);
+            string updateResult = await this.candidatesService.UpdateProfileAsync(candidateId, input);
 
-            if (candidateId != null)
+            if (updateResult == null)
             {
-                this.TempData["InfoMessage"] = GlobalConstants.ProfileSuccessfullyUpdated;
-                return this.RedirectToAction("Index");
+                return this.RedirectToAction("Error", "Home");
             }
 
-            return this.View("Error");
+            this.TempData["Success"] = GlobalConstants.ProfileSuccessfullyUpdated;
+            return this.RedirectToAction(nameof(this.Index));
         }
 
         // TODO: add skills and languages to the models

@@ -12,6 +12,7 @@
     using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.JobApplications;
 
+    [Authorize]
     public class JobApplicationsController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -33,7 +34,7 @@
             this.jobApplicationStatusesService = jobApplicationStatusesService;
         }
 
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
+        [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public IActionResult Apply(string jobOfferId)
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
@@ -45,6 +46,11 @@
             CandidateContactDetailsViewModel candidateDetails = this.candidatesService.GetProfileDetails<CandidateContactDetailsViewModel>(candidateId);
             IEnumerable<CandidateDocumentsDropDownViewModel> candidateDocumentDetails = this.documentsService.GetAllDocumentsForCandidate<CandidateDocumentsDropDownViewModel>(candidateId);
             JobApplicationJobOfferDetailsViewModel jobOfferDetails = this.jobOffersService.GetDetails<JobApplicationJobOfferDetailsViewModel>(jobOfferId);
+
+            if (candidateDetails == null || candidateDocumentDetails == null || jobOfferDetails == null)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
             ApplyViewModel viewModel = new ApplyViewModel
             {
@@ -59,7 +65,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.CandidateRoleName)]
+        [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Apply(ApplyViewModel input)
         {
             if (!this.ModelState.IsValid)
@@ -94,24 +100,38 @@
             }
         }
 
-        [Authorize]
         public IActionResult Details(string id)
         {
             string userId = this.userManager.GetUserId(this.User);
 
             bool isUserRelatedToApplication = this.jobApplicationService.IsUserRelatedToJobApplication(id, userId);
-            if (!isUserRelatedToApplication)
+            if (!isUserRelatedToApplication || !this.User.IsInRole(GlobalConstants.AdministratorRoleName))
             {
                 return this.Forbid();
             }
 
             DetailsViewModel jobApplicationDetails = this.jobApplicationService.GetJobApplicationDetails<DetailsViewModel>(id);
+
+            if (jobApplicationDetails == null)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
+
             jobApplicationDetails.JobApplicationStatusChangeList = this.jobApplicationStatusesService.GetAll<JobApplicationStatusDetailsView>();
             return this.View(jobApplicationDetails);
         }
 
+        [HttpPost]
         public async Task<IActionResult> StatusChange(int statusId, string jobApplicationId)
         {
+            string userId = this.userManager.GetUserId(this.User);
+
+            bool isUserRelatedToApplication = this.jobApplicationService.IsUserRelatedToJobApplication(jobApplicationId, userId);
+            if (!isUserRelatedToApplication || !this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+            {
+                return this.Forbid();
+            }
+
             int currentStatusId = this.jobApplicationService.GetJobApplicationStatusId(jobApplicationId);
 
             if (currentStatusId == statusId)
@@ -122,12 +142,13 @@
             {
                 int newStatus = await this.jobApplicationService.ChangeJobApplicationStatus(jobApplicationId, statusId);
 
-                if (newStatus == currentStatusId)
+                if (newStatus < 0)
                 {
-                    return this.View("Error");
+                    return this.RedirectToAction("Error", "Home");
                 }
             }
 
+            this.TempData["Success"] = GlobalConstants.JobApplicationStatusSuccessfullyChanged;
             return this.RedirectToAction(nameof(this.Details), new { id = jobApplicationId });
         }
     }

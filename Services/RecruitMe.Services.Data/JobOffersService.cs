@@ -17,7 +17,11 @@
         private readonly IDeletableEntityRepository<JobOfferSkill> jobOfferSkillsRepository;
         private readonly IDeletableEntityRepository<JobOfferJobType> jobOfferJobTypeRepository;
 
-        public JobOffersService(IDeletableEntityRepository<JobOffer> jobOffersRepository, IDeletableEntityRepository<JobOfferLanguage> jobOfferLanguagesRepository, IDeletableEntityRepository<JobOfferSkill> jobOfferSkillsRepository, IDeletableEntityRepository<JobOfferJobType> jobOfferJobTypeRepository)
+        public JobOffersService(
+            IDeletableEntityRepository<JobOffer> jobOffersRepository,
+            IDeletableEntityRepository<JobOfferLanguage> jobOfferLanguagesRepository,
+            IDeletableEntityRepository<JobOfferSkill> jobOfferSkillsRepository,
+            IDeletableEntityRepository<JobOfferJobType> jobOfferJobTypeRepository)
         {
             this.jobOffersRepository = jobOffersRepository;
             this.jobOfferLanguagesRepository = jobOfferLanguagesRepository;
@@ -30,7 +34,6 @@
             JobOffer offer = AutoMapperConfig.MapperInstance.Map<JobOffer>(model);
             offer.EmployerId = employerId;
             offer.CreatedOn = DateTime.UtcNow;
-            await this.jobOffersRepository.AddAsync(offer);
 
             List<JobOfferLanguage> jobOfferLanguages = new List<JobOfferLanguage>();
             foreach (int languageId in model.LanguagesIds)
@@ -39,11 +42,10 @@
                 {
                     JobOffer = offer,
                     LanguageId = languageId,
+                    CreatedOn = DateTime.UtcNow,
                 };
                 jobOfferLanguages.Add(jobOfferLanguage);
             }
-
-            await this.jobOfferLanguagesRepository.AddRangeAsync(jobOfferLanguages);
 
             List<JobOfferSkill> jobOfferSkills = new List<JobOfferSkill>();
             foreach (int skillId in model.SkillsIds)
@@ -52,11 +54,10 @@
                 {
                     JobOffer = offer,
                     SkillId = skillId,
+                    CreatedOn = DateTime.UtcNow,
                 };
                 jobOfferSkills.Add(jobOfferSkill);
             }
-
-            await this.jobOfferSkillsRepository.AddRangeAsync(jobOfferSkills);
 
             List<JobOfferJobType> jobTypes = new List<JobOfferJobType>();
             foreach (int jobTypeId in model.JobTypesIds)
@@ -65,17 +66,27 @@
                 {
                     JobOffer = offer,
                     JobTypeId = jobTypeId,
+                    CreatedOn = DateTime.UtcNow,
                 };
                 jobTypes.Add(jobOfferJobType);
             }
 
-            await this.jobOfferJobTypeRepository.AddRangeAsync(jobTypes);
-            await this.jobOffersRepository.SaveChangesAsync();
-            await this.jobOfferSkillsRepository.SaveChangesAsync();
-            await this.jobOfferLanguagesRepository.SaveChangesAsync();
-            await this.jobOfferJobTypeRepository.SaveChangesAsync();
-
-            return offer.Id;
+            try
+            {
+                await this.jobOffersRepository.AddAsync(offer);
+                await this.jobOfferSkillsRepository.AddRangeAsync(jobOfferSkills);
+                await this.jobOfferLanguagesRepository.AddRangeAsync(jobOfferLanguages);
+                await this.jobOfferJobTypeRepository.AddRangeAsync(jobTypes);
+                await this.jobOffersRepository.SaveChangesAsync();
+                await this.jobOfferSkillsRepository.SaveChangesAsync();
+                await this.jobOfferLanguagesRepository.SaveChangesAsync();
+                await this.jobOfferJobTypeRepository.SaveChangesAsync();
+                return offer.Id;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public async Task<IEnumerable<T>> GetAllValidFilteredOffers<T>(FilterModel filters)
@@ -191,13 +202,11 @@
 
         public T GetDetails<T>(string jobOfferId)
         {
-            T offer = this.jobOffersRepository
-                 .All()
+            return this.jobOffersRepository
+                 .AllAsNoTracking()
                  .Where(jo => jo.Id == jobOfferId)
                  .To<T>()
                  .FirstOrDefault();
-
-            return offer;
         }
 
         public bool IsTitleDuplicate(string employerId, string jobOfferTitle)
@@ -214,7 +223,6 @@
 
         public async Task<string> Update(EditViewModel model, string employerId)
         {
-            // TODO: Add CreatedOn on all entities in create methods
             JobOffer jobOffer = this.jobOffersRepository
                  .All()
                  .Where(jo => jo.Id == model.JobOfferDetails.Id)
@@ -247,6 +255,7 @@
                     {
                         SkillId = skillId,
                         JobOfferId = jobOffer.Id,
+                        CreatedOn = DateTime.UtcNow,
                     };
                     await this.jobOfferSkillsRepository.AddAsync(jobOfferSkill);
                 }
@@ -282,6 +291,7 @@
                     {
                         LanguageId = languageId,
                         JobOfferId = jobOffer.Id,
+                        CreatedOn = DateTime.UtcNow,
                     };
                     await this.jobOfferLanguagesRepository.AddAsync(jobOfferLanguage);
                 }
@@ -317,6 +327,7 @@
                     {
                         JobTypeId = jobTypeId,
                         JobOfferId = jobOffer.Id,
+                        CreatedOn = DateTime.UtcNow,
                     };
                     await this.jobOfferJobTypeRepository.AddAsync(jobOfferType);
                 }
@@ -337,24 +348,37 @@
                 }
             }
 
-            // TODO : Check all saveChanges are at the end to avoid data being saved when there is an exception + add try/catch
-            await this.jobOffersRepository.SaveChangesAsync();
-            await this.jobOfferSkillsRepository.SaveChangesAsync();
-            await this.jobOfferLanguagesRepository.SaveChangesAsync();
-            await this.jobOfferJobTypeRepository.SaveChangesAsync();
-
-            return jobOffer.Id;
+            try
+            {
+                await this.jobOffersRepository.SaveChangesAsync();
+                await this.jobOfferSkillsRepository.SaveChangesAsync();
+                await this.jobOfferLanguagesRepository.SaveChangesAsync();
+                await this.jobOfferJobTypeRepository.SaveChangesAsync();
+                return jobOffer.Id;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public async Task Delete(string jobOfferId)
+        public async Task<bool> Delete(string jobOfferId)
         {
             JobOffer jobOffer = this.jobOffersRepository
                 .All()
                 .Where(jo => jo.Id == jobOfferId)
                 .FirstOrDefault();
 
-            this.jobOffersRepository.Delete(jobOffer);
-            await this.jobOffersRepository.SaveChangesAsync();
+            try
+            {
+                this.jobOffersRepository.Delete(jobOffer);
+                await this.jobOffersRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public int GetCount()

@@ -7,6 +7,16 @@
 
 <h1>@ViewData["Title"]</h1>
 
+@if (this.TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
 <div class="table-responsive-sm">
     <table class="table table-hover">
         <thead>
@@ -19,7 +29,7 @@
                 <th scope="col">File Size</th>
                 <th scope="col">Uploaded On</th>
                 <th style="text-align:center">
-                    <a class=" btn btn-success" asp-controller="Documents" asp-action="Upload">Upload</a>
+                    <a class=" btn btn-success float-left" asp-controller="Documents" asp-action="Upload">Upload</a>
                 </th>
             </tr>
         </thead>
@@ -41,26 +51,34 @@
             }
         </tbody>
     </table>
-    @if (Model.PagesCount > 0)
-    {
-        <div class="text-center">
-            <ul class="pagination">
-                <li><a style="margin: 5px" href="~/Documents/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
-                @for (int i = 1; i <= Model.PagesCount; i++)
-                {
-                    if (i == Model.CurrentPage)
-                    {
-                        <li class="active"><a style="margin: 5px" href="~/Documents/All?page=@i">@i</a></li>
-                    }
-                    else
-                    {
-                        <li><a style="margin: 5px" href="~/Documents/All?page=@i">@i</a></li>
-                    }
-                }
-                <li><a style="margin: 5px" href="~/Documents/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
-            </ul>
-        </div>
-    }
+    <nav>
+        <ul class="pagination">
+            @if (this.Model.CurrentPage == 1)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+
+            @for (int i = 1; i <= Model.PagesCount; i++)
+            {
+                var active = i == this.Model.CurrentPage ? "active" : string.Empty;
+
+                <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@i">@i</a></li>
+            }
+
+            @if (this.Model.CurrentPage == this.Model.PagesCount)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+        </ul>
+    </nav>
 </div>
 
 @section Scripts{

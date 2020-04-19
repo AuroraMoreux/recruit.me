@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RecruitMe.Data.Models.EnumModels.JobApplicationStatus>
+﻿@model RecruitMe.Web.ViewModels.Administration.JobApplicationStatuses.AllStatusesViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -13,19 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
+                Deleted
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DeletedOn)
+                Deleted On
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedOn)
+                Created On
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ModifiedOn)
+                Modified On
             </th>
             <th>
                 Actions
@@ -33,29 +33,57 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Statuses)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @item.Name
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                    @(item.IsDeleted == true ? "Yes" : "No")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DeletedOn)
+                    @item.DeletedOn
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedOn)
+                    @item.CreatedOn
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ModifiedOn)
+                    @item.ModifiedOn
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id"class="btn btn-warning btn-sm">Edit</a> 
-                    <a asp-action="Delete" asp-route-id="@item.Id"class="btn btn-danger btn-sm">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<nav>
+    <ul class="pagination">
+        @if (this.Model.CurrentPage == 1)
+        {
+            <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-left"></icon></a></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" style="margin: 5px" href="~/Administration/JobApplicationStatuses/Index?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+        }
+
+        @for (int i = 1; i <= Model.PagesCount; i++)
+        {
+            var active = i == this.Model.CurrentPage ? "active" : string.Empty;
+
+            <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/Administration/JobApplicationStatuses/Index?page=@i">@i</a></li>
+        }
+
+        @if (this.Model.CurrentPage == this.Model.PagesCount)
+        {
+            <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" style="margin: 5px" href="~/Administration/JobApplicationStatuses/Index?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+        }
+    </ul>
+</nav>

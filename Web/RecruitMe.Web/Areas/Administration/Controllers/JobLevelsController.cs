@@ -5,31 +5,39 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using RecruitMe.Common;
-    using RecruitMe.Data;
-    using RecruitMe.Data.Models.EnumModels;
+    using RecruitMe.Services.Data;
+    using RecruitMe.Web.ViewModels.Administration.JobLevels;
 
     public class JobLevelsController : AdministrationController
     {
-        private readonly ApplicationDbContext context;
+        private const int ItemsPerPageCount = 8;
+        private readonly IJobLevelsService jobLevelsService;
 
-        public JobLevelsController(ApplicationDbContext context)
+        public JobLevelsController(IJobLevelsService jobLevelsService)
         {
-            this.context = context;
+            this.jobLevelsService = jobLevelsService;
         }
 
         // GET: Administration/JobLevels
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
         {
-            List<JobLevel> levels = await this.context
-                 .JobLevels
-                 .IgnoreQueryFilters()
-                 .ToListAsync();
+            IEnumerable<JobLevelViewModel> levels = this.jobLevelsService.GetAllWithDeleted<JobLevelViewModel>();
+            int pagesCount = (int)Math.Ceiling(levels.Count() / (decimal)perPage);
 
-            return this.View(levels);
+            List<JobLevelViewModel> paginatedLevels = levels
+               .Skip(perPage * (page - 1))
+               .Take(perPage)
+               .ToList();
+
+            AllJobLevelsViewModel viewModel = new AllJobLevelsViewModel
+            {
+                Levels = paginatedLevels,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+
+            return this.View(viewModel);
         }
 
         // GET: Administration/JobLevels/Create
@@ -41,129 +49,85 @@
         // POST: Administration/JobLevels/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] JobLevel jobLevel)
+        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] CreateViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(jobLevel);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (jobLevel.IsDeleted)
+            int result = await this.jobLevelsService.Create(input);
+
+            if (result < 0)
             {
-                jobLevel.DeletedOn = currentTime;
+                return this.RedirectToAction("Error", "Home");
             }
 
-            jobLevel.CreatedOn = currentTime;
-            this.context.Add(jobLevel);
-            await this.context.SaveChangesAsync();
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/JobLevels/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
+            EditViewModel level = this.jobLevelsService.GetDetails<EditViewModel>(id);
+            if (level == null)
             {
                 return this.NotFound();
             }
 
-            JobLevel jobLevel = await this.context
-                .JobLevels
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(jl => jl.Id == id);
-
-            if (jobLevel == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(jobLevel);
+            return this.View(level);
         }
 
         // POST: Administration/JobLevels/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] JobLevel jobLevel)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] EditViewModel input)
         {
-            if (id != jobLevel.Id)
+            if (id != input.Id)
             {
                 return this.NotFound();
             }
 
             if (!this.ModelState.IsValid)
             {
-                return this.View(jobLevel);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (jobLevel.IsDeleted)
-            {
-                jobLevel.DeletedOn = currentTime;
-            }
-            else if (!jobLevel.IsDeleted)
-            {
-                jobLevel.DeletedOn = null;
-            }
+            int result = await this.jobLevelsService.Update(input);
 
-            jobLevel.ModifiedOn = currentTime;
-            try
+            if (result < 0)
             {
-                this.context.Update(jobLevel);
-                await this.context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!this.JobLevelExists(jobLevel.Id))
-                {
-                    return this.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return this.RedirectToAction("Error", "Home");
             }
 
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/JobLevels/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
+            DeleteViewModel level = this.jobLevelsService.GetDetails<DeleteViewModel>(id);
+            if (level == null)
             {
                 return this.NotFound();
             }
 
-            JobLevel jobLevel = await this.context.JobLevels
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (jobLevel == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(jobLevel);
+            return this.View(level);
         }
 
         // POST: Administration/JobLevels/Delete/5
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            JobLevel jobLevel = await this.context.JobLevels.FindAsync(id);
-            jobLevel.DeletedOn = DateTime.UtcNow;
-            this.context.JobLevels.Remove(jobLevel);
-            await this.context.SaveChangesAsync();
-            return this.RedirectToAction(nameof(this.Index));
-        }
+            bool isDeleted = this.jobLevelsService.Delete(id);
+            if (!isDeleted)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
-        private bool JobLevelExists(int id)
-        {
-            return this.context
-               .DocumentCategories
-               .IgnoreQueryFilters()
-               .Any(e => e.Id == id);
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

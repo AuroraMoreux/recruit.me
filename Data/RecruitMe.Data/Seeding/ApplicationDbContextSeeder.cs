@@ -25,6 +25,7 @@
 
             List<ISeeder> seeders = new List<ISeeder>
             {
+                new RolesSeeder(),
                 new AdminUserSeeder(),
                 new DocumentCategoriesSeeder(),
                 new FileExtensionsSeeder(),
@@ -33,7 +34,6 @@
                 new JobSectorsSeeder(),
                 new JobTypesSeeder(),
                 new LanguagesSeeder(),
-                new RolesSeeder(),
                 new SkillsSeeder(),
             };
 

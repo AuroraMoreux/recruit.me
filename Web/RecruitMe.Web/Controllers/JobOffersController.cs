@@ -11,9 +11,11 @@
     using RecruitMe.Common;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Data;
+    using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.Employers;
     using RecruitMe.Web.ViewModels.JobOffers;
 
+    [Authorize]
     public class JobOffersController : BaseController
     {
         private const int OffersPerPageDefaultCount = 10;
@@ -59,7 +61,6 @@
             this.skills = this.skillsService.GetAll<SkillsDropDownCheckboxListViewModel>();
         }
 
-        [Authorize]
         public async Task<IActionResult> All([FromQuery]FilterModel filters, string dateSortOrder, int page = 1, int perPage = OffersPerPageDefaultCount)
         {
             if (!this.ModelState.IsValid)
@@ -69,6 +70,11 @@
 
             int totalJobOffersCount = this.jobOffersService.GetCount();
             IEnumerable<JobOffersViewModel> filteredJobOffers = await this.jobOffersService.GetAllValidFilteredOffers<JobOffersViewModel>(filters);
+
+            if (filteredJobOffers == null)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
             if (filteredJobOffers.Count() != totalJobOffersCount)
             {
@@ -104,7 +110,6 @@
             return this.View(viewModel);
         }
 
-        [Authorize]
         public IActionResult Search()
         {
             FilterModel filterModel = new FilterModel
@@ -119,14 +124,19 @@
             return this.View(filterModel);
         }
 
-        [Authorize]
         public IActionResult Details(string id)
         {
             JobOfferDetailsViewModel jobOfferDetails = this.jobOffersService.GetDetails<JobOfferDetailsViewModel>(id);
+
+            if (jobOfferDetails == null)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
+
             return this.View(jobOfferDetails);
         }
 
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
         public IActionResult Post()
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
@@ -147,7 +157,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Post(PostViewModel input)
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
@@ -177,14 +187,14 @@
 
             if (jobOfferId == null)
             {
-                return this.View("Error");
+                return this.RedirectToAction("Error", "Home");
             }
 
-            this.TempData["JobOfferPosted"] = GlobalConstants.JobOfferSuccessfullyPosted;
+            this.TempData["Success"] = GlobalConstants.JobOfferSuccessfullyPosted;
             return this.RedirectToAction(nameof(this.All));
         }
 
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
         public IActionResult Edit(string id)
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
@@ -200,6 +210,12 @@
             }
 
             EditJobOfferDetailsModel jobOffer = this.jobOffersService.GetDetails<EditJobOfferDetailsModel>(id);
+
+            if (jobOffer == null)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
+
             EditViewModel viewModel = new EditViewModel
             {
                 JobOfferDetails = jobOffer,
@@ -213,7 +229,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Edit(EditViewModel input)
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
@@ -242,16 +258,16 @@
 
             if (jobOfferId == null)
             {
-                return this.View("Error");
+                return this.RedirectToAction("Error", "Home");
             }
 
-            this.TempData["JobOfferUpdated"] = GlobalConstants.JobOfferSuccessfullyUpdated;
+            this.TempData["Success"] = GlobalConstants.JobOfferSuccessfullyUpdated;
 
             return this.RedirectToAction(nameof(this.All));
         }
 
         [HttpPost]
-        [Authorize(Roles = GlobalConstants.EmployerRoleName)]
+        [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Delete(string id)
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
@@ -266,9 +282,13 @@
                 return this.Forbid();
             }
 
-            await this.jobOffersService.Delete(id);
+            bool deleteResult = await this.jobOffersService.Delete(id);
+            if (deleteResult == false)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
-            this.TempData["JobOfferDeleted"] = GlobalConstants.JobOfferSuccessfullyUpdated;
+            this.TempData["Success"] = GlobalConstants.JobOfferSuccessfullyUpdated;
             return this.RedirectToAction(nameof(this.All));
         }
     }

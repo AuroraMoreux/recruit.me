@@ -5,31 +5,40 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using RecruitMe.Common;
-    using RecruitMe.Data;
-    using RecruitMe.Data.Models.EnumModels;
+    using RecruitMe.Services.Data;
+    using RecruitMe.Web.ViewModels.Administration.DocumentCategories;
 
     public class DocumentCategoriesController : AdministrationController
     {
-        private readonly ApplicationDbContext context;
+        private const int ItemsPerPageCount = 8;
+        private readonly IDocumentCategoriesService documentCategoriesService;
 
-        public DocumentCategoriesController(ApplicationDbContext context)
+        public DocumentCategoriesController(IDocumentCategoriesService documentCategoriesService)
         {
-            this.context = context;
+            this.documentCategoriesService = documentCategoriesService;
         }
 
         // GET: Administration/DocumentCategories
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int page = 1, int perPage = ItemsPerPageCount)
         {
-            List<DocumentCategory> categories = await this.context
-                .DocumentCategories
-                .IgnoreQueryFilters()
-                .ToListAsync();
+            IEnumerable<DocumentCategoriesViewModel> categories = this.documentCategoriesService.GetAllWithDeleted<DocumentCategoriesViewModel>();
 
-            return this.View(categories);
+            int pagesCount = (int)Math.Ceiling(categories.Count() / (decimal)perPage);
+
+            var paginatedCategories = categories
+               .Skip(perPage * (page - 1))
+               .Take(perPage)
+               .ToList();
+
+            AllDocumentCategoriesViewModel viewModel = new AllDocumentCategoriesViewModel
+            {
+                DocumentCategories = paginatedCategories,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+
+            return this.View(viewModel);
         }
 
         // GET: Administration/DocumentCategories/Create
@@ -41,129 +50,85 @@
         // POST: Administration/DocumentCategories/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] DocumentCategory documentCategory)
+        public async Task<IActionResult> Create([Bind("Name,IsDeleted")] CreateViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
-                return this.View(documentCategory);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (documentCategory.IsDeleted)
+            int result = await this.documentCategoriesService.Create(input);
+
+            if (result < 0)
             {
-                documentCategory.DeletedOn = currentTime;
+                return this.RedirectToAction("Error", "Home");
             }
 
-            documentCategory.CreatedOn = currentTime;
-            this.context.Add(documentCategory);
-            await this.context.SaveChangesAsync();
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/DocumentCategories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null)
+            EditViewModel category = this.documentCategoriesService.GetDetails<EditViewModel>(id);
+            if (category == null)
             {
                 return this.NotFound();
             }
 
-            DocumentCategory documentCategory = await this.context
-                .DocumentCategories
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(dc => dc.Id == id);
-
-            if (documentCategory == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(documentCategory);
+            return this.View(category);
         }
 
         // POST: Administration/DocumentCategories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] DocumentCategory documentCategory)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,IsDeleted,Id")] EditViewModel input)
         {
-            if (id != documentCategory.Id)
+            if (id != input.Id)
             {
                 return this.NotFound();
             }
 
             if (!this.ModelState.IsValid)
             {
-                return this.View(documentCategory);
+                return this.View(input);
             }
 
-            DateTime currentTime = DateTime.UtcNow;
-            if (documentCategory.IsDeleted)
-            {
-                documentCategory.DeletedOn = currentTime;
-            }
-            else if (!documentCategory.IsDeleted)
-            {
-                documentCategory.DeletedOn = null;
-            }
+            int result = await this.documentCategoriesService.Update(input);
 
-            documentCategory.ModifiedOn = currentTime;
-            try
+            if (result < 0)
             {
-                this.context.Update(documentCategory);
-                await this.context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!this.DocumentCategoryExists(documentCategory.Id))
-                {
-                    return this.NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return this.RedirectToAction("Error", "Home");
             }
 
             return this.RedirectToAction(nameof(this.Index));
         }
 
         // GET: Administration/DocumentCategories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null)
+            DeleteViewModel category = this.documentCategoriesService.GetDetails<DeleteViewModel>(id);
+            if (category == null)
             {
                 return this.NotFound();
             }
 
-            DocumentCategory documentCategory = await this.context.DocumentCategories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (documentCategory == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(documentCategory);
+            return this.View(category);
         }
 
         // POST: Administration/DocumentCategories/Delete/5
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            DocumentCategory documentCategory = await this.context.DocumentCategories.FindAsync(id);
-            documentCategory.DeletedOn = DateTime.UtcNow;
-            this.context.DocumentCategories.Remove(documentCategory);
-            await this.context.SaveChangesAsync();
-            return this.RedirectToAction(nameof(this.Index));
-        }
+            bool isDeleted = this.documentCategoriesService.Delete(id);
+            if (!isDeleted)
+            {
+                return this.RedirectToAction("Error", "Home");
+            }
 
-        private bool DocumentCategoryExists(int id)
-        {
-            return this.context
-                .DocumentCategories
-                .IgnoreQueryFilters()
-                .Any(e => e.Id == id);
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

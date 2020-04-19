@@ -1,11 +1,13 @@
 ﻿namespace RecruitMe.Services.Data
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Threading.Tasks;
     using RecruitMe.Data.Common.Repositories;
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
+    using RecruitMe.Web.ViewModels.Administration.Skills;
 
     public class SkillsService : ISkillsService
     {
@@ -16,15 +18,110 @@
             this.skillsRepository = skillsRepository;
         }
 
+        public async Task<int> Create(CreateViewModel input)
+        {
+            Skill skill = AutoMapperConfig.MapperInstance.Map<Skill>(input);
+
+            if (skill.IsDeleted)
+            {
+                skill.DeletedOn = DateTime.UtcNow;
+            }
+
+            skill.CreatedOn = DateTime.UtcNow;
+            try
+            {
+                await this.skillsRepository.AddAsync(skill);
+                await this.skillsRepository.SaveChangesAsync();
+                return skill.Id;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        public bool Delete(int id)
+        {
+            Skill skill = this.skillsRepository
+                 .All()
+                 .Where(s => s.Id == id)
+                 .FirstOrDefault();
+
+            if (skill == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                this.skillsRepository.Delete(skill);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public IEnumerable<T> GetAll<T>()
         {
             var skills = this.skillsRepository
-                 .All()
+                 .AllAsNoTracking()
                  .OrderBy(s => s.Name)
                  .To<T>()
                  .ToList();
 
             return skills;
+        }
+
+        public IEnumerable<T> GetAllWithDeleted<T>()
+        {
+            return this.skillsRepository
+                 .AllAsNoTrackingWithDeleted()
+                 .OrderBy(s => s.Name)
+                 .To<T>()
+                 .ToList();
+        }
+
+        public T GetDetails<T>(int id)
+        {
+            return this.skillsRepository
+                 .AllAsNoTrackingWithDeleted()
+                 .Where(s => s.Id == id)
+                 .To<T>()
+                 .FirstOrDefault();
+        }
+
+        public async Task<int> Update(EditViewModel input)
+        {
+            Skill skill = this.skillsRepository
+                 .AllWithDeleted()
+                 .Where(c => c.Id == input.Id)
+                 .FirstOrDefault();
+
+            if (skill == null)
+            {
+                return -1;
+            }
+
+            skill.Name = input.Name;
+            skill.IsDeleted = input.IsDeleted;
+            skill.ModifiedOn = DateTime.UtcNow;
+            if (skill.IsDeleted)
+            {
+                skill.DeletedOn = DateTime.UtcNow;
+            }
+
+            try
+            {
+                this.skillsRepository.Update(skill);
+                await this.skillsRepository.SaveChangesAsync();
+                return skill.Id;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
     }
 }
