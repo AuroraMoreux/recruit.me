@@ -82,5 +82,9 @@
         public const string NewJobApplicationReceivedCandidatePhoneNumber = "<br /><strong>Phone Number:</strong> {0}";
 
         public const string NewJobApplicationReceivedClosing = "<br /> You can review the application details <a href='{0}'>here</a>";
+
+        public const string PasswordChanged = "Your are receiving this email because your password has been successfully reset. If the password change was not requested by you, please contact us at {0} for assistance.";
+
+        public const string EmailAddressChanged = "You are receiving this email because there has been a request to update the email address for your account. Please confirm your new email address by <a href='{0}'>clicking here</a>.";
     }
 }

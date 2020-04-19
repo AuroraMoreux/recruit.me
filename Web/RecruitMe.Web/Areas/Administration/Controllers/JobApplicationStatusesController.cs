@@ -25,7 +25,7 @@
             IEnumerable<JobApplicationStatusViewModel> statuses = this.jobApplicationStatusesService.GetAllWithDeleted<JobApplicationStatusViewModel>();
             int pagesCount = (int)Math.Ceiling(statuses.Count() / (decimal)perPage);
 
-            var paginatedStatuses = statuses
+            List<JobApplicationStatusViewModel> paginatedStatuses = statuses
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();

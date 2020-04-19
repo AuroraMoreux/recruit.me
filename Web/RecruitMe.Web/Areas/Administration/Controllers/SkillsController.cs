@@ -26,7 +26,7 @@
 
             int pagesCount = (int)Math.Ceiling(skills.Count() / (decimal)perPage);
 
-            var paginatedSkills = skills
+            List<SkillsViewModel> paginatedSkills = skills
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();

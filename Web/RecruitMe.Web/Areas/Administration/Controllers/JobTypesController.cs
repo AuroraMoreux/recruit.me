@@ -25,7 +25,7 @@
             IEnumerable<JobTypesViewModel> types = this.jobTypesService.GetAllWithDeleted<JobTypesViewModel>();
             int pagesCount = (int)Math.Ceiling(types.Count() / (decimal)perPage);
 
-            var paginatedTypes = types
+            List<JobTypesViewModel> paginatedTypes = types
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();

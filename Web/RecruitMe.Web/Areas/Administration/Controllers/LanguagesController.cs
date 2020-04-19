@@ -25,7 +25,7 @@
             IEnumerable<LanguagesViewModel> languages = this.languagesService.GetAllWithDeleted<LanguagesViewModel>();
             int pagesCount = (int)Math.Ceiling(languages.Count() / (decimal)perPage);
 
-            var paginatedaLanguages = languages
+            List<LanguagesViewModel> paginatedaLanguages = languages
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
@@ -119,7 +119,7 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public  IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
             bool isDeleted = this.languagesService.Delete(id);
             if (!isDeleted)

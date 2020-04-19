@@ -2,28 +2,38 @@
 namespace RecruitMe.Web.Areas.Identity.Pages.Account.Manage
 {
     using System.ComponentModel.DataAnnotations;
+    using System.Text.Encodings.Web;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using RecruitMe.Common;
     using RecruitMe.Data.Models;
+    using RecruitMe.Services.Messaging;
 
     public class ChangePasswordModel : PageModel
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly ILogger<ChangePasswordModel> logger;
+        private readonly IConfiguration configuration;
+        private readonly IEmailSender emailSender;
 
         public ChangePasswordModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<ChangePasswordModel> logger)
+            ILogger<ChangePasswordModel> logger,
+            IConfiguration configuration,
+            IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.logger = logger;
+            this.configuration = configuration;
+            this.emailSender = emailSender;
         }
 
         [BindProperty]
@@ -91,6 +101,10 @@ namespace RecruitMe.Web.Areas.Identity.Pages.Account.Manage
 
                 return this.Page();
             }
+
+            string userEmail = await this.userManager.GetEmailAsync(user);
+            string htmlMessage = string.Format(GlobalConstants.PasswordChanged, this.configuration["DefaultAdminCredentials:Username"]);
+            await this.emailSender.SendEmailAsync(this.configuration["DefaultAdminCredentials:Email"], this.configuration["DefaultAdminCredentials:Username"], userEmail, "Your password has been reset", htmlMessage);
 
             await this.signInManager.RefreshSignInAsync(user);
             this.logger.LogInformation("User changed their password successfully.");

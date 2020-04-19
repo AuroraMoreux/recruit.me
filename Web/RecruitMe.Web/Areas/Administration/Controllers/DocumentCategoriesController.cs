@@ -26,7 +26,7 @@
 
             int pagesCount = (int)Math.Ceiling(categories.Count() / (decimal)perPage);
 
-            var paginatedCategories = categories
+            List<DocumentCategoriesViewModel> paginatedCategories = categories
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
