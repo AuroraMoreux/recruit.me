@@ -1,14 +1,15 @@
 ﻿@model RecruitMe.Web.ViewModels.JobOffers.JobOfferDetailsViewModel
 @using RecruitMe.Common
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = Model.Position;
     var officeAddress = Model.OfficeAddress != null ? ", " + Model.OfficeAddress : string.Empty;
     var jobTypes = string.Join("; ", Model.JobTypes);
     var languages = string.Join("; ", Model.Languages);
     var skills = string.Join("; ", Model.Skills);
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 style="display:inline-block">@ViewData["Title"]</h1>
+<a class="btn btn-warning float-right" asp-controller="JobOffers" asp-action="All">Back to List</a>
 
 @if (this.TempData["AlreadyAppliedMessage"] != null)
 {
@@ -50,9 +51,9 @@
         <p class="card-text">@Html.Raw(Model.Description)</p>
         @if (this.User.IsInRole(GlobalConstants.CandidateRoleName))
         {
-        <div class="text-center">
-            <a class="btn btn-success align-center" asp-controller="JobApplications" asp-action="Apply" asp-route-jobOfferId="@Model.Id">Apply</a>
-        </div>
+            <div class="text-center">
+                <a class="btn btn-success align-center" asp-controller="JobApplications" asp-action="Apply" asp-route-jobOfferId="@Model.Id">Apply</a>
+            </div>
         }
 
     </div>

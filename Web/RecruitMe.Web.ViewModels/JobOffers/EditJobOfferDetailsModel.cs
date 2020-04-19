@@ -19,7 +19,7 @@
 
         [Required]
         [MaxLength(150)]
-        public string Title { get; set; }
+        public string Position { get; set; }
 
         [Required]
         public string Description { get; set; }

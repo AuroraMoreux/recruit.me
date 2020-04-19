@@ -15,7 +15,7 @@
 
         bool IsOfferPostedByEmployer(string jobOfferId, string employerId);
 
-        bool IsTitleDuplicate(string employerId, string jobOfferTitle);
+        bool IsPositionDuplicate(string employerId, string jobOfferPosition);
 
         Task<string> Update(EditViewModel model, string employerId);
 
@@ -24,5 +24,9 @@
         int GetCount();
 
         int GetNewOffersCount();
+
+        IEnumerable<T> GetEmployerJobOffers<T>(string employerId);
+
+        string GetOfferPositionById(string jobOfferId);
     }
 }

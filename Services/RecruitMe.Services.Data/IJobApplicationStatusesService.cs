@@ -1,8 +1,9 @@
 ﻿namespace RecruitMe.Services.Data
 {
-    using RecruitMe.Web.ViewModels.Administration.JobApplicationStatuses;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
+    using RecruitMe.Web.ViewModels.Administration.JobApplicationStatuses;
 
     public interface IJobApplicationStatusesService
     {

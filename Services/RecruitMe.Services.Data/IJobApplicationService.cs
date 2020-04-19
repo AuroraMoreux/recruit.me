@@ -1,12 +1,13 @@
 ﻿namespace RecruitMe.Services.Data
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using RecruitMe.Web.ViewModels.JobApplications;
 
     public interface IJobApplicationService
     {
-        Task<string> Apply(ApplyViewModel input, string jobOfferBaseUrl);
+        Task<string> Apply(ApplyViewModel input, string jobApplicationBaseUrl);
 
         bool IsUserRelatedToJobApplication(string jobApplicationId, string userId);
 
@@ -18,10 +19,14 @@
 
         int GetJobApplicationStatusId(string jobApplicationId);
 
-        Task<int> ChangeJobApplicationStatus(string jobApplicationId, int statusId);
+        Task<int> ChangeJobApplicationStatus(string jobApplicationId, int statusId, string jobApplicationBaseUrl);
 
         int GetCount();
 
         int GetNewApplicationsCount();
+
+        IEnumerable<T> GetCandidateApplications<T>(string candidateId);
+
+        IEnumerable<T> GetApplicationsForOffer<T>(string offerId);
     }
 }

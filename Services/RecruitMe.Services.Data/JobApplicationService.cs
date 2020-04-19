@@ -18,7 +18,7 @@
 
     public class JobApplicationService : IJobApplicationService
     {
-        private readonly IDeletableEntityRepository<JobApplication> jobApplicationRepository;
+        private readonly IDeletableEntityRepository<JobApplication> jobApplicationsRepository;
         private readonly IDeletableEntityRepository<JobApplicationDocument> jobApplicationDocumentsRepository;
         private readonly IDeletableEntityRepository<JobOffer> jobOfferRepository;
         private readonly IDeletableEntityRepository<JobApplicationStatus> applicationStatusRepository;
@@ -33,7 +33,7 @@
             IEmailSender emailSender,
             IConfiguration configuration)
         {
-            this.jobApplicationRepository = jobApplicationRepository;
+            this.jobApplicationsRepository = jobApplicationRepository;
             this.jobApplicationDocumentsRepository = jobApplicationDocumentsRepository;
             this.jobOfferRepository = jobOfferRepository;
             this.applicationStatusRepository = applicationStatusRepository;
@@ -41,7 +41,7 @@
             this.configuration = configuration;
         }
 
-        public async Task<string> Apply(ApplyViewModel input, string jobOfferBaseUrl)
+        public async Task<string> Apply(ApplyViewModel input, string jobApplicationBaseUrl)
         {
             JobApplication jobApplication = AutoMapperConfig.MapperInstance.Map<JobApplication>(input);
 
@@ -68,8 +68,8 @@
 
             try
             {
-                await this.jobApplicationRepository.AddAsync(jobApplication);
-                await this.jobApplicationRepository.SaveChangesAsync();
+                await this.jobApplicationsRepository.AddAsync(jobApplication);
+                await this.jobApplicationsRepository.SaveChangesAsync();
                 await this.jobApplicationDocumentsRepository.AddRangeAsync(jobApplicationDocuments);
                 await this.jobApplicationDocumentsRepository.SaveChangesAsync();
             }
@@ -83,29 +83,30 @@
                 .Where(jo => jo.Id == input.JobOfferId)
                 .Select(jo => new
                 {
-                    jo.Title,
+                    jo.Position,
                     jo.Employer.ContactPersonEmail,
+                    EmployerAccountEmail = jo.Employer.ApplicationUser.Email,
                     jo.Employer.ContactPersonNames,
                 })
                 .FirstOrDefault();
 
             StringBuilder sb = new StringBuilder();
-            sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedOpening, jobOfferDetails.ContactPersonNames, jobOfferDetails.Title, input.CandidateDetails.FirstName + " " + input.CandidateDetails.LastName, input.CandidateDetails.ApplicationUserEmail));
+            sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedOpening, jobOfferDetails.ContactPersonNames, jobOfferDetails.Position, input.CandidateDetails.FirstName + " " + input.CandidateDetails.LastName, input.CandidateDetails.ApplicationUserEmail));
             if (input.CandidateDetails.PhoneNumber != null)
             {
                 sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedCandidatePhoneNumber, input.CandidateDetails.PhoneNumber));
             }
 
-            sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedClosing, HtmlEncoder.Default.Encode(jobOfferBaseUrl + jobApplication.Id)));
+            sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedClosing, HtmlEncoder.Default.Encode(jobApplicationBaseUrl + jobApplication.Id)));
 
-            await this.emailSender.SendEmailAsync(this.configuration["DefaultAdminCredentials:Email"], this.configuration["DefaultAdminCredentials:Username"], jobOfferDetails.ContactPersonEmail, $"New Job Application received for Job Offer {jobOfferDetails.Title}", sb.ToString());
+            await this.emailSender.SendEmailAsync(this.configuration["DefaultAdminCredentials:Email"], this.configuration["DefaultAdminCredentials:Username"], jobOfferDetails.ContactPersonEmail, $"New Job Application received for Job Offer {jobOfferDetails.Position}", sb.ToString(), null, jobOfferDetails.EmployerAccountEmail);
 
             return jobApplication.Id;
         }
 
-        public async Task<int> ChangeJobApplicationStatus(string jobApplicationId, int statusId)
+        public async Task<int> ChangeJobApplicationStatus(string jobApplicationId, int statusId, string jobApplicationBaseUrl)
         {
-            JobApplication jobApplication = this.jobApplicationRepository
+            JobApplication jobApplication = this.jobApplicationsRepository
                 .All()
                 .Where(ja => ja.Id == jobApplicationId)
                 .FirstOrDefault();
@@ -123,26 +124,61 @@
             {
                 jobApplication.ApplicationStatusId = statusId;
                 jobApplication.ModifiedOn = DateTime.UtcNow;
-                this.jobApplicationRepository.Update(jobApplication);
-                await this.jobApplicationRepository.SaveChangesAsync();
-                return jobApplication.ApplicationStatusId;
+                this.jobApplicationsRepository.Update(jobApplication);
+                await this.jobApplicationsRepository.SaveChangesAsync();
             }
             catch (Exception)
             {
                 return -1;
             }
+
+            var applicationDetails = this.jobApplicationsRepository
+                .AllAsNoTracking()
+                .Where(ja => ja.Id == jobApplicationId)
+                .Select(ja => new
+                {
+                    JobOfferPosition= ja.JobOffer.Position,
+                    JobApplicationStatus = ja.ApplicationStatus.Name,
+                    ja.Candidate.ApplicationUser.Email,
+                })
+                .FirstOrDefault();
+
+            string htmlMessage = string.Format(GlobalConstants.JobApplicationStatusChanged, applicationDetails.JobOfferPosition, applicationDetails.JobApplicationStatus, HtmlEncoder.Default.Encode(jobApplicationBaseUrl + jobApplicationId));
+            await this.emailSender.SendEmailAsync(this.configuration["DefaultAdminCredentials:Email"], this.configuration["DefaultAdminCredentials:Username"], applicationDetails.Email, $"Your Job Application Status was Updated", htmlMessage);
+
+            return jobApplication.ApplicationStatusId;
+        }
+
+        public IEnumerable<T> GetApplicationsForOffer<T>(string offerId)
+        {
+            return this.jobApplicationsRepository
+                 .AllAsNoTracking()
+                 .Where(ja => ja.JobOfferId == offerId)
+                 .OrderBy(ja => ja.CreatedOn)
+                 .To<T>()
+                 .ToList();
+        }
+
+        public IEnumerable<T> GetCandidateApplications<T>(string candidateId)
+        {
+            return this.jobApplicationsRepository
+                 .AllAsNoTracking()
+                 .Where(ja => ja.CandidateId == candidateId)
+                 .OrderByDescending(ja => ja.CreatedOn)
+                 .To<T>()
+                 .ToList();
         }
 
         public int GetCount()
         {
-            return this.jobApplicationRepository
+            return this.jobApplicationsRepository
                  .AllAsNoTracking()
                  .Count();
         }
 
         public T GetJobApplicationDetails<T>(string jobApplicationId)
         {
-            return this.jobApplicationRepository
+            return this.jobApplicationsRepository
                  .AllAsNoTracking()
                  .Where(ja => ja.Id == jobApplicationId)
                  .To<T>()
@@ -151,7 +187,7 @@
 
         public int GetJobApplicationStatusId(string jobApplicationId)
         {
-            return this.jobApplicationRepository
+            return this.jobApplicationsRepository
                  .AllAsNoTracking()
                  .Where(ja => ja.Id == jobApplicationId)
                  .Select(ja => ja.ApplicationStatusId)
@@ -160,7 +196,7 @@
 
         public string GetJobOfferIdForApplication(string jobApplicationId)
         {
-            return this.jobApplicationRepository
+            return this.jobApplicationsRepository
                  .AllAsNoTracking()
                  .Where(ja => ja.Id == jobApplicationId)
                  .Select(ja => ja.JobOfferId)
@@ -170,7 +206,7 @@
         public int GetNewApplicationsCount()
         {
             DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
-            return this.jobApplicationRepository
+            return this.jobApplicationsRepository
                 .AllAsNoTracking()
                 .Where(ja => ja.CreatedOn >= yesterdaysDate)
                 .Count();
@@ -178,7 +214,7 @@
 
         public bool HasCandidateAppliedForOffer(string candidateId, string jobOfferId)
         {
-            return this.jobApplicationRepository
+            return this.jobApplicationsRepository
                  .AllAsNoTracking()
                  .Any(ja => ja.CandidateId == candidateId
                    && ja.JobOfferId == jobOfferId);
@@ -186,7 +222,7 @@
 
         public bool IsUserRelatedToJobApplication(string jobApplicationId, string userId)
         {
-            return this.jobApplicationRepository
+            return this.jobApplicationsRepository
                  .AllAsNoTracking()
                  .Any(ja => ja.Id == jobApplicationId
                   && (ja.Candidate.ApplicationUserId == userId

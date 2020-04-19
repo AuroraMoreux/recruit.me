@@ -6,13 +6,13 @@
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
-    public class EditViewModel: IMapFrom<JobApplicationStatus>, IMapTo<JobApplicationStatus>
+    public class EditViewModel : IMapFrom<JobApplicationStatus>, IMapTo<JobApplicationStatus>
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        [Display(Name= "Deleted")]
+        [Display(Name = "Deleted")]
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedOn { get; set; }

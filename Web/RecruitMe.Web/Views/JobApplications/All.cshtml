@@ -1,0 +1,63 @@
+﻿@model RecruitMe.Web.ViewModels.JobApplications.AllViewModel
+@{
+    ViewData["Title"] = "My Job Applications";
+    var applications = Model.JobApplications.ToList();
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="table-responsive-sm">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">
+                    #
+                </th>
+                <th scope="col">Position</th>
+                <th scope="col">Applied On</th>
+                <th scope="col">Application Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < applications.Count; i++)
+            {             
+                <tr>
+                    <td>@(i+1)</td>
+                    <td>@applications[i].JobOfferPosition</td>
+                    <td>@applications[i].ApplicationDate.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@applications[i].ApplicationStatusName</td>
+                    <td>  <a class=" btn btn-primary float-left" asp-controller="JobApplications" asp-action="Details" asp-route-id="@applications[i].Id">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination">
+            @if (this.Model.CurrentPage == 1)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/JobApplications/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+
+            @for (int i = 1; i <= Model.PagesCount; i++)
+            {
+                var active = i == this.Model.CurrentPage ? "active" : string.Empty;
+
+                <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/JobApplications/All?page=@i">@i</a></li>
+            }
+
+            @if (this.Model.CurrentPage == this.Model.PagesCount)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/JobApplications/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+        </ul>
+    </nav>
+</div>

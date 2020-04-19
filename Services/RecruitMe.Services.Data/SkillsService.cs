@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     using RecruitMe.Data.Common.Repositories;
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
@@ -65,7 +66,7 @@
 
         public IEnumerable<T> GetAll<T>()
         {
-            var skills = this.skillsRepository
+            List<T> skills = this.skillsRepository
                  .AllAsNoTracking()
                  .OrderBy(s => s.Name)
                  .To<T>()

@@ -1,0 +1,68 @@
+﻿@model RecruitMe.Web.ViewModels.JobOffers.AllEmployerOffersViewModel
+@{
+    ViewData["Title"] = "My Job Offers";
+    var offers = Model.Offers.ToList();
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="table-responsive-sm">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Position</th>
+                <th scope="col">Valid From</th>
+                <th scope="col">Valid From</th>
+                <th scope="col">Job Level</th>
+                <th scope="col">Applications
+                Count</th>
+                <th><a class="btn btn-success" asp-controller="JobOffers" asp-action="Post">Post New Offer</a></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < offers.Count; i++)
+            {
+                <tr>
+                    <td>@offers[i].Position</td>
+                    <td>@offers[i].ValidFrom.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@offers[i].ValidUntil.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@offers[i].JobLevelName</td>
+                    <td>@offers[i].JobApplicationsCount</td>
+                    <td>
+                        <a class=" btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@offers[i].Id">Details</a>
+                        <a class=" btn btn-info btn-sm" asp-controller="JobApplications" asp-action="ByOffer" asp-route-jobOfferId="@offers[i].Id">View Applications</a>
+                        <a class=" btn btn-danger btn-sm" asp-controller="JobOffers" asp-action="Delete" asp-route-id="@offers[i].Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination">
+            @if (this.Model.CurrentPage == 1)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/JobOffers/MyOffers?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+
+            @for (int i = 1; i <= Model.PagesCount; i++)
+            {
+                var active = i == this.Model.CurrentPage ? "active" : string.Empty;
+
+                <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/JobOffers/MyOffers?page=@i">@i</a></li>
+            }
+
+            @if (this.Model.CurrentPage == this.Model.PagesCount)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/JobOffers/MyOffers?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+        </ul>
+    </nav>
+</div>

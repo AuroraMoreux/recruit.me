@@ -8,6 +8,6 @@
     public class JobApplicationJobOfferDetailsViewModel : IMapFrom<JobOffer>
     {
         [Required]
-        public string Title { get; set; }
+        public string Position { get; set; }
     }
 }

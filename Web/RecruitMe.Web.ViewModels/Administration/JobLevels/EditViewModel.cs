@@ -6,7 +6,7 @@
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
-  public  class EditViewModel : IMapFrom<JobLevel>, IMapTo<JobLevel>
+    public class EditViewModel : IMapFrom<JobLevel>, IMapTo<JobLevel>
     {
         public int Id { get; set; }
 

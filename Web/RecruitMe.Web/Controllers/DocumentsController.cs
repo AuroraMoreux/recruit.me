@@ -62,7 +62,7 @@
                 .Take(perPage)
                 .ToList();
 
-            UserDocumentsViewModel viewModel = new UserDocumentsViewModel
+            CandidateDocumentsViewModel viewModel = new CandidateDocumentsViewModel
             {
                 Documents = paginatedDocuments,
                 CurrentPage = page,

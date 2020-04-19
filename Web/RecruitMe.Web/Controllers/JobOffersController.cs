@@ -164,8 +164,8 @@
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            bool isOfferTitleDuplicate = this.jobOffersService.IsTitleDuplicate(employerId, input.Title);
-            if (isOfferTitleDuplicate)
+            bool isOfferPositionDuplicate = this.jobOffersService.IsPositionDuplicate(employerId, input.Position);
+            if (isOfferPositionDuplicate)
             {
                 this.ModelState.AddModelError(string.Empty, GlobalConstants.JobOfferWithSameNameAlreadyExists);
             }
@@ -262,6 +262,33 @@
             this.TempData["Success"] = GlobalConstants.JobOfferSuccessfullyUpdated;
 
             return this.RedirectToAction(nameof(this.All));
+        }
+
+        [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
+        public IActionResult MyOffers(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
+        {
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Employers");
+            }
+
+            IEnumerable<EmployerJobOffersViewModel> employerOffers = this.jobOffersService.GetEmployerJobOffers<EmployerJobOffersViewModel>(employerId);
+            int pagesCount = (int)Math.Ceiling(employerOffers.Count() / (decimal)perPage);
+
+            IEnumerable<EmployerJobOffersViewModel> paginatedOffers = employerOffers
+                .Skip(perPage * (page - 1))
+                .Take(perPage)
+                .ToList();
+
+            AllEmployerOffersViewModel viewModel = new AllEmployerOffersViewModel
+            {
+                Offers = paginatedOffers,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+
+            return this.View(viewModel);
         }
 
         [HttpPost]

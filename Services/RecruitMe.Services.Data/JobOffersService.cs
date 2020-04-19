@@ -105,12 +105,12 @@
                string keywords = filters.Keywords != null ? filters.Keywords.ToLower() : string.Empty;
                string employerName = filters.Employer != null ? filters.Employer.ToLower() : string.Empty;
                string city = filters.City != null ? filters.City.ToLower() : string.Empty;
-               baseQuery = baseQuery
 
-                   .Where(jo => (jo.Title.ToLower().Contains(keywords)
-                       || jo.Description.ToLower().Contains(keywords))
-                       && jo.Employer.Name.ToLower().Contains(employerName)
-                       && jo.City.ToLower().Contains(city));
+               baseQuery = baseQuery
+               .Where(jo => (jo.Position.ToLower().Contains(keywords)
+                   || jo.Description.ToLower().Contains(keywords))
+                   && jo.Employer.Name.ToLower().Contains(employerName)
+                   && jo.City.ToLower().Contains(city));
 
                // range filters
                DateTime publishedFromDate = filters.PublishedFromDate != null ? filters.PublishedFromDate.Value.Date : DateTime.MinValue.Date;
@@ -121,8 +121,9 @@
                baseQuery = baseQuery
                    .Where(jo => jo.ValidFrom >= publishedFromDate
                        && jo.ValidUntil <= publishedToDate
-                       && jo.Salary >= salaryFrom
-                       && jo.Salary <= salaryTo);
+                       && ((jo.Salary >= salaryFrom
+                       && jo.Salary <= salaryTo)
+                       || jo.Salary == null));
 
                // select options filters
                if (filters.LevelsIds.Count > 0)
@@ -209,13 +210,13 @@
                  .FirstOrDefault();
         }
 
-        public bool IsTitleDuplicate(string employerId, string jobOfferTitle)
+        public bool IsPositionDuplicate(string employerId, string jobOfferPosition)
         {
             DateTime currentDate = DateTime.UtcNow.Date;
 
             return this.jobOffersRepository
                 .AllAsNoTracking()
-                .Any(jo => jo.Title == jobOfferTitle
+                .Any(jo => jo.Position == jobOfferPosition
                 && jo.EmployerId == employerId
                 && currentDate >= jo.ValidFrom
                 && currentDate <= jo.ValidUntil);
@@ -230,7 +231,7 @@
 
             EditJobOfferDetailsModel input = model.JobOfferDetails;
 
-            jobOffer.Title = input.Title;
+            jobOffer.Position = input.Position;
             jobOffer.Description = input.SanitizedDescription;
             jobOffer.Salary = input.Salary;
             jobOffer.City = input.City;
@@ -383,8 +384,11 @@
 
         public int GetCount()
         {
+            DateTime requestTime = DateTime.UtcNow;
             return this.jobOffersRepository
                  .AllAsNoTracking()
+                 .Where(jo => jo.ValidFrom <= requestTime
+                     && jo.ValidUntil >= requestTime)
                  .Count();
         }
 
@@ -395,6 +399,25 @@
                 .AllAsNoTracking()
                 .Where(jo => jo.CreatedOn >= yesterdaysDate)
                 .Count();
+        }
+
+        public IEnumerable<T> GetEmployerJobOffers<T>(string employerId)
+        {
+            return this.jobOffersRepository
+                 .AllAsNoTracking()
+                 .Where(jo => jo.EmployerId == employerId)
+                 .OrderByDescending(jo => jo.CreatedOn)
+                 .To<T>()
+                 .ToList();
+        }
+
+        public string GetOfferPositionById(string jobOfferId)
+        {
+            return this.jobOffersRepository
+                .AllAsNoTracking()
+                .Where(jo => jo.Id == jobOfferId)
+                .Select(jo => jo.Position)
+                .FirstOrDefault();
         }
     }
 }

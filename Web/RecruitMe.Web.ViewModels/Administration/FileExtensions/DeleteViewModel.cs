@@ -6,7 +6,7 @@
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
-    public class DeleteViewModel: IMapFrom<FileExtension>
+    public class DeleteViewModel : IMapFrom<FileExtension>
     {
         public int Id { get; set; }
 

@@ -48,7 +48,7 @@
 
         public const string ValidUntilDateMustBeCreaterThanValidFromDate = @"The ""Valid until"" date must be greater than the ""Valid from"" date";
 
-        public const string JobOfferWithSameNameAlreadyExists = "You already have a Job Offer with the same title that is currently active";
+        public const string JobOfferWithSameNameAlreadyExists = "You already have a Job Offer for the same position that is currently active";
 
         public const string InvalidInputType = "Invalid input type";
 
@@ -88,5 +88,7 @@
         public const string PasswordChanged = "Your are receiving this email because your password has been successfully reset. If the password change was not requested by you, please contact us at {0} for assistance.";
 
         public const string EmailAddressChanged = "You are receiving this email because there has been a request to update the email address for your account. Please confirm your new email address by <a href='{0}'>clicking here</a>.";
+
+        public const string JobApplicationStatusChanged = @"The status for your application for position ""{0}"" has been updated to ''{1}''. Please click <a href='{2}'>here</a> for more details.";
     }
 }

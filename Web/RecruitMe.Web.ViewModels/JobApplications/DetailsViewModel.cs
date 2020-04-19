@@ -4,14 +4,15 @@
 
     using AutoMapper;
     using RecruitMe.Data.Models;
-    using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
     public class DetailsViewModel : IMapFrom<JobApplication>, IMapFrom<JobApplicationDocument>, IHaveCustomMappings
     {
         public string Id { get; set; }
 
-        public string JobOfferTitle { get; set; }
+        public string JobOfferPosition { get; set; }
+
+        public string JobOfferId { get; set; }
 
         public string CandidateName { get; set; }
 

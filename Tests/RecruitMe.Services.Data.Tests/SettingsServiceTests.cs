@@ -1,16 +1,6 @@
 ﻿namespace RecruitMe.Services.Data.Tests
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
-
-    using Microsoft.EntityFrameworkCore;
-    using Moq;
-
-    using RecruitMe.Data;
-    using RecruitMe.Data.Common.Repositories;
-    using RecruitMe.Data.Models;
-    using RecruitMe.Data.Repositories;
     using Xunit;
 
     public class SettingsServiceTests

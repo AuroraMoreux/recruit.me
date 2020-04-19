@@ -1,6 +1,6 @@
 ﻿@model RecruitMe.Web.ViewModels.JobOffers.EditViewModel
 @{
-    ViewData["Title"] = @$"Edit Job Offer details for ""{Model.JobOfferDetails.Title}""";
+    ViewData["Title"] = @$"Edit Job Offer details for ""{Model.JobOfferDetails.Position}""";
 
     var jobSectors = Model.JobSectors.Select(js => new SelectListItem(js.Name, js.Id.ToString()));
     var jobLevels = Model.JobLevels.Select(jl => new SelectListItem(jl.Name, jl.Id.ToString()));
@@ -28,9 +28,9 @@
             <div>
                 <div class="form-group">
                     <input hidden asp-for="JobOfferDetails.Id" class="form-control" value="@Model.JobOfferDetails.Id" />
-                    <label asp-for="JobOfferDetails.Title"></label>
-                    <input asp-for="JobOfferDetails.Title" class="form-control" />
-                    <span asp-validation-for="JobOfferDetails.Title" class="text-danger"></span>
+                    <label asp-for="JobOfferDetails.Position"></label>
+                    <input asp-for="JobOfferDetails.Position" class="form-control" />
+                    <span asp-validation-for="JobOfferDetails.Position" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">

@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.Linq;
 
     using AutoMapper;
     using Ganss.XSS;
@@ -17,7 +16,7 @@
     {
         [Required]
         [MaxLength(150)]
-        public string Title { get; set; }
+        public string Position { get; set; }
 
         [Required]
         public string Description { get; set; }
@@ -25,7 +24,7 @@
         public string SanitizedDescription => new HtmlSanitizer().Sanitize(this.Description);
 
         [Range(0, int.MaxValue)]
-        public decimal Salary { get; set; }
+        public decimal? Salary { get; set; }
 
         [Required]
         [MaxLength(80)]

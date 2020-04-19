@@ -7,14 +7,13 @@
 
     using AutoMapper;
     using RecruitMe.Data.Models;
-    using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
     public class JobOffersViewModel : IMapFrom<JobOffer>, IHaveCustomMappings
     {
         public string Id { get; set; }
 
-        public string Title { get; set; }
+        public string Position { get; set; }
 
         public string City { get; set; }
 

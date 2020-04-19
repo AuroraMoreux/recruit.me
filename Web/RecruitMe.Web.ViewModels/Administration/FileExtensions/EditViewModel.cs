@@ -6,13 +6,13 @@
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
 
-    public class EditViewModel: IMapFrom<FileExtension>, IMapTo<FileExtension>
+    public class EditViewModel : IMapFrom<FileExtension>, IMapTo<FileExtension>
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        [Display(Name="File Type")]
+        [Display(Name = "File Type")]
         public string FileType { get; set; }
 
         [Display(Name = "Deleted")]

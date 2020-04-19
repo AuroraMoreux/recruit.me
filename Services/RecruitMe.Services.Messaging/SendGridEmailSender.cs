@@ -17,16 +17,27 @@
             this.client = new SendGridClient(apiKey);
         }
 
-        public async Task SendEmailAsync(string from, string fromName, string to, string subject, string htmlContent, IEnumerable<EmailAttachment> attachments = null)
-         {
+        public async Task SendEmailAsync(string from, string fromName, string to, string subject, string htmlContent, IEnumerable<EmailAttachment> attachments = null, params string[] additionalEmailAddresses)
+        {
             if (string.IsNullOrWhiteSpace(subject) && string.IsNullOrWhiteSpace(htmlContent))
             {
                 throw new ArgumentException("Subject and message should be provided.");
             }
 
             EmailAddress fromAddress = new EmailAddress(from, fromName);
+            List<EmailAddress> recipientList = new List<EmailAddress>();
             EmailAddress toAddress = new EmailAddress(to);
-            SendGridMessage message = MailHelper.CreateSingleEmail(fromAddress, toAddress, subject, null, htmlContent);
+            recipientList.Add(toAddress);
+            if (additionalEmailAddresses != null)
+            {
+                foreach (string address in additionalEmailAddresses)
+                {
+                    EmailAddress emailAddress = new EmailAddress(address);
+                    recipientList.Add(emailAddress);
+                }
+            }
+
+            SendGridMessage message = MailHelper.CreateSingleEmailToMultipleRecipients(fromAddress, recipientList, subject, null, htmlContent);
             if (attachments?.Any() == true)
             {
                 foreach (EmailAttachment attachment in attachments)

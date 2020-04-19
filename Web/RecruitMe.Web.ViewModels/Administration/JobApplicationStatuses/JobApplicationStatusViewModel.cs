@@ -1,11 +1,11 @@
 ﻿namespace RecruitMe.Web.ViewModels.Administration.JobApplicationStatuses
 {
+    using System;
 
     using RecruitMe.Data.Models.EnumModels;
     using RecruitMe.Services.Mapping;
-    using System;
 
-    public class JobApplicationStatusViewModel: IMapFrom<JobApplicationStatus>
+    public class JobApplicationStatusViewModel : IMapFrom<JobApplicationStatus>
     {
         public int Id { get; set; }
 

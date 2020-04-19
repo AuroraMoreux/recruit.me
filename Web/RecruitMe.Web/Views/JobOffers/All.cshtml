@@ -28,7 +28,7 @@ else
     <table class="table table-hover table-responsive">
         <thead>
             <tr>
-                <th scope="col">Job Title</th>
+                <th scope="col">Position</th>
                 <th scope="col">Employer</th>
                 <th scope="col">Position Level</th>
                 <th scope="col">Location</th>
@@ -55,7 +55,7 @@ else
             @for (int i = 0; i < jobOffers.Count; i++)
             {
                 <tr>
-                    <td class="text-break">@jobOffers[i].Title</td>
+                    <td class="text-break">@jobOffers[i].Position</td>
                     <td>@jobOffers[i].EmployerName</td>
                     <td>@jobOffers[i].JobLevelName</td>
                     <td>@jobOffers[i].City</td>

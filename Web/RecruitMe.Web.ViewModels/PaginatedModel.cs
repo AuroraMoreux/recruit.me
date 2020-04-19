@@ -1,11 +1,7 @@
-﻿namespace RecruitMe.Web.ViewModels.Documents
+﻿namespace RecruitMe.Web.ViewModels
 {
-    using System.Collections.Generic;
-
-    public class UserDocumentsViewModel
+    public abstract class PaginatedModel
     {
-        public IEnumerable<DocumentsViewModel> Documents { get; set; }
-
         public int PagesCount { get; set; }
 
         public int CurrentPage { get; set; }

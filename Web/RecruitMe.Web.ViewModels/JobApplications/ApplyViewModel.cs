@@ -16,7 +16,6 @@
 
         public string SanitizedMessage => new HtmlSanitizer().Sanitize(this.Message);
 
-        // TODO: Find way to integrate candidate skills and languages
         [Required]
         public string CandidateId { get; set; }
 
