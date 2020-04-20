@@ -47,15 +47,16 @@
         [AllowAnonymous]
         public IActionResult Index()
         {
-            this.HttpContext.Session.SetString("UserRole", GlobalConstants.CandidateRoleName);
+            IndexViewModel viewModel = new IndexViewModel();
+
             if (!this.User.Identity.IsAuthenticated)
             {
-                return this.View();
+                this.HttpContext.Session.SetString("UserRole", GlobalConstants.CandidateRoleName);
+                return this.View(viewModel);
             }
 
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
 
-            IndexViewModel viewModel = new IndexViewModel();
             if (candidateId == null)
             {
                 viewModel.IsProfileCreated = false;

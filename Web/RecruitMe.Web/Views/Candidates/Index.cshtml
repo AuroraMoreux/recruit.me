@@ -71,15 +71,15 @@ else
         </div>
         <div class="card flex-fill">
             <div class="card-body">
-                <h5 class="card-title" style="display:inline-block"><strong>Contact Information:</strong></h5>
+                <h5 class="card-title" style="display:inline-block"><strong>Profile Details:</strong></h5>
                 <a class="float-right btn btn-primary" asp-controller="Candidates" asp-action="UpdateProfile">Update profile details</a>
                 <div class="card-text"><strong>Name: </strong>@Model.Name</div>
-                <div class="card-text"><strong>Email: </strong>@Model.ApplicationUserEmail</div>
-                <div class="card-text"><strong>Phone Number: </strong>@(Model.PhoneNumber!=null?Model.PhoneNumber:"-")</div>
+                <div class="card-text"><strong>Email Address: </strong>@Model.ApplicationUserEmail</div>
+                <div class="card-text"><strong>Phone Number: </strong>@(Model.PhoneNumber!=null?Model.PhoneNumber:"  -")</div>
                 <div class="card-text"><strong>Education: </strong>@Model.Education</div>
                 <div class="card-text">
                     <strong>Languages: </strong>@(Model.Languages!=string.Empty?Model.Languages : " -")<p>
-                        <div class="card-text"><strong>Skills: </strong>@(Model.Skills!=string.Empty?Model.Skills : " -")</div>
+                        <div class="card-text"><strong>Skills: </strong>@(Model.Skills!=string.Empty?Model.Skills : "  -")</div>
                 </div>
             </div>
         </div>

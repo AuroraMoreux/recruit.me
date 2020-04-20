@@ -42,9 +42,27 @@
         [AllowAnonymous]
         public IActionResult Index()
         {
-            this.HttpContext.Session.SetString("UserRole", GlobalConstants.EmployerRoleName);
+            IndexViewModel viewModel = new IndexViewModel();
 
-            return this.View();
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                this.HttpContext.Session.SetString("UserRole", GlobalConstants.EmployerRoleName);
+                return this.View(viewModel);
+            }
+
+            string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
+
+            if (employerId == null)
+            {
+                viewModel.IsProfileCreated = false;
+            }
+            else
+            {
+                viewModel = this.employerService.GetProfileDetails<IndexViewModel>(employerId);
+                viewModel.IsProfileCreated = true;
+            }
+
+            return this.View(viewModel);
         }
 
         public IActionResult CreateProfile()
