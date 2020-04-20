@@ -162,7 +162,7 @@
         }
 
         [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
-        public IActionResult All(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
+        public IActionResult All(string sortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId == null)
@@ -171,6 +171,21 @@
             }
 
             IEnumerable<CandidateJobApplicationsViewModel> candidateApplications = this.jobApplicationService.GetCandidateApplications<CandidateJobApplicationsViewModel>(candidateId);
+
+            this.ViewData["DateSortParam"] = string.IsNullOrEmpty(sortOrder) ? "date_asc" : string.Empty;
+            this.ViewData["StatusSortParam"] = sortOrder == "max_status" ? "min_status" : "max_status";
+            this.ViewData["PositionSortParam"] = sortOrder == "name_asc" ? "name_desc" : "name_asc";
+
+            candidateApplications = sortOrder switch
+            {
+                "name_desc" => candidateApplications.OrderByDescending(ja => ja.JobOfferPosition),
+                "name_asc" => candidateApplications.OrderBy(ja => ja.JobOfferPosition),
+                "max_status" => candidateApplications.OrderByDescending(ja => ja.ApplicationStatusId),
+                "min_status" => candidateApplications.OrderBy(ja => ja.ApplicationStatusId),
+                "date_asc" => candidateApplications.OrderBy(ja => ja.ApplicationDate),
+                _ => candidateApplications.OrderByDescending(ja => ja.ApplicationDate)
+            };
+
             int pagesCount = (int)Math.Ceiling(candidateApplications.Count() / (decimal)perPage);
 
             IEnumerable<CandidateJobApplicationsViewModel> paginatedApplications = candidateApplications
@@ -189,7 +204,7 @@
         }
 
         [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
-        public IActionResult ByOffer(string jobOfferId, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
+        public IActionResult ByOffer(string jobOfferId, string sortOrder,int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
@@ -204,6 +219,20 @@
             }
 
             IEnumerable<JobOfferJobApplicationsViewModel> jobOfferApplications = this.jobApplicationService.GetApplicationsForOffer<JobOfferJobApplicationsViewModel>(jobOfferId);
+            this.ViewData["DateSortParam"] = string.IsNullOrEmpty(sortOrder) ? "date_asc" : string.Empty;
+            this.ViewData["StatusSortParam"] = sortOrder == "max_status" ? "min_status" : "max_status";
+            this.ViewData["EducationSortParam"] = sortOrder == "name_asc" ? "name_desc" : "name_asc";
+
+            jobOfferApplications = sortOrder switch
+            {
+                "name_desc" => jobOfferApplications.OrderByDescending(ja => ja.CandidateEducation),
+                "name_asc" => jobOfferApplications.OrderBy(ja => ja.CandidateEducation),
+                "max_status" => jobOfferApplications.OrderByDescending(ja => ja.ApplicationStatusId),
+                "min_status" => jobOfferApplications.OrderBy(ja => ja.ApplicationStatusId),
+                "date_asc" => jobOfferApplications.OrderBy(ja => ja.CreatedOn),
+                _ => jobOfferApplications.OrderByDescending(ja => ja.CreatedOn)
+            };
+
             int pagesCount = (int)Math.Ceiling(jobOfferApplications.Count() / (decimal)perPage);
 
             IEnumerable<JobOfferJobApplicationsViewModel> paginatedApplications = jobOfferApplications

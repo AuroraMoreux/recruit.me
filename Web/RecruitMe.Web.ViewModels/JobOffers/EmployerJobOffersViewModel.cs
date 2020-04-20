@@ -12,11 +12,15 @@
 
         public string Position { get; set; }
 
+        public bool IsActive => this.ValidFrom <= DateTime.UtcNow && this.ValidUntil >= DateTime.UtcNow;
+
         public DateTime ValidFrom { get; set; }
 
         public DateTime ValidUntil { get; set; }
 
         public string JobLevelName { get; set; }
+
+        public string JobLevelId { get; set; }
 
         public int JobApplicationsCount { get; set; }
 

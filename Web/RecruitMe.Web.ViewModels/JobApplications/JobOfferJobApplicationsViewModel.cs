@@ -16,6 +16,8 @@
 
         public string ApplicationStatusName { get; set; }
 
+        public string ApplicationStatusId { get; set; }
+
         public DateTime CreatedOn { get; set; }
 
         public void CreateMappings(IProfileExpression configuration)

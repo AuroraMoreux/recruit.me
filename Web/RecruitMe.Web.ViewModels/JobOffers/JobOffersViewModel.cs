@@ -25,6 +25,8 @@
 
         public string JobLevelName { get; set; }
 
+        public string JobLevelId { get; set; }
+
         public string JobDetails
         {
             get

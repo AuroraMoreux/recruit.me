@@ -16,7 +16,7 @@
                 return;
             }
 
-            List<string> levels = new List<string> { "Management", "Expert", "Entry Level" };
+            List<string> levels = new List<string> { "Entry Level", "Expert", "Management" };
 
             foreach (string level in levels)
             {
@@ -24,6 +24,7 @@
                 {
                     Name = level,
                 });
+                await dbContext.SaveChangesAsync();
             }
         }
     }

@@ -11,9 +11,9 @@
         <thead>
             <tr>
                 <th scope="col">Candidate Name</th>
-                <th scope="col">Submitted On</th>
-                <th scope="col">Application Status</th>
-                <th scope="col">Candidate Education</th>
+                <th scope="col">Submitted On <a style="margin: 5px" asp-action="ByOffer" asp-controller="JobApplications" asp-route-sortOrder="@ViewData["DateSortParam"]" asp-route-jobOfferId="@Model.JobOfferId"><icon class="fas fa-sort"></icon></a></th>
+                <th scope="col">Application Status <a style="margin: 5px" asp-action="ByOffer" asp-controller="JobApplications" asp-route-sortOrder="@ViewData["StatusSortParam"]" asp-route-jobOfferId="@Model.JobOfferId"><icon class="fas fa-sort"></icon></a></th>
+                <th scope="col">Candidate Education <a style="margin: 5px" asp-action="ByOffer" asp-controller="JobApplications" asp-route-sortOrder="@ViewData["EducationSortParam"]" asp-route-jobOfferId="@Model.JobOfferId"><icon class="fas fa-sort"></icon></a></th>
                 <th scope="col">
                     Actions
                 </th>

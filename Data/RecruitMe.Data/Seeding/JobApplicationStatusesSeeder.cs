@@ -24,6 +24,7 @@
                 {
                     Name = status,
                 });
+                await dbContext.SaveChangesAsync();
             }
         }
     }

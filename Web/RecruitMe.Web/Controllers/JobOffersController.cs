@@ -59,7 +59,7 @@
             this.skills = this.skillsService.GetAll<SkillsDropDownCheckboxListViewModel>();
         }
 
-        public async Task<IActionResult> All([FromQuery]FilterModel filters, string dateSortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
+        public async Task<IActionResult> All([FromQuery]FilterModel filters, string sortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             if (!this.ModelState.IsValid)
             {
@@ -79,17 +79,16 @@
                 this.ViewData["IsFromSearch"] = "Search Results";
             }
 
-            switch (dateSortOrder)
+            this.ViewData["DateSortParam"] = string.IsNullOrEmpty(sortOrder) ? "date_asc" : string.Empty;
+            this.ViewData["LevelSortParam"] = sortOrder == "max_level" ? "min_level" : "max_level";
+
+            filteredJobOffers = sortOrder switch
             {
-                case "date_asc":
-                    filteredJobOffers = filteredJobOffers.OrderBy(jo => jo.CreatedOn);
-                    this.ViewData["DateSortParam"] = "date";
-                    break;
-                default:
-                    filteredJobOffers = filteredJobOffers.OrderByDescending(jo => jo.CreatedOn);
-                    this.ViewData["DateSortParam"] = "date_asc";
-                    break;
-            }
+                "max_level" => filteredJobOffers.OrderByDescending(jo => jo.JobLevelId),
+                "min_level" => filteredJobOffers.OrderBy(jo => jo.JobLevelId),
+                "date_asc" => filteredJobOffers.OrderBy(jo => jo.CreatedOn),
+                _ => filteredJobOffers.OrderByDescending(jo => jo.CreatedOn)
+            };
 
             int pagesCount = (int)Math.Ceiling(filteredJobOffers.Count() / (decimal)perPage);
 
@@ -265,7 +264,7 @@
         }
 
         [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
-        public IActionResult MyOffers(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
+        public IActionResult MyOffers(string sortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
@@ -274,6 +273,30 @@
             }
 
             IEnumerable<EmployerJobOffersViewModel> employerOffers = this.jobOffersService.GetEmployerJobOffers<EmployerJobOffersViewModel>(employerId);
+
+            this.ViewData["DateFromSortParam"] = string.IsNullOrEmpty(sortOrder) ? "dateFrom_asc" : string.Empty;
+            this.ViewData["DateUntilSortParam"] = sortOrder == "dateUntil_asc" ? "dateUntil" : "dateUntil_asc";
+            this.ViewData["IsActiveSortParam"] = sortOrder == "is_inactive" ? "is_active" : "is_inactive";
+            this.ViewData["LevelSortParam"] = sortOrder == "max_level" ? "min_level" : "max_level";
+            this.ViewData["CountSortParam"] = sortOrder == "max_count" ? "min_count" : "max_count";
+            this.ViewData["PositionSortParam"] = sortOrder == "name_asc" ? "name_desc" : "name_asc";
+
+            employerOffers = sortOrder switch
+            {
+                "name_desc" => employerOffers.OrderByDescending(jo => jo.Position),
+                "name_asc" => employerOffers.OrderBy(jo => jo.Position),
+                "max_count" => employerOffers.OrderByDescending(jo => jo.JobApplicationsCount),
+                "min_count" => employerOffers.OrderBy(jo => jo.JobApplicationsCount),
+                "max_level" => employerOffers.OrderByDescending(jo => jo.JobLevelId),
+                "min_level" => employerOffers.OrderBy(jo => jo.JobLevelId),
+                "is_inactive" => employerOffers.OrderByDescending(jo => jo.IsActive),
+                "is_active" => employerOffers.OrderBy(jo => jo.IsActive),
+                "dateUntil_asc" => employerOffers.OrderBy(jo => jo.ValidUntil),
+                "dateUntil" => employerOffers.OrderByDescending(jo => jo.ValidUntil),
+                "dateFrom_asc" => employerOffers.OrderBy(jo => jo.ValidFrom),
+                _ => employerOffers.OrderByDescending(jo => jo.ValidFrom),
+            };
+
             int pagesCount = (int)Math.Ceiling(employerOffers.Count() / (decimal)perPage);
 
             IEnumerable<EmployerJobOffersViewModel> paginatedOffers = employerOffers

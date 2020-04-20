@@ -10,9 +10,9 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col">Position</th>
-                <th scope="col">Applied On</th>
-                <th scope="col">Application Status</th>
+                <th scope="col">Position <a style="margin: 5px" asp-action="All" asp-controller="JobApplications" asp-route-sortOrder="@ViewData["PositionSortParam"]"><icon class="fas fa-sort"></icon></a></th>
+                <th scope="col">Applied On <a style="margin: 5px" asp-action="All" asp-controller="JobApplications" asp-route-sortOrder="@ViewData["DateSortParam"]"><icon class="fas fa-sort"></icon></a></th>
+                <th scope="col">Application Status <a style="margin: 5px" asp-action="All" asp-controller="JobApplications" asp-route-sortOrder="@ViewData["StatusSortParam"]"><icon class="fas fa-sort"></icon></a></th>
                 <th>Actions</th>
             </tr>
         </thead>
