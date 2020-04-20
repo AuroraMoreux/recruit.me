@@ -52,18 +52,26 @@ else
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < jobOffers.Count; i++)
+            @if (jobOffers.Count == 0)
             {
                 <tr>
-                    <td class="text-break">@jobOffers[i].Position</td>
-                    <td>@jobOffers[i].EmployerName</td>
-                    <td>@jobOffers[i].JobLevelName</td>
-                    <td>@jobOffers[i].City</td>
-                    <td>@jobOffers[i].CreatedOn.Date.ToString("dd-MM-yyyy")</td>
-                    <td>@jobOffers[i].JobSectorName</td>
-                    <td>@jobOffers[i].JobDetails</td>
                     <td>
-                        <a class="btn btn-info text-nowrap" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffers[i].Id">View Details</a>
+                        No job offers to show.
+                    </td>
+                </tr>
+            }
+            @foreach (var jobOffer in jobOffers)
+            {
+                <tr>
+                    <td class="text-break">@jobOffer.Position</td>
+                    <td>@jobOffer.EmployerName</td>
+                    <td>@jobOffer.JobLevelName</td>
+                    <td>@jobOffer.City</td>
+                    <td>@jobOffer.CreatedOn.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@jobOffer.JobSectorName</td>
+                    <td>@jobOffer.JobDetails</td>
+                    <td>
+                        <a class="btn btn-info text-nowrap" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffer.Id">View Details</a>
                     </td>
                 </tr>
             }
@@ -87,7 +95,7 @@ else
                 <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/JobOffers/All?page=@i">@i</a></li>
             }
 
-            @if (this.Model.CurrentPage == this.Model.PagesCount)
+            @if (this.Model.CurrentPage == this.Model.PagesCount || this.Model.PagesCount == 0)
             {
                 <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
             }

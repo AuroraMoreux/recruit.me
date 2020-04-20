@@ -47,7 +47,7 @@
         public string ContactPersonPosition { get; set; }
 
         [Display(Name = "Upload Logo")]
-        [FileValidatior]
+        [FileValidatior(true)]
         public IFormFile Logo { get; set; }
 
         [Url]

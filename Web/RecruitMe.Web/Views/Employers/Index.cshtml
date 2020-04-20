@@ -14,7 +14,14 @@
     </div>
 }
 <h3>Welcome</h3>
+@if (!User.Identity.IsAuthenticated)
+{
+    <p>Looking for the perfect candidate for your position?</p>
+    <p>Our platform connects you with top-tier motivated and qualified professionals looking for an exciting new career which will help you boost your business and reach your goals! </p>
 
-<p>Lorem ipsum dolor sit amet, eos assentior adipiscing an. Eam in mucius sensibus. Simul graeco aliquip duo ad. Probatus argumentum et mea. Ea his hinc expetenda patrioque, dicit iudicabit at pri. Omnium deseruisse quo id, omnes moderatius cu mei. Intellegam reprehendunt cum ad, id eum unum meliore alienum.</p>
+    <p>If you are interested in posting a job offer on our platform and connecting with potential candidates, <a style="display:inline" href="/Identity/Account/Register">please register here.</a></p>
+}
+else
+{
 
-<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Please register here</a>
+}

@@ -34,18 +34,26 @@
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < documents.Count; i++)
+            @if (documents.Count == 0)
             {
-                var fileSize = (documents[i].Size < 1024 ? @documents[i].Size + " KB" : Math.Round(@documents[i].Size / 1024m, 2) + " MB");
                 <tr>
-                    <td><icon name="@documents[i].FileExtensionName"></icon></td>
-                    <td>@documents[i].Name</td>
-                    <td>@documents[i].DocumentCategoryName</td>
-                    <td>@fileSize</td>
-                    <td>@documents[i].UploadedOn</td>
                     <td>
-                        <a class="btn btn-primary btn-sm" asp-controller="Documents" asp-action="Download" asp-route-id="@documents[i].Id">Download</a>
-                        <a class="btn btn-danger btn-sm" asp-controller="Documents" asp-action="Delete" asp-route-id="@documents[i].Id">Delete</a>
+                        No documents to show.
+                    </td>
+                </tr>
+            }
+            @foreach (var document in documents)
+            {
+                var fileSize = (document.Size < 1024 ? @document.Size + " KB" : Math.Round(@document.Size / 1024m, 2) + " MB");
+                <tr>
+                    <td><icon name="@document.FileExtensionName"></icon></td>
+                    <td>@document.Name</td>
+                    <td>@document.DocumentCategoryName</td>
+                    <td>@fileSize</td>
+                    <td>@document.UploadedOn</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-controller="Documents" asp-action="Download" asp-route-id="@document.Id">Download</a>
+                        <a class="btn btn-danger btn-sm" asp-controller="Documents" asp-action="Delete" asp-route-id="@document.Id">Delete</a>
                     </td>
                 </tr>
             }
@@ -69,7 +77,7 @@
                 <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@i">@i</a></li>
             }
 
-            @if (this.Model.CurrentPage == this.Model.PagesCount)
+            @if (this.Model.CurrentPage == this.Model.PagesCount || this.Model.PagesCount == 0)
             {
                 <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
             }

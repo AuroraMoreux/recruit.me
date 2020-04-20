@@ -20,18 +20,26 @@
             </tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < offers.Count; i++)
+            @if (offers.Count == 0)
             {
                 <tr>
-                    <td>@offers[i].Position</td>
-                    <td>@offers[i].ValidFrom.Date.ToString("dd-MM-yyyy")</td>
-                    <td>@offers[i].ValidUntil.Date.ToString("dd-MM-yyyy")</td>
-                    <td>@offers[i].JobLevelName</td>
-                    <td>@offers[i].JobApplicationsCount</td>
                     <td>
-                        <a class=" btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@offers[i].Id">Details</a>
-                        <a class=" btn btn-info btn-sm" asp-controller="JobApplications" asp-action="ByOffer" asp-route-jobOfferId="@offers[i].Id">View Applications</a>
-                        <a class=" btn btn-danger btn-sm" asp-controller="JobOffers" asp-action="Delete" asp-route-id="@offers[i].Id">Delete</a>
+                        No job offers to show.
+                    </td>
+                </tr>
+            }
+            @foreach (var offer in offers)
+            {
+                <tr>
+                    <td>@offer.Position</td>
+                    <td>@offer.ValidFrom.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@offer.ValidUntil.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@offer.JobLevelName</td>
+                    <td>@offer.JobApplicationsCount</td>
+                    <td>
+                        <a class=" btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@offer.Id">Details</a>
+                        <a class=" btn btn-info btn-sm" asp-controller="JobApplications" asp-action="ByOffer" asp-route-jobOfferId="@offer.Id">View Applications</a>
+                        <a class=" btn btn-danger btn-sm" asp-controller="JobOffers" asp-action="Delete" asp-route-id="@offer.Id">Delete</a>
                     </td>
                 </tr>
             }
@@ -55,7 +63,7 @@
                 <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/JobOffers/MyOffers?page=@i">@i</a></li>
             }
 
-            @if (this.Model.CurrentPage == this.Model.PagesCount)
+            @if (this.Model.CurrentPage == this.Model.PagesCount || this.Model.PagesCount == 0)
             {
                 <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
             }

@@ -44,11 +44,11 @@
                 </div>
                 <div class="form-group">
                     @*<input type="checkbox" asp-for="IsFullTime" />
-                    <label asp-for="IsFullTime" style="margin-right: 35px"></label>
-                    <span asp-validation-for="IsFullTime" class="text-danger"></span>
-                    <input type="checkbox" asp-for="IsRemote" />
-                    <label asp-for="IsRemote"></label>
-                    <span asp-validation-for="IsRemote" class="text-danger"></span>*@
+                        <label asp-for="IsFullTime" style="margin-right: 35px"></label>
+                        <span asp-validation-for="IsFullTime" class="text-danger"></span>
+                        <input type="checkbox" asp-for="IsRemote" />
+                        <label asp-for="IsRemote"></label>
+                        <span asp-validation-for="IsRemote" class="text-danger"></span>*@
 
                 </div>
                 <div class="form-group">
@@ -70,6 +70,7 @@
                     <span asp-validation-for="Levels" class="text-danger"></span>
                 </div>
                 <input type="submit" value="Search" class="btn btn-primary" style="margin-left: 1.5rem;margin-top:1.5rem" />
+                <a class="btn btn-danger" style="margin-top:1.5rem" asp-controller="JobOffers" asp-action="All">Back to List</a>
             </div>
             <div class="col-6">
                 <div class="form-group">

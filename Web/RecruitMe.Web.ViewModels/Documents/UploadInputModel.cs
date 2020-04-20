@@ -17,8 +17,8 @@
     public class UploadInputModel : IMapTo<Document>, IHaveCustomMappings
     {
         [Display(Name = "Upload file")]
-        [FileValidatior]
-        [Required(ErrorMessage = GlobalConstants.FileCannotBeNull)]
+        [FileValidatior(false)]
+        [Required]
         public IFormFile File { get; set; }
 
         public long Size => this.File.Length / 1024;

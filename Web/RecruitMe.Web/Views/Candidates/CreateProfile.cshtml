@@ -2,10 +2,14 @@
 @{
     ViewData["Title"] = "Create Profile";
     var allowedFileExtensions = string.Join(", ", this.Model.ImageExtensions);
+    var languages = Model.Languages.Select(l => new SelectListItem(l.Name, l.Id.ToString())).ToList();
+    var skills = Model.Skills.Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList();
 }
 
 <h1 style="display:inline-block">@ViewData["Title"]</h1>
-<a class="btn btn-primary float-right" asp-area="Identity" asp-controller="Account" asp-action="Manage">Manage Account</a>
+<a class="btn btn-primary float-right" style="margin-right:1rem" asp-area="Identity" asp-controller="Account" asp-action="Manage">Manage Account</a>
+<a class="btn btn-warning float-right" style="margin-right:5px" asp-controller="Candidates" asp-action="Index">Back</a>
+
 <div class="container-fluid">
     <form class="container" asp-controller="Candidates" asp-action="CreateProfile" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="All" class="text-danger"></div>
@@ -30,7 +34,6 @@
                     <input asp-for="@Model.LastName" class="form-control" />
                     <span asp-validation-for="@Model.LastName" class="text-danger"></span>
                 </div>
-                <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
             </div>
             <div class="col-6">
 
@@ -52,6 +55,24 @@
                     <span asp-validation-for="@Model.Education" class="text-danger"></span>
                 </div>
             </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="SkillsIds"></label>
+                    <select multiple size="5" asp-for="SkillsIds" asp-items="skills" class="form-control"></select>
+                    <span asp-validation-for="SkillsIds" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="LanguagesIds"></label>
+                    <select multiple size="5" asp-for="LanguagesIds" asp-items="languages" class="form-control"></select>
+                    <span asp-validation-for="LanguagesIds" class="text-danger"></span>
+                </div>
+            </div>
+            <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
         </div>
     </form>
 </div>

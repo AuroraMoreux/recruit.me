@@ -7,26 +7,40 @@
 
     public class FileValidatiorAttribute : ValidationAttribute
     {
+        public FileValidatiorAttribute(bool fileCanBeNull)
+        {
+            this.FileCanBeNull = fileCanBeNull;
+        }
+
+        public bool FileCanBeNull { get; set; }
+
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if (value == null)
+            if (value == null && this.FileCanBeNull)
             {
-                return new ValidationResult(GlobalConstants.FileCannotBeNull);
+                return ValidationResult.Success;
             }
-
-            IFormFile file = value as IFormFile;
-
-            if (file.FileName.Length > 50)
+            else
             {
-                return new ValidationResult(GlobalConstants.FileNameTooLong);
-            }
+                if (value == null)
+                {
+                    return new ValidationResult(GlobalConstants.FileCannotBeNull);
+                }
 
-            if (file.Length > 10 * 1024 * 1024)
-            {
-                return new ValidationResult(GlobalConstants.FileSizeTooLarge);
-            }
+                IFormFile file = value as IFormFile;
 
-            return ValidationResult.Success;
-         }
+                if (file.FileName.Length > 50)
+                {
+                    return new ValidationResult(GlobalConstants.FileNameTooLong);
+                }
+
+                if (file.Length > 10 * 1024 * 1024)
+                {
+                    return new ValidationResult(GlobalConstants.FileSizeTooLarge);
+                }
+
+                return ValidationResult.Success;
+            }
+        }
     }
 }

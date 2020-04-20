@@ -13,6 +13,7 @@
     using RecruitMe.Services.Data;
     using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.Candidates;
+    using RecruitMe.Web.ViewModels.JobOffers;
 
     [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
     public class CandidatesController : BaseController
@@ -20,26 +21,52 @@
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICandidatesService candidatesService;
         private readonly IFileExtensionsService fileExtensionsService;
-        private IEnumerable<string> allowedExtensions;
+        private readonly ILanguagesService languagesService;
+        private readonly ISkillsService skillsService;
+        private readonly IEnumerable<string> allowedExtensions;
+        private readonly IEnumerable<LanguagesDropDownCheckboxListViewModel> languages;
+        private readonly IEnumerable<SkillsDropDownCheckboxListViewModel> skills;
 
         public CandidatesController(
             UserManager<ApplicationUser> userManager,
             ICandidatesService candidatesService,
-            IFileExtensionsService fileExtensionsService)
+            IFileExtensionsService fileExtensionsService,
+            ILanguagesService languagesService,
+            ISkillsService skillsService)
         {
             this.userManager = userManager;
             this.candidatesService = candidatesService;
             this.fileExtensionsService = fileExtensionsService;
-
+            this.languagesService = languagesService;
+            this.skillsService = skillsService;
             this.allowedExtensions = this.fileExtensionsService.GetImageExtensions();
+            this.languages = this.languagesService.GetAll<LanguagesDropDownCheckboxListViewModel>();
+            this.skills = this.skillsService.GetAll<SkillsDropDownCheckboxListViewModel>();
         }
 
         [AllowAnonymous]
         public IActionResult Index()
         {
             this.HttpContext.Session.SetString("UserRole", GlobalConstants.CandidateRoleName);
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                return this.View();
+            }
 
-            return this.View();
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+
+            IndexViewModel viewModel = new IndexViewModel();
+            if (candidateId == null)
+            {
+                viewModel.IsProfileCreated = false;
+            }
+            else
+            {
+                viewModel = this.candidatesService.GetProfileDetails<IndexViewModel>(candidateId);
+                viewModel.IsProfileCreated = true;
+            }
+
+            return this.View(viewModel);
         }
 
         public IActionResult CreateProfile()
@@ -53,6 +80,8 @@
             CreateCandidateProfileInputModel viewModel = new CreateCandidateProfileInputModel
             {
                 ImageExtensions = this.allowedExtensions,
+                Languages = this.languages,
+                Skills = this.skills,
             };
             return this.View(viewModel);
         }
@@ -68,10 +97,12 @@
             if (!this.ModelState.IsValid)
             {
                 input.ImageExtensions = this.allowedExtensions;
+                input.Languages = this.languages;
+                input.Skills = this.skills;
                 return this.View(input);
             }
 
-            if (!this.allowedExtensions.Any(ae => input.ProfilePicture.FileName.EndsWith(ae)))
+            if (input.ProfilePicture != null && !this.allowedExtensions.Any(ae => input.ProfilePicture.FileName.EndsWith(ae)))
             {
                 this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
                 input.ImageExtensions = this.allowedExtensions;
@@ -110,6 +141,8 @@
             }
 
             details.ImageExtensions = this.allowedExtensions;
+            details.LanguagesList = this.languages;
+            details.SkillsList = this.skills;
             return this.View(details);
         }
 
@@ -125,10 +158,12 @@
             if (!this.ModelState.IsValid)
             {
                 input.ImageExtensions = this.allowedExtensions;
+                input.LanguagesList = this.languages;
+                input.SkillsList = this.skills;
                 return this.View(input);
             }
 
-            if (!this.allowedExtensions.Any(ae => input.ProfilePicture.FileName.EndsWith(ae)))
+            if (input.ProfilePicture != null && !this.allowedExtensions.Any(ae => input.ProfilePicture.FileName.EndsWith(ae)))
             {
                 this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
                 input.ImageExtensions = this.allowedExtensions;

@@ -7,6 +7,7 @@
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
     using RecruitMe.Web.Infrastructure.ValidationAttributes;
+    using RecruitMe.Web.ViewModels.JobOffers;
 
     public class CreateCandidateProfileInputModel : IMapTo<Candidate>
     {
@@ -36,8 +37,20 @@
         [Display(Name ="Education")]
         public string Education { get; set; }
 
-        [FileValidatior]
+        [FileValidatior(true)]
         [Display(Name = "Upload Profile Picture")]
         public IFormFile ProfilePicture { get; set; }
+
+        [Display(Name = "My Skills")]
+        [IntArrayLength("My Skills", 10, 1)]
+        public List<int> SkillsIds { get; set; }
+
+        [Display(Name = "My Languages")]
+        [IntArrayLength("My Languages", 5, 1)]
+        public List<int> LanguagesIds { get; set; }
+
+        public IEnumerable<SkillsDropDownCheckboxListViewModel> Skills { get; set; }
+
+        public IEnumerable<LanguagesDropDownCheckboxListViewModel> Languages { get; set; }
     }
 }

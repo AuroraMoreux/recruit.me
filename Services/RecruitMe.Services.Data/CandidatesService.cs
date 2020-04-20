@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Services.Data
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -15,13 +16,19 @@
     {
         private const string PictureNameAddIn = "_profilePicture";
         private readonly IDeletableEntityRepository<Candidate> candidatesRepository;
+        private readonly IDeletableEntityRepository<CandidateLanguage> candidateLanguagesRepository;
+        private readonly IDeletableEntityRepository<CandidateSkill> candidateSkillsRepository;
         private readonly Cloudinary cloudinary;
 
         public CandidatesService(
             IDeletableEntityRepository<Candidate> candidatesRepository,
+            IDeletableEntityRepository<CandidateLanguage> candidateLanguagesRepository,
+            IDeletableEntityRepository<CandidateSkill> candidateSkillsRepository,
             Cloudinary cloudinary)
         {
             this.candidatesRepository = candidatesRepository;
+            this.candidateLanguagesRepository = candidateLanguagesRepository;
+            this.candidateSkillsRepository = candidateSkillsRepository;
             this.cloudinary = cloudinary;
         }
 
@@ -41,10 +48,37 @@
             }
 
             candidate.CreatedOn = DateTime.UtcNow;
+
+            List<CandidateLanguage> candidateLanguages = new List<CandidateLanguage>();
+            foreach (int languageId in model.LanguagesIds)
+            {
+                CandidateLanguage language = new CandidateLanguage
+                {
+                    Candidate = candidate,
+                    LanguageId = languageId,
+                };
+                candidateLanguages.Add(language);
+            }
+
+            List<CandidateSkill> candidateSkills = new List<CandidateSkill>();
+            foreach (int skillId in model.SkillsIds)
+            {
+                CandidateSkill skill = new CandidateSkill
+                {
+                    Candidate = candidate,
+                    SkillId = skillId,
+                };
+                candidateSkills.Add(skill);
+            }
+
             try
             {
                 await this.candidatesRepository.AddAsync(candidate);
+                await this.candidateLanguagesRepository.AddRangeAsync(candidateLanguages);
+                await this.candidateSkillsRepository.AddRangeAsync(candidateSkills);
                 await this.candidatesRepository.SaveChangesAsync();
+                await this.candidateLanguagesRepository.SaveChangesAsync();
+                await this.candidateSkillsRepository.SaveChangesAsync();
                 return candidate.Id;
             }
             catch (Exception)

@@ -2,13 +2,15 @@
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    using System.Linq;
+    using AutoMapper;
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
     using RecruitMe.Web.Infrastructure.ValidationAttributes;
+    using RecruitMe.Web.ViewModels.JobOffers;
 
-    public class UpdateCandidateProfileViewModel : IMapFrom<Candidate>, IMapTo<Candidate>
+    public class UpdateCandidateProfileViewModel : IMapFrom<Candidate>, IMapTo<Candidate>, IMapFrom<CandidateLanguage>, IMapTo<CandidateLanguage>, IHaveCustomMappings
     {
         public IEnumerable<string> ImageExtensions { get; set; }
 
@@ -35,7 +37,32 @@
         public string Education { get; set; }
 
         [Display(Name = "Upload Profile Picture")]
-        [FileValidatior]
+        [FileValidatior(true)]
         public IFormFile ProfilePicture { get; set; }
+
+        [Display(Name = "My Skills")]
+        [IntArrayLength("My Skills", 10, 1)]
+        public List<int> SkillsIds { get; set; }
+
+        [Display(Name = "My Languages")]
+        [IntArrayLength("My Languages", 5, 1)]
+        public List<int> LanguagesIds { get; set; }
+
+        public IEnumerable<SkillsDropDownCheckboxListViewModel> SkillsList { get; set; }
+
+        public IEnumerable<LanguagesDropDownCheckboxListViewModel> LanguagesList { get; set; }
+
+        public void CreateMappings(IProfileExpression configuration)
+        {
+            configuration.CreateMap<Candidate, UpdateCandidateProfileViewModel>()
+                 .ForMember(ucpvm => ucpvm.SkillsIds, options =>
+                 {
+                     options.MapFrom(c => c.Skills.Select(jos => jos.SkillId).ToList());
+                 })
+                 .ForMember(ucpvm => ucpvm.LanguagesIds, options =>
+                 {
+                     options.MapFrom(c => c.Languages.Select(jos => jos.LanguageId).ToList());
+                 });
+        }
     }
 }

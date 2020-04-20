@@ -4,46 +4,49 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav navbar-expand-sm">
-    @if (this.SignInManager.IsSignedIn(this.User))
-    {
+    <ul class="navbar-nav navbar-expand-sm">
+        @if (this.SignInManager.IsSignedIn(this.User))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="JobOffers" asp-action="All">Browse Job Offers</a>
+            </li>
 
-        if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
-        {
+            if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
+                </li>
+            }
+            else if (this.User.IsInRole(GlobalConstants.CandidateRoleName))
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Candidates" asp-action="UpdateProfile">My Profile</a>
+                </li>
+                //browse JOs, add files, review applications, view top employers and browse their ads etc.
+            }
+            else if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Employers" asp-action="UpdateProfile">My Profile</a>
+                </li>
+                //post offers, review JAs
+            }
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@(this.Url.Action("Index", "Home", new { area = string.Empty }))">
+                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                </form>
             </li>
         }
-        else if (this.User.IsInRole(GlobalConstants.CandidateRoleName))
+        else
         {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Candidates" asp-action="UpdateProfile">Hello @(this.User.Identity.Name)!</a>
+                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Sign In</a>
             </li>
-            //browse JOs, add files, review applications, view top employers and browse their ads etc.
-        }
-        else if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
-        {
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Employers" asp-action="UpdateProfile">Hello @(this.User.Identity.Name)!</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Candidates" asp-action="Index">For Candidates</a>
             </li>
-            //post offers, review JAs
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Employers" asp-action="Index">For Employers</a>
+            </li>
         }
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@(this.Url.Action("Index", "Home", new { area = string.Empty }))">
-                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-            </form>
-        </li>
-    }
-    else
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Sign In</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Candidates" asp-action="Index">For Candidates</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Employers" asp-action="Index">For Employers</a>
-        </li>
-    }
-</ul>
+    </ul>

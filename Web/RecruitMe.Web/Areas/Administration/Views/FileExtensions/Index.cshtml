@@ -36,6 +36,14 @@
         </tr>
     </thead>
     <tbody>
+        @if (Model.Extensions.Count() == 0)
+        {
+            <tr>
+                <td>
+                    No file extensions to show.
+                </td>
+            </tr>
+        }
         @foreach (var item in Model.Extensions)
         {
             <tr>
@@ -83,7 +91,7 @@
             <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/Administration/FileExtensions/Index?page=@i">@i</a></li>
         }
 
-        @if (this.Model.CurrentPage == this.Model.PagesCount)
+        @if (this.Model.CurrentPage == this.Model.PagesCount || this.Model.PagesCount == 0)
         {
             <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
         }
