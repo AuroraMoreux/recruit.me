@@ -3,13 +3,15 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using AutoMapper;
+    using Ganss.XSS;
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
     using RecruitMe.Web.Infrastructure.ValidationAttributes;
     using RecruitMe.Web.ViewModels.JobOffers;
 
-    public class CreateCandidateProfileInputModel : IMapTo<Candidate>
+    public class CreateCandidateProfileInputModel : IMapTo<Candidate>,IHaveCustomMappings
     {
         public IEnumerable<string> ImageExtensions { get; set; }
 
@@ -37,6 +39,12 @@
         [Display(Name ="Education")]
         public string Education { get; set; }
 
+        [MaxLength(800)]
+        [Display(Name = "About Me")]
+        public string AboutMe { get; set; }
+
+        public string SanitizedAboutMe => new HtmlSanitizer().Sanitize(this.AboutMe);
+
         [FileValidatior(true)]
         [Display(Name = "Upload Profile Picture")]
         public IFormFile ProfilePicture { get; set; }
@@ -52,5 +60,14 @@
         public IEnumerable<SkillsDropDownCheckboxListViewModel> Skills { get; set; }
 
         public IEnumerable<LanguagesDropDownCheckboxListViewModel> Languages { get; set; }
+
+        public void CreateMappings(IProfileExpression configuration)
+        {
+            configuration.CreateMap<CreateCandidateProfileInputModel, Candidate>()
+                .ForMember(c => c.AboutMe, options =>
+                {
+                    options.MapFrom(ccpim => ccpim.SanitizedAboutMe);
+                });
+        }
     }
 }

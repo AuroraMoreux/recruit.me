@@ -1,5 +1,6 @@
 ﻿namespace RecruitMe.Services.Data
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using RecruitMe.Web.ViewModels.Employers;
@@ -17,5 +18,9 @@
         int GetCount();
 
         int GetNewEmployersCount();
+
+        IEnumerable<T> GetTopFiveEmployers<T>();
+
+        string GetEmployerNameById(string id);
     }
 }

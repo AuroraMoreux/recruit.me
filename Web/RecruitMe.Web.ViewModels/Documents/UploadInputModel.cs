@@ -26,6 +26,7 @@
         public string SanitizedFileName => new HtmlSanitizer().Sanitize(this.File.FileName);
 
         [Display(Name = "File category")]
+        [Required]
         public int DocumentCategoryId { get; set; }
 
         public IEnumerable<CategoriesDropDownViewModel> Categories { get; set; }

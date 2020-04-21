@@ -204,7 +204,7 @@
         }
 
         [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
-        public IActionResult ByOffer(string jobOfferId, string sortOrder,int page = 1, int perPage = GlobalConstants.ItemsPerPage)
+        public IActionResult ByOffer(string jobOfferId, string sortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
             string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)

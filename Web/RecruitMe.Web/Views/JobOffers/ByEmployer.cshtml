@@ -1,0 +1,79 @@
+﻿@model RecruitMe.Web.ViewModels.JobOffers.ByEmployerViewModel
+@using RecruitMe.Common
+@{
+    ViewData["Title"] = $"Current Job Offers by {Model.Name}";
+
+    var jobOffers = this.Model.JobOffers.ToList();
+}
+
+<h1 style="display:inline">@ViewData["Title"]</h1>
+
+<div class="table-responsive">
+    <table class="table table-hover table-responsive">
+        <thead>
+            <tr>
+                <th scope="col">Position</th>
+                <th scope="col">Employer</th>
+                <th scope="col">Position Level </th>
+                <th scope="col">Location</th>
+                <th scope="col">Published On <a style="margin: 5px;display:inline" asp-action="All" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["DateSortParam"]"><icon class="fas fa-sort"></icon></a></th>
+                <th scope="col">Sector</th>
+                <th scope="col">Position Specifics</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (jobOffers.Count == 0)
+            {
+                <tr>
+                    <td>
+                        No job offers to show.
+                    </td>
+                </tr>
+            }
+            @foreach (var jobOffer in jobOffers)
+            {
+                <tr>
+                    <td class="text-break">@jobOffer.Position</td>
+                    <td>@jobOffer.EmployerName</td>
+                    <td>@jobOffer.JobLevelName</td>
+                    <td>@jobOffer.City</td>
+                    <td>@jobOffer.CreatedOn.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@jobOffer.JobSectorName</td>
+                    <td>@jobOffer.JobDetails</td>
+                    <td>
+                        <a class="btn btn-info text-nowrap" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffer.Id">View Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination">
+            @if (this.Model.CurrentPage == 1)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/JobOffers/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+            }
+
+            @for (int i = 1; i <= Model.PagesCount; i++)
+            {
+                var active = i == this.Model.CurrentPage ? "active" : string.Empty;
+
+                <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/JobOffers/All?page=@i">@i</a></li>
+            }
+
+            @if (this.Model.CurrentPage == this.Model.PagesCount || this.Model.PagesCount == 0)
+            {
+                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/JobOffers/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+            }
+        </ul>
+    </nav>
+</div>

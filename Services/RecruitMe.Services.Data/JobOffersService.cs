@@ -15,7 +15,7 @@
         private readonly IDeletableEntityRepository<JobOffer> jobOffersRepository;
         private readonly IDeletableEntityRepository<JobOfferLanguage> jobOfferLanguagesRepository;
         private readonly IDeletableEntityRepository<JobOfferSkill> jobOfferSkillsRepository;
-        private readonly IDeletableEntityRepository<JobOfferJobType> jobOfferJobTypeRepository;
+        private readonly IDeletableEntityRepository<JobOfferJobType> jobOfferJobTypesRepository;
 
         public JobOffersService(
             IDeletableEntityRepository<JobOffer> jobOffersRepository,
@@ -26,7 +26,7 @@
             this.jobOffersRepository = jobOffersRepository;
             this.jobOfferLanguagesRepository = jobOfferLanguagesRepository;
             this.jobOfferSkillsRepository = jobOfferSkillsRepository;
-            this.jobOfferJobTypeRepository = jobOfferJobTypeRepository;
+            this.jobOfferJobTypesRepository = jobOfferJobTypeRepository;
         }
 
         public async Task<string> Add(PostViewModel model, string employerId)
@@ -76,11 +76,11 @@
                 await this.jobOffersRepository.AddAsync(offer);
                 await this.jobOfferSkillsRepository.AddRangeAsync(jobOfferSkills);
                 await this.jobOfferLanguagesRepository.AddRangeAsync(jobOfferLanguages);
-                await this.jobOfferJobTypeRepository.AddRangeAsync(jobTypes);
+                await this.jobOfferJobTypesRepository.AddRangeAsync(jobTypes);
                 await this.jobOffersRepository.SaveChangesAsync();
                 await this.jobOfferSkillsRepository.SaveChangesAsync();
                 await this.jobOfferLanguagesRepository.SaveChangesAsync();
-                await this.jobOfferJobTypeRepository.SaveChangesAsync();
+                await this.jobOfferJobTypesRepository.SaveChangesAsync();
                 return offer.Id;
             }
             catch (Exception)
@@ -152,7 +152,7 @@
 
                if (filters.TypesIds.Count > 0)
                {
-                   List<string> jobOffersIdsWithSelectedTypes = this.jobOfferJobTypeRepository
+                   List<string> jobOffersIdsWithSelectedTypes = this.jobOfferJobTypesRepository
                        .AllAsNoTracking()
                        .Where(jojt => filters.TypesIds.Contains(jojt.JobTypeId))
                        .Select(jo => jo.JobOfferId)
@@ -239,8 +239,6 @@
             jobOffer.JobSectorId = input.JobSectorId;
             jobOffer.JobLevelId = input.JobLevelId;
 
-            this.jobOffersRepository.Update(jobOffer);
-
             List<int> jobOfferSkillsIds = this.jobOfferSkillsRepository
                 .AllAsNoTracking()
                 .Where(jos => jos.JobOfferId == jobOffer.Id)
@@ -313,7 +311,7 @@
                 }
             }
 
-            List<int> jobOfferTypesIds = this.jobOfferJobTypeRepository
+            List<int> jobOfferTypesIds = this.jobOfferJobTypesRepository
                 .AllAsNoTracking()
                 .Where(jojt => jojt.JobOfferId == jobOffer.Id)
                 .Select(jojt => jojt.JobTypeId)
@@ -330,7 +328,7 @@
                         JobOfferId = jobOffer.Id,
                         CreatedOn = DateTime.UtcNow,
                     };
-                    await this.jobOfferJobTypeRepository.AddAsync(jobOfferType);
+                    await this.jobOfferJobTypesRepository.AddAsync(jobOfferType);
                 }
             }
 
@@ -339,22 +337,23 @@
             {
                 if (!input.JobTypesIds.Contains(jobOfferTypeId))
                 {
-                    JobOfferJobType jobOfferJobType = this.jobOfferJobTypeRepository
+                    JobOfferJobType jobOfferJobType = this.jobOfferJobTypesRepository
                         .All()
                         .Where(jos => jos.JobTypeId == jobOfferTypeId
                         && jos.JobOfferId == jobOffer.Id)
                         .FirstOrDefault();
 
-                    this.jobOfferJobTypeRepository.Delete(jobOfferJobType);
+                    this.jobOfferJobTypesRepository.Delete(jobOfferJobType);
                 }
             }
 
             try
             {
+                this.jobOffersRepository.Update(jobOffer);
                 await this.jobOffersRepository.SaveChangesAsync();
                 await this.jobOfferSkillsRepository.SaveChangesAsync();
                 await this.jobOfferLanguagesRepository.SaveChangesAsync();
-                await this.jobOfferJobTypeRepository.SaveChangesAsync();
+                await this.jobOfferJobTypesRepository.SaveChangesAsync();
                 return jobOffer.Id;
             }
             catch (Exception)
@@ -418,6 +417,19 @@
                 .Where(jo => jo.Id == jobOfferId)
                 .Select(jo => jo.Position)
                 .FirstOrDefault();
+        }
+
+        public IEnumerable<T> GetLastTenOffers<T>()
+        {
+            DateTime requestTime = DateTime.UtcNow;
+            return this.jobOffersRepository
+                 .AllAsNoTracking()
+                 .Where(jo => jo.ValidFrom <= requestTime
+                     && jo.ValidUntil >= requestTime)
+                 .OrderByDescending(jo => jo.CreatedOn)
+                 .Take(10)
+                 .To<T>()
+                 .ToList();
         }
     }
 }

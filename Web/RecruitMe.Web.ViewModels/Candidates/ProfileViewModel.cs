@@ -6,7 +6,7 @@
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
 
-    public class IndexViewModel : IMapFrom<Candidate>, IHaveCustomMappings
+    public class ProfileViewModel : IMapFrom<Candidate>, IHaveCustomMappings
     {
         public bool IsProfileCreated { get; set; }
 
@@ -24,9 +24,11 @@
 
         public string Skills { get; set; }
 
+        public string AboutMe { get; set; }
+
         public void CreateMappings(IProfileExpression configuration)
         {
-            configuration.CreateMap<Candidate, IndexViewModel>()
+            configuration.CreateMap<Candidate, ProfileViewModel>()
                 .ForMember(ivm => ivm.Name, options =>
                    {
                        options.MapFrom(c => c.FirstName + " " + c.LastName);

@@ -47,7 +47,11 @@
                  .ForMember(jodvm => jodvm.Languages, options =>
                  {
                      options.MapFrom(jo => jo.Languages.Select(jl => jl.Language.Name).ToList());
-                 });
+                 })
+                 .ForMember(jodvm => jodvm.EmployerName, options =>
+                    {
+                        options.MapFrom(jo => jo.Employer.Name + $" ({(jo.Employer.IsPublicSector == true ? "Public Sector" : "Private Sector")}{(jo.Employer.IsHiringAgency == true ? ", Hiring Agency" : string.Empty)})");
+                    });
         }
     }
 }

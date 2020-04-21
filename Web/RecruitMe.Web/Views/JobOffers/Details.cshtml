@@ -9,7 +9,7 @@
 }
 
 <h1 style="display:inline-block">@ViewData["Title"]</h1>
-<a class="btn btn-warning float-right" asp-controller="JobOffers" asp-action="All">Back to List</a>
+<a class="btn btn-warning float-right" href="javascript:history.go(-1)">Back to List</a>
 
 @if (this.TempData["AlreadyAppliedMessage"] != null)
 {

@@ -1,0 +1,88 @@
+﻿@model RecruitMe.Web.ViewModels.Employers.ProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+    string logoUrl = this.Model.LogoUrl != null ? this.Model.LogoUrl : "/img/profile-placeholder.png";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (this.TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+<h3>Welcome!</h3>
+<div class="row">
+    <div class="card">
+        <img class="card-img-top img-thumbnail" src="@logoUrl" style="width: 300px; height: 300px;">
+    </div>
+    <div class="card flex-fill">
+        <div class="row">
+            <div class="card-body col-6">
+                <h5 class="card-title" style="display:inline-block"><strong>Profile Details:</strong></h5>
+                <div class="card-text"><strong>Name: </strong>@Model.Name</div>
+                <div class="card-text"><strong>Email Address: </strong>@Model.ApplicationUserEmail</div>
+                <div class="card-text"><strong>Phone Number: </strong>@(Model.PhoneNumber!=null?Model.PhoneNumber:"  -")</div>
+                <div class="card-text"><strong>Address: </strong>@(Model.Address!=null?Model.Address:"  -")</div>
+                <div class="card-text"><strong>Website: </strong>@(Model.WebsiteAddress != null ? Model.WebsiteAddress:"  -")</div>
+                <div class="card-text"><strong>Sector: </strong>@Model.JobSectorName</div>
+                <br />
+                <a class="btn btn-primary" asp-controller="Employers" asp-action="UpdateProfile">Update profile details</a>
+            </div>
+
+            <div class="card-body col-6">
+                <h5 class="card-title" style="display:inline-block"><strong>Contact Person Information:</strong></h5>
+                <div class="card-text"><strong>Name: </strong>@Model.ContactPersonNames</div>
+                <div class="card-text"><strong>Email Address: </strong>@Model.ContactPersonEmail</div>
+                <div class="card-text"><strong>Phone Number: </strong>@(Model.ContactPersonPhoneNumber!=null?Model.ContactPersonPhoneNumber : "  -")</div>
+                <div class="card-text"><strong>Position: </strong>@(Model.ContactPersonPosition!=null?Model.ContactPersonPosition : "  -")</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="card flex-fill">
+        <div class="card-body">
+            <h5 class="card-title" style="display:inline-block"><strong>My Links:</strong></h5>
+            <div class="card-text">
+                <strong>Post a Job Offer:   </strong>
+                Post a
+                <a style="display:inline" href="/JobOffers/Post">
+                    <strong>
+                        new Job Offer
+                    </strong>
+                </a>
+            </div>
+            <div class="card-text">
+                <strong>My Job Offers:   </strong>
+                Review the history and details of
+                <a style="display:inline" href="/JobOffers/MyOffers">
+                    <strong>
+                        your Job Offers
+                    </strong>
+                </a>
+                view and manage their current status
+            </div>
+            <div class="card-text">
+                <strong>Account management:   </strong>
+                Manage your Recruit.Me account,
+                <a style="display:inline" href="/Identity/Account/Manage/ChangePassword">
+                    <strong>
+                        reset your password
+                    </strong>
+                </a>
+                or
+                <a style="display:inline" href="/Identity/Account/Manage/Email">
+                    <strong>
+                        update your email address
+                    </strong>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

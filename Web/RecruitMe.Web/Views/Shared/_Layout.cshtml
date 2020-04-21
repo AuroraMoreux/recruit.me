@@ -32,7 +32,7 @@
     <link href="~/lib/fontawesome/css/all.css" rel="stylesheet" asp-append-version="true" />
 </head>
 <body style="@style">
-    <header style="position:sticky;top: 0;">
+    <header style="position:sticky;top: 0; z-index:99999">
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3" >
             <div class="container">
                 <a class="navbar-brand" style="color:#9055a2" asp-area="" asp-controller="Home" asp-action="Index"><h3>@GlobalConstants.SystemName</h3></a>
@@ -47,7 +47,7 @@
         </nav>
     </header>
 
-    <div class="container container-lg">
+    <div class="container container-lg" style="padding-top:10px">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @this.RenderBody()

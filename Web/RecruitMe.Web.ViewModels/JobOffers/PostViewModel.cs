@@ -49,14 +49,17 @@
         [Display(Name = "Job Level")]
         public int JobLevelId { get; set; }
 
+        [Required]
         [Display(Name = "Required Skills")]
         [IntArrayLength("Required Skills", 10, 1)]
         public List<int> SkillsIds { get; set; }
 
+        [Required]
         [Display(Name = "Required Languages")]
         [IntArrayLength("Required Languages", 5, 1)]
         public List<int> LanguagesIds { get; set; }
 
+        [Required]
         [Display(Name = "Job Types")]
         [IntArrayLength("Job Type", 5, 1)]
         public List<int> JobTypesIds { get; set; }

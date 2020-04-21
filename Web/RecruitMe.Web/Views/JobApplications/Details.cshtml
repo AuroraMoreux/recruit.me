@@ -24,7 +24,18 @@ else if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
         <h5 class="card-title" style="display:inline-block">Candidate Contact Information:</h5>
         <h6 class="card-title float-right" style="display:inline-block">Application Status: <span id="applicationStatus"> @Model.ApplicationStatusName</span></h6>
         <p class="card-text"><strong>Name: </strong>@Model.CandidateName</p>
-        <p class="card-text"><strong>Email: </strong>@Model.CandidateApplicationUserEmail; <strong>Phone Number: </strong>@Model.CandidatePhoneNumber</p>
+        <p class="card-text"><strong>Email: </strong>@Model.CandidateApplicationUserEmail; <strong>Phone Number: </strong>@(Model.CandidatePhoneNumber!=null?Model.CandidatePhoneNumber:"  -")</p>
+        <p class="card-text"><strong>Languages: </strong>@(Model.CandidateLanguages.Count()!=0?Model.CandidateLanguages:"  -")</p>
+        <p class="card-text"><strong>Skills: </strong>@(Model.CandidateSkills.Count()!=0?Model.CandidateSkills : "  -")</p>
+        @if (Model.CandidateAboutMe != null)
+        {
+            <hr />
+            <h5 class="card-title" style="display:inline-block">About Me:</h5>
+            <div class="card-text">
+                @Model.CandidateAboutMe
+            </div>
+        }
+
     </div>
 </div>
 
@@ -68,7 +79,7 @@ else if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
         @if (this.User.IsInRole(GlobalConstants.CandidateRoleName) && Model.ApplicationStatusName.ToLower().Contains("review"))
         {
             <div class="text-center">
-                <a class="btn btn-success align-center" asp-controller="JobApplications" asp-action="StatusChange" asp-route-statusId="@retractStatusId" asp-route-jobApplicationId="@Model.Id">Retract</a>
+                <a class="btn btn-danger align-center" asp-controller="JobApplications" asp-action="StatusChange" asp-route-statusId="@retractStatusId" asp-route-jobApplicationId="@Model.Id">Retract</a>
             </div>
         }
     </div>

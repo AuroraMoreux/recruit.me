@@ -3,7 +3,9 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
+
     using AutoMapper;
+    using Ganss.XSS;
     using Microsoft.AspNetCore.Http;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
@@ -36,6 +38,12 @@
         [Display(Name = "Education")]
         public string Education { get; set; }
 
+        [MaxLength(800)]
+        [Display(Name = "About Me")]
+        public string AboutMe { get; set; }
+
+        public string SanitizedAboutMe => new HtmlSanitizer().Sanitize(this.AboutMe);
+
         [Display(Name = "Upload Profile Picture")]
         [FileValidatior(true)]
         public IFormFile ProfilePicture { get; set; }
@@ -63,6 +71,12 @@
                  {
                      options.MapFrom(c => c.Languages.Select(jos => jos.LanguageId).ToList());
                  });
+
+            configuration.CreateMap<UpdateCandidateProfileViewModel, Candidate>()
+           .ForMember(c => c.AboutMe, options =>
+           {
+               options.MapFrom(ucpvm => ucpvm.SanitizedAboutMe);
+           });
         }
     }
 }

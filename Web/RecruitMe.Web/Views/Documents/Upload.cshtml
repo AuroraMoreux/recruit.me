@@ -15,12 +15,14 @@
                 <div class="form-group">
                     <label>Allowed file extensions: @allowedFileExtensions</label>
                     <label>Max Size allowed: 10MB</label>
+                    <label class="text-danger float-right"><small><strong>Required</strong></small></label>
                     <input asp-for="File" class="form-control" />
                     <span asp-validation-for="File" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="DocumentCategoryId"></label>
+                    <label class="text-danger float-right"><small><strong>Required</strong></small></label>
                     <select asp-for="DocumentCategoryId" asp-items="categories" class="form-control"></select>
                     <span asp-validation-for="DocumentCategoryId" class="text-danger"></span>
                 </div>

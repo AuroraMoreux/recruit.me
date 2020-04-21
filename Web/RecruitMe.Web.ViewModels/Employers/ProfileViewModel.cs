@@ -4,7 +4,7 @@
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
 
-    public class IndexViewModel : IMapFrom<Employer>
+    public class ProfileViewModel : IMapFrom<Employer>
     {
         public bool IsProfileCreated { get; set; }
 

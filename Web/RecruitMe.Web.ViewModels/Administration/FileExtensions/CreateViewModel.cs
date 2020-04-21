@@ -7,8 +7,10 @@
 
     public class CreateViewModel : IMapTo<FileExtension>
     {
+        [Required]
         public string Name { get; set; }
 
+        [Required]
         [Display(Name = "File Type")]
         public string FileType { get; set; }
 

@@ -1,0 +1,78 @@
+﻿@model RecruitMe.Web.ViewModels.Shared.IndexViewModel
+@using RecruitMe.Common
+
+
+    <div class="row container-fluid">
+        <div class="col-7">
+            <h5>Latest Job Offers:</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Published On</th>
+                        <th>Position</th>
+                        <th>City</th>
+                        <th>Level</th>
+                        <th>Employer</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.LastTenJobOffers.Count() == 0)
+                    {
+                        <tr>
+                            <td>
+                                No job offers to show.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var jobOffer in Model.LastTenJobOffers)
+                    {
+                        <tr>
+                            <td>@jobOffer.ValidFrom.Date.ToString("dd-MM-yyyy")</td>
+                            <td class="text-break">@jobOffer.Position</td>
+                            <td>@jobOffer.City</td>
+                            <td>@jobOffer.JobLevelName</td>
+                            <td>@jobOffer.EmployerName</td>
+                            <td>
+                                <a class="btn btn-info btn-sm text-nowrap" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffer.Id">View Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-5">
+            <h5>Top Employers:</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Employer</th>
+                        <th>Offers Today</th>
+                        <th>Total Offers</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.TopEmployers.Count() == 0)
+                    {
+                        <tr>
+                            <td>
+                                No employers to show.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var employer in Model.TopEmployers)
+                    {
+                        <tr>
+                            <td>@employer.Name</td>
+                            <td>@employer.NewOffersCount</td>
+                            <td>@employer.EmployerJobOffersCount</td>
+                            <td>
+                                <a class="btn btn-info btn-sm text-nowrap" asp-controller="JobOffers" asp-action="ByEmployer" asp-route-id="@employer.Id">View All</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>

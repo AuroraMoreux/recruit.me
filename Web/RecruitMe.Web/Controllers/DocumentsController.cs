@@ -165,14 +165,14 @@
         [Authorize]
         public async Task<IActionResult> Download(string id, string jobApplicationId = null)
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-            if (candidateId == null)
-            {
-                return this.RedirectToAction("CreateProfile", "Candidates");
-            }
-
             if (jobApplicationId == null)
             {
+                string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+                if (candidateId == null)
+                {
+                    return this.RedirectToAction("CreateProfile", "Candidates");
+                }
+
                 bool isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
                 if (!isOwner)
                 {

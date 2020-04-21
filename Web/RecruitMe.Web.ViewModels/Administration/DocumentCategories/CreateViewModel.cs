@@ -7,6 +7,7 @@
 
     public class CreateViewModel : IMapTo<DocumentCategory>
     {
+        [Required]
         public string Name { get; set; }
 
         [Display(Name = "Deleted")]

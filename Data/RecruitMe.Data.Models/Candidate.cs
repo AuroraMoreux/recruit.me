@@ -36,6 +36,9 @@
 
         public string Education { get; set; }
 
+        [MaxLength(800)]
+        public string AboutMe { get; set; }
+
         [Required]
         public string ApplicationUserId { get; set; }
 

@@ -28,5 +28,7 @@
         IEnumerable<T> GetEmployerJobOffers<T>(string employerId);
 
         string GetOfferPositionById(string jobOfferId);
+
+        IEnumerable<T> GetLastTenOffers<T>();
     }
 }

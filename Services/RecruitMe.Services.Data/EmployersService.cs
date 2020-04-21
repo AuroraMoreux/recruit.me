@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Services.Data
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -69,6 +70,15 @@
                  .FirstOrDefault();
         }
 
+        public string GetEmployerNameById(string id)
+        {
+            return this.employersRepository
+                 .AllAsNoTracking()
+                 .Where(e => e.Id == id)
+                 .Select(e => e.Name)
+                 .FirstOrDefault();
+        }
+
         public int GetNewEmployersCount()
         {
             DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
@@ -85,6 +95,16 @@
                  .Where(e => e.Id == employerId)
                  .To<T>()
                  .FirstOrDefault();
+        }
+
+        public IEnumerable<T> GetTopFiveEmployers<T>()
+        {
+            return this.employersRepository
+                .AllAsNoTracking()
+                .OrderByDescending(e => e.JobOffers.Count)
+                .Take(5)
+                .To<T>()
+                .ToList();
         }
 
         public async Task<string> UpdateProfileAsync(string employerId, UpdateEmployerProfileViewModel model)

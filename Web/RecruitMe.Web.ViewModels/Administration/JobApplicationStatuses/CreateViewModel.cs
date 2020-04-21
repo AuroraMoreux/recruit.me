@@ -7,6 +7,7 @@
 
     public class CreateViewModel : IMapTo<JobApplicationStatus>
     {
+        [Required]
         public string Name { get; set; }
 
         [Display(Name = "Deleted")]

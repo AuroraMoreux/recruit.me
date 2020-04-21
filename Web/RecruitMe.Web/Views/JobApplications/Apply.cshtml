@@ -1,6 +1,6 @@
 ﻿@model RecruitMe.Web.ViewModels.JobApplications.ApplyViewModel
 @{
-    ViewData["Title"] = $"Submit Application for position {Model.JobOfferDetails.Position}";
+    ViewData["Title"] = $"Submit Application for position '{Model.JobOfferDetails.Position}'";
     var documents = Model.Documents.Select(d => new SelectListItem(d.Name, d.Id.ToString()));
 
 }
@@ -31,7 +31,7 @@
     <form class="container" asp-controller="JobApplications" asp-action="Apply" method="post">
         <div asp-validation-summary="All" class="text-danger"></div>
         <div>
-            <label><strong>Please validate your contact information:</strong></label>
+            <label style="margin-left:1.5rem"><strong>Please validate your contact information:</strong></label>
             <div class="form-group">
                 <label asp-for="CandidateDetails.FirstName"><strong>Name: </strong>@Model.CandidateDetails.FirstName @Model.CandidateDetails.LastName</label>
                 <input hidden asp-for="CandidateDetails.FirstName" value="@Model.CandidateDetails.FirstName" />
@@ -53,7 +53,7 @@
             <input hidden asp-for="JobOfferId" value="@Model.JobOfferId" />
             <input hidden asp-for="CandidateId" value="@Model.CandidateId" />
             <a class=" btn btn-sm btn-primary" style="margin-left:1rem" target="_blank" asp-controller="Candidates" asp-action="UpdateProfile">Update contact information</a>
-            <small class="form-text text-muted"style="margin-left:1.5rem">Changes will appear after reload</small>
+            <small class="form-text text-muted" style="margin-left:1.5rem">Changes will appear after reload</small>
         </div>
         <hr />
         <div>
@@ -63,15 +63,17 @@
                 <span asp-validation-for="Message" class="text-danger"></span>
 
             </div>
+            <hr />
             <div class="form-group">
                 <label>Select documents to attach: </label>
                 <a class="btn btn-primary btn-sm float-right" target="_blank" asp-controller="Documents" asp-action="Upload">Add new Document</a><br />
+                <label class="text-danger"><small><strong>Please choose at least one</strong></small></label>
                 <small class="form-text text-muted float-right" style="display:block">Changes will appear after reload</small>
                 <select asp-for="DocumentIds" multiple asp-items="documents" class="form-control"></select>
                 <span asp-validation-for="DocumentIds" class="text-danger"></span>
             </div>
 
-            <input type="submit" value="Submit" class="btn btn-primary" style="margin-left:1.5rem"/>
+            <input type="submit" value="Submit" class="btn btn-primary" style="margin-left:1.5rem" />
             <a class="btn btn-warning" asp-controller="JobOffers" asp-action="Details" asp-route-id="@Model.JobOfferId">Back to Offer</a>
         </div>
         <hr />

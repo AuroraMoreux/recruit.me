@@ -14,6 +14,7 @@
     using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.Candidates;
     using RecruitMe.Web.ViewModels.JobOffers;
+    using RecruitMe.Web.ViewModels.Shared;
 
     [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
     public class CandidatesController : BaseController
@@ -23,6 +24,8 @@
         private readonly IFileExtensionsService fileExtensionsService;
         private readonly ILanguagesService languagesService;
         private readonly ISkillsService skillsService;
+        private readonly IJobOffersService jobOffersService;
+        private readonly IEmployersService employersService;
         private readonly IEnumerable<string> allowedExtensions;
         private readonly IEnumerable<LanguagesDropDownCheckboxListViewModel> languages;
         private readonly IEnumerable<SkillsDropDownCheckboxListViewModel> skills;
@@ -32,13 +35,17 @@
             ICandidatesService candidatesService,
             IFileExtensionsService fileExtensionsService,
             ILanguagesService languagesService,
-            ISkillsService skillsService)
+            ISkillsService skillsService,
+            IJobOffersService jobOffersService,
+            IEmployersService employersService)
         {
             this.userManager = userManager;
             this.candidatesService = candidatesService;
             this.fileExtensionsService = fileExtensionsService;
             this.languagesService = languagesService;
             this.skillsService = skillsService;
+            this.jobOffersService = jobOffersService;
+            this.employersService = employersService;
             this.allowedExtensions = this.fileExtensionsService.GetImageExtensions();
             this.languages = this.languagesService.GetAll<LanguagesDropDownCheckboxListViewModel>();
             this.skills = this.skillsService.GetAll<SkillsDropDownCheckboxListViewModel>();
@@ -47,25 +54,34 @@
         [AllowAnonymous]
         public IActionResult Index()
         {
-            IndexViewModel viewModel = new IndexViewModel();
-
             if (!this.User.Identity.IsAuthenticated)
             {
                 this.HttpContext.Session.SetString("UserRole", GlobalConstants.CandidateRoleName);
-                return this.View(viewModel);
             }
 
+            IndexViewModel viewModel = new IndexViewModel();
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-
-            if (candidateId == null)
+            if (candidateId != null)
             {
-                viewModel.IsProfileCreated = false;
-            }
-            else
-            {
-                viewModel = this.candidatesService.GetProfileDetails<IndexViewModel>(candidateId);
                 viewModel.IsProfileCreated = true;
             }
+
+            IEnumerable<IndexJobOffersModel> lastTenOffers = this.jobOffersService.GetLastTenOffers<IndexJobOffersModel>();
+            IEnumerable<IndexTopEmployersModel> topEmployers = this.employersService.GetTopFiveEmployers<IndexTopEmployersModel>();
+            viewModel.LastTenJobOffers = lastTenOffers;
+            viewModel.TopEmployers = topEmployers;
+            return this.View(viewModel);
+        }
+
+        public IActionResult MyProfile()
+        {
+            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            if (candidateId == null)
+            {
+                return this.RedirectToAction(nameof(this.Index));
+            }
+
+            ProfileViewModel viewModel = this.candidatesService.GetProfileDetails<ProfileViewModel>(candidateId);
 
             return this.View(viewModel);
         }
@@ -114,7 +130,6 @@
             input.ApplicationUserId = user.Id;
 
             string candidateId = await this.candidatesService.CreateProfileAsync(input);
-
             if (candidateId == null)
             {
                 return this.RedirectToAction("Error", "Home");
@@ -123,13 +138,12 @@
             user.CandidateId = candidateId;
             await this.userManager.UpdateAsync(user);
             this.TempData["Success"] = GlobalConstants.ProfileSuccessfullyCreated;
-            return this.RedirectToAction(nameof(this.Index));
+            return this.RedirectToAction(nameof(this.MyProfile));
         }
 
         public IActionResult UpdateProfile()
         {
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
-
             if (candidateId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
@@ -179,10 +193,7 @@
             }
 
             this.TempData["Success"] = GlobalConstants.ProfileSuccessfullyUpdated;
-            return this.RedirectToAction(nameof(this.Index));
+            return this.RedirectToAction(nameof(this.MyProfile));
         }
-
-        // TODO: add skills and languages to the models
-        // TODO: add job applications review screen
     }
 }

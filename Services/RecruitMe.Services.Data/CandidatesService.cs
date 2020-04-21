@@ -56,6 +56,7 @@
                 {
                     Candidate = candidate,
                     LanguageId = languageId,
+                    CreatedOn = DateTime.UtcNow,
                 };
                 candidateLanguages.Add(language);
             }
@@ -67,6 +68,7 @@
                 {
                     Candidate = candidate,
                     SkillId = skillId,
+                    CreatedOn = DateTime.UtcNow,
                 };
                 candidateSkills.Add(skill);
             }
@@ -137,6 +139,7 @@
             candidate.PhoneNumber = model.PhoneNumber;
             candidate.ContactAddress = model.ContactAddress;
             candidate.Education = model.Education;
+            candidate.AboutMe = model.SanitizedAboutMe;
 
             if (model.ProfilePicture != null)
             {
@@ -156,10 +159,86 @@
             }
 
             candidate.ModifiedOn = DateTime.UtcNow;
+
+            List<int> candidateLanguagesIds = this.candidateLanguagesRepository
+               .AllAsNoTracking()
+               .Where(cl => cl.CandidateId == candidateId)
+               .Select(cl => cl.LanguageId)
+               .ToList();
+
+            // Add new ones
+            foreach (int languageId in model.LanguagesIds)
+            {
+                if (!candidateLanguagesIds.Contains(languageId))
+                {
+                    CandidateLanguage language = new CandidateLanguage
+                    {
+                        LanguageId = languageId,
+                        CandidateId = candidate.Id,
+                        CreatedOn = DateTime.UtcNow,
+                    };
+                    await this.candidateLanguagesRepository.AddAsync(language);
+                }
+            }
+
+            // Delete old ones
+            foreach (int languageId in candidateLanguagesIds)
+            {
+                if (!model.LanguagesIds.Contains(languageId))
+                {
+                    CandidateLanguage languages = this.candidateLanguagesRepository
+                        .All()
+                        .Where(cl => cl.LanguageId == languageId
+                        && cl.CandidateId == candidate.Id)
+                        .FirstOrDefault();
+
+                    this.candidateLanguagesRepository.Delete(languages);
+                }
+            }
+
+            List<int> candidateSkillsIds = this.candidateSkillsRepository
+              .AllAsNoTracking()
+              .Where(cs => cs.CandidateId == candidateId)
+              .Select(cs => cs.SkillId)
+              .ToList();
+
+            // Add new ones
+            foreach (int skillId in model.SkillsIds)
+            {
+                if (!candidateSkillsIds.Contains(skillId))
+                {
+                    CandidateSkill skill = new CandidateSkill
+                    {
+                        SkillId = skillId,
+                        CandidateId = candidate.Id,
+                        CreatedOn = DateTime.UtcNow,
+                    };
+                    await this.candidateSkillsRepository.AddAsync(skill);
+                }
+            }
+
+            // Delete old ones
+            foreach (int skillId in candidateSkillsIds)
+            {
+                if (!model.SkillsIds.Contains(skillId))
+                {
+                    CandidateSkill skills = this.candidateSkillsRepository
+                        .All()
+                        .Where(cs => cs.SkillId == skillId
+                        && cs.CandidateId == candidate.Id)
+                        .FirstOrDefault();
+
+                    this.candidateSkillsRepository.Delete(skills);
+                }
+            }
+
             try
             {
                 this.candidatesRepository.Update(candidate);
                 await this.candidatesRepository.SaveChangesAsync();
+                await this.candidateLanguagesRepository.SaveChangesAsync();
+                await this.candidateSkillsRepository.SaveChangesAsync();
+
                 return candidate.Id;
             }
             catch (Exception)

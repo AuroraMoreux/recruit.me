@@ -13,14 +13,16 @@
     using RecruitMe.Services.Data;
     using RecruitMe.Web.Infrastructure.Attributes;
     using RecruitMe.Web.ViewModels.Employers;
+    using RecruitMe.Web.ViewModels.Shared;
 
     [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
     public class EmployersController : BaseController
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IEmployersService employerService;
+        private readonly IEmployersService employersService;
         private readonly IJobSectorsService jobSectorsService;
         private readonly IFileExtensionsService fileExtensionsService;
+        private readonly IJobOffersService jobOffersService;
         private IEnumerable<JobSectorsDropDownViewModel> jobSectors;
         private IEnumerable<string> allowedExtensions;
 
@@ -28,12 +30,14 @@
             UserManager<ApplicationUser> userManager,
             IEmployersService employerService,
             IJobSectorsService jobSectorsService,
-            IFileExtensionsService fileExtensionsService)
+            IFileExtensionsService fileExtensionsService,
+            IJobOffersService jobOffersService)
         {
             this.userManager = userManager;
-            this.employerService = employerService;
+            this.employersService = employerService;
             this.jobSectorsService = jobSectorsService;
             this.fileExtensionsService = fileExtensionsService;
+            this.jobOffersService = jobOffersService;
             this.jobSectors = this.jobSectorsService.GetAll<JobSectorsDropDownViewModel>();
 
             this.allowedExtensions = this.fileExtensionsService.GetImageExtensions();
@@ -42,32 +46,44 @@
         [AllowAnonymous]
         public IActionResult Index()
         {
-            IndexViewModel viewModel = new IndexViewModel();
 
             if (!this.User.Identity.IsAuthenticated)
             {
                 this.HttpContext.Session.SetString("UserRole", GlobalConstants.EmployerRoleName);
-                return this.View(viewModel);
             }
 
-            string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
+            IndexViewModel viewModel = new IndexViewModel();
 
-            if (employerId == null)
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+
+            if (employerId != null)
             {
-                viewModel.IsProfileCreated = false;
-            }
-            else
-            {
-                viewModel = this.employerService.GetProfileDetails<IndexViewModel>(employerId);
                 viewModel.IsProfileCreated = true;
             }
+
+            IEnumerable<IndexJobOffersModel> lastTenOffers = this.jobOffersService.GetLastTenOffers<IndexJobOffersModel>();
+            IEnumerable<IndexTopEmployersModel> topEmployers = this.employersService.GetTopFiveEmployers<IndexTopEmployersModel>();
+            viewModel.LastTenJobOffers = lastTenOffers;
+            viewModel.TopEmployers = topEmployers;
+            return this.View(viewModel);
+        }
+
+        public IActionResult MyProfile()
+        {
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
+            {
+                return this.RedirectToAction(nameof(this.Index));
+            }
+
+            ProfileViewModel viewModel = this.employersService.GetProfileDetails<ProfileViewModel>(employerId);
 
             return this.View(viewModel);
         }
 
         public IActionResult CreateProfile()
         {
-            string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId != null)
             {
                 return this.RedirectToAction(nameof(this.UpdateProfile));
@@ -85,7 +101,7 @@
         [HttpPost]
         public async Task<IActionResult> CreateProfile(CreateEmployerProfileInputModel input)
         {
-            if (this.employerService.GetEmployerIdByUsername(this.User.Identity.Name) != null)
+            if (this.employersService.GetEmployerIdByUsername(this.User.Identity.Name) != null)
             {
                 return this.RedirectToAction(nameof(this.UpdateProfile));
             }
@@ -97,7 +113,7 @@
                 return this.View(input);
             }
 
-            if (!this.allowedExtensions.Any(ae => input.Logo.FileName.EndsWith(ae)))
+            if (input.Logo != null && !this.allowedExtensions.Any(ae => input.Logo.FileName.EndsWith(ae)))
             {
                 this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
                 input.ImageExtensions = this.allowedExtensions;
@@ -108,7 +124,7 @@
             ApplicationUser user = await this.userManager.GetUserAsync(this.User);
             input.ApplicationUserId = user.Id;
 
-            string employerId = await this.employerService.CreateProfileAsync(input);
+            string employerId = await this.employersService.CreateProfileAsync(input);
 
             if (employerId == null)
             {
@@ -123,13 +139,13 @@
 
         public IActionResult UpdateProfile()
         {
-            string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            UpdateEmployerProfileViewModel details = this.employerService.GetProfileDetails<UpdateEmployerProfileViewModel>(employerId);
+            UpdateEmployerProfileViewModel details = this.employersService.GetProfileDetails<UpdateEmployerProfileViewModel>(employerId);
             if (details == null)
             {
                 return this.NotFound();
@@ -143,7 +159,7 @@
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(UpdateEmployerProfileViewModel input)
         {
-            string employerId = this.employerService.GetEmployerIdByUsername(this.User.Identity.Name);
+            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
@@ -156,7 +172,7 @@
                 return this.View(input);
             }
 
-            if (!this.allowedExtensions.Any(ae => input.Logo.FileName.EndsWith(ae)))
+            if (input.Logo != null && !this.allowedExtensions.Any(ae => input.Logo.FileName.EndsWith(ae)))
             {
                 this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
                 input.ImageExtensions = this.allowedExtensions;
@@ -164,7 +180,7 @@
                 return this.View(input);
             }
 
-            string updateResult = await this.employerService.UpdateProfileAsync(employerId, input);
+            string updateResult = await this.employersService.UpdateProfileAsync(employerId, input);
 
             if (employerId == null)
             {

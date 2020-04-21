@@ -314,6 +314,35 @@
             return this.View(viewModel);
         }
 
+        public IActionResult ByEmployer(string id, string sortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
+        {
+            IEnumerable<JobOffersViewModel> offers = this.jobOffersService.GetEmployerJobOffers<JobOffersViewModel>(id);
+            this.ViewData["DateSortParam"] = string.IsNullOrEmpty(sortOrder) ? "date_asc" : string.Empty;
+
+            offers = sortOrder switch
+            {
+                "date_asc" => offers.OrderBy(jo => jo.CreatedOn),
+                _ => offers.OrderByDescending(jo => jo.CreatedOn)
+            };
+
+            int pagesCount = (int)Math.Ceiling(offers.Count() / (decimal)perPage);
+            IEnumerable<JobOffersViewModel> paginatedOffers = offers
+                .Skip(perPage * (page - 1))
+                .Take(perPage)
+                .ToList();
+            string employerName = this.employersService.GetEmployerNameById(id);
+
+            ByEmployerViewModel viewModel = new ByEmployerViewModel
+            {
+                Name = employerName,
+                JobOffers = paginatedOffers,
+                CurrentPage = page,
+                PagesCount = pagesCount,
+            };
+
+            return this.View(viewModel);
+        }
+
         [HttpPost]
         [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Delete(string id)
