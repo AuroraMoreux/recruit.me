@@ -67,7 +67,7 @@
             <div class="form-group">
                 <label>Select documents to attach: </label>
                 <a class="btn btn-primary btn-sm float-right" target="_blank" asp-controller="Documents" asp-action="Upload">Add new Document</a><br />
-                <label class="text-danger"><small><strong>Please choose at least one</strong></small></label>
+                <label class="text-danger"><small><strong>Please select at least one</strong></small></label>
                 <small class="form-text text-muted float-right" style="display:block">Changes will appear after reload</small>
                 <select asp-for="DocumentIds" multiple asp-items="documents" class="form-control"></select>
                 <span asp-validation-for="DocumentIds" class="text-danger"></span>
