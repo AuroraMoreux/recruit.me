@@ -46,7 +46,7 @@
             {
                 var fileSize = (document.Size < 1024 ? @document.Size + " KB" : Math.Round(@document.Size / 1024m, 2) + " MB");
                 <tr>
-                    <td><icon name="@document.FileExtensionName"></icon></td>
+                    <td><icon class="documentIcons" name="@document.FileExtensionName"></icon></td>
                     <td>@document.Name</td>
                     <td>@document.DocumentCategoryName</td>
                     <td>@fileSize</td>
@@ -92,22 +92,22 @@
 @section Scripts{
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var iconElements = $("icon").toArray();
+            var iconElements = $(".documentIcons").toArray();
             jQuery.each(iconElements, function () {
                 var elementName = this.getAttribute("name");
                 if (elementName.includes("doc")) {
                     this.classList.add("far");
                     this.classList.add("fa-file-word");
                 }
-                else if (elementName === ".pdf") {
+                else if (elementName === "pdf") {
                     this.classList.add("far");
                     this.classList.add("fa-file-pdf");
                 }
-                else if (elementName === ".jpeg" || elementName === ".jpg" || elementName === ".png") {
+                else if (elementName === "jpeg" || elementName === "jpg" || elementName === "png") {
                     this.classList.add("far");
                     this.classList.add("fa-image");
                 }
-                else if (elementName === ".eml" || elementName === ".msg") {
+                else if (elementName === "eml" || elementName === "msg") {
                     this.classList.add("far");
                     this.classList.add("fa-envelope-open");
                 }
