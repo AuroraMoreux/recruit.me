@@ -46,7 +46,17 @@
 }
 else
 {
-    <p>Ready to meet our professionals and hire the perfect candidate? Let us know more about you by <a style="display:inline" href="/Employers/CreateProfile">filling out your profile details.</a></p>
+    <p>
+        Ready to meet our professionals and hire the perfect candidate?
+    </p>
+    if (!this.Model.IsProfileCreated)
+    {
+        <p>Let us know more about you by <a style="display:inline" href="/Employers/CreateProfile">filling out your profile details.</a></p>
+    }
+    else
+    {
+        <p>Let us know what you are looking for in an applicant by <a style="display:inline" href="/JobOffers/Post">posting a new offer!</a></p>
+    }
     <br />
     <hr />
     <partial name="_IndexPartial" model="@Model" />

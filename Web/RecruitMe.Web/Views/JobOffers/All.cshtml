@@ -12,7 +12,7 @@
 else
 {
     <h1 style="display:inline">@ViewData["Title"]</h1>
-    <a class="btn btn-primary float-right" asp-action="Search" asp-controller="JobOffers">Search Offers</a>
+    <a class="btn btn-primary float-right" style="margin-right:1rem" asp-action="Search" asp-controller="JobOffers">Search Offers</a>
 }
 @if (this.TempData["Success"] != null)
 {
@@ -71,7 +71,7 @@ else
                     <td>@jobOffer.JobSectorName</td>
                     <td>@jobOffer.JobDetails</td>
                     <td>
-                        <a class="btn btn-info text-nowrap" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffer.Id">View Details</a>
+                        <a class="btn btn-info text-nowrap float-right" asp-controller="JobOffers" asp-action="Details" asp-route-id="@jobOffer.Id">View Details</a>
                     </td>
                 </tr>
             }

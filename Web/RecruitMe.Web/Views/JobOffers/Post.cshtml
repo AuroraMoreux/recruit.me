@@ -1,6 +1,6 @@
 ﻿@model RecruitMe.Web.ViewModels.JobOffers.PostViewModel
 @{
-    ViewData["Title"] = "Post a job offer";
+    ViewData["Title"] = "Post a Job Offer";
 
     var jobSectors = Model.JobSectors.Select(js => new SelectListItem(js.Name, js.Id.ToString()));
     var jobLevels = Model.JobLevels.Select(jl => new SelectListItem(jl.Name, jl.Id.ToString()));
@@ -9,7 +9,7 @@
     var skills = Model.Skills.Select(s => new SelectListItem(s.Name, s.Id.ToString())).ToList();
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 style="display:inline">@ViewData["Title"]</h1>
 
 <script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -89,7 +89,7 @@
                     <span asp-validation-for="ValidUntil" class="text-danger"></span>
                 </div>
                 <input type="submit" value="Publish" class="btn btn-primary" style="margin-left: 1.5rem;margin-top:1.5rem" />
-                <a asp-action="All" asp-controller="JobOffers" class="btn btn-danger" style="margin-left: 1.5rem;margin-top:1.5rem">Back</a>
+                <a href="javascript:history.go(-1)" class="btn btn-danger" style="margin-left: 1.5rem;margin-top:1.5rem">Back</a>
             </div>
             <div class="col-6">
                 <div class="form-group">

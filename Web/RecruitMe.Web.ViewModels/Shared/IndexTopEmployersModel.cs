@@ -13,7 +13,7 @@
 
         public string Name { get; set; }
 
-        public int EmployerJobOffersCount { get; set; }
+        public int JobOffersCount { get; set; }
 
         public int NewOffersCount { get; set; }
 

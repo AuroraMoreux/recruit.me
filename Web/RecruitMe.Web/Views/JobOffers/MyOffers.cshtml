@@ -4,7 +4,8 @@
     var offers = Model.Offers.ToList();
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 style="display:inline">@ViewData["Title"]</h1>
+<a class="btn btn-warning float-right" style="margin-right:1rem" href="javascript:history.go(-1)">Back</a>
 
 <div class="table-responsive-sm">
     <table class="table table-hover">
@@ -18,7 +19,7 @@
                 <th scope="col">
                     Applications Count <a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["CountSortParam"]"><icon class="fas fa-sort"></icon></a>
                 </th>
-                <th><a class="btn btn-success" asp-controller="JobOffers" asp-action="Post">Post New Offer</a></th>
+                <th><a class="btn btn-success float-right" asp-controller="JobOffers" asp-action="Post">Post New Offer</a></th>
             </tr>
         </thead>
         <tbody>
@@ -32,19 +33,19 @@
             }
             @foreach (var offer in offers)
             {
-        <tr>
-            <td>@offer.Position</td>
-            <td>@(offer.IsActive==true?"Yes":"No")</td>
-            <td>@offer.ValidFrom.Date.ToString("dd-MM-yyyy")</td>
-            <td>@offer.ValidUntil.Date.ToString("dd-MM-yyyy")</td>
-            <td>@offer.JobLevelName</td>
-            <td>@offer.JobApplicationsCount</td>
-            <td>
-                <a class=" btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@offer.Id">Details</a>
-                <a class=" btn btn-info btn-sm" asp-controller="JobApplications" asp-action="ByOffer" asp-route-jobOfferId="@offer.Id">View Applications</a>
-                <a class=" btn btn-danger btn-sm" asp-controller="JobOffers" asp-action="Delete" asp-route-id="@offer.Id">Delete</a>
-            </td>
-        </tr>
+                <tr>
+                    <td>@offer.Position</td>
+                    <td>@(offer.IsActive==true?"Yes":"No")</td>
+                    <td>@offer.ValidFrom.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@offer.ValidUntil.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@offer.JobLevelName</td>
+                    <td>@offer.JobApplicationsCount</td>
+                    <td>
+                        <a class=" btn btn-primary btn-sm" asp-controller="JobOffers" asp-action="Details" asp-route-id="@offer.Id">Details</a>
+                        <a class=" btn btn-info btn-sm" asp-controller="JobApplications" asp-action="ByOffer" asp-route-jobOfferId="@offer.Id">View Applications</a>
+                        <a class=" btn btn-danger btn-sm" asp-controller="JobOffers" asp-action="Delete" asp-route-id="@offer.Id">Delete</a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>

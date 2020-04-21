@@ -42,7 +42,17 @@
 }
 else
 {
-    <p>Ready to find your new career? Let us know more about you by <a style="display:inline" href="/Candidates/CreateProfile">filling out your profile details.</a></p>
+    <p>
+        Ready to find your new career?
+    </p>
+    if (!this.Model.IsProfileCreated)
+    {
+        <p>Let us know more about you by <a style="display:inline" href="/Candidates/CreateProfile">filling out your profile details.</a></p>
+    }
+    else
+    {
+        <p>Have a look at our latest offers or check out the offers of our top employers, or <a style="display:inline" href="/JobOffers/All">browse all offers.</a></p>
+    }
     <br />
     <hr />
     <partial name="_IndexPartial" model="@Model" />
