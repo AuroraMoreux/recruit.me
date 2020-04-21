@@ -6,7 +6,7 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-
+<h3>Add documents to your portfolio to use in your job applications</h3>
 <div class="container-fluid">
     <form class="container" asp-controller="Documents" asp-action="Upload" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="All" class="text-danger"></div>
@@ -28,6 +28,7 @@
                 </div>
 
                 <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
+                <a class="btn btn-warning" style="margin-left:0.5rem" asp-controller="JobOffers" asp-action="All">Skip</a>
                 <hr />
             </div>
         </div>

@@ -126,7 +126,7 @@
                        || jo.Salary == null));
 
                // select options filters
-               if (filters.LevelsIds.Count > 0)
+               if (filters.LevelsIds.Count() > 0)
                {
                    List<string> jobOffersIdsWithSelectedLevels = this.jobOffersRepository
                        .AllAsNoTracking()
@@ -138,7 +138,7 @@
                        .Where(jo => jobOffersIdsWithSelectedLevels.Contains(jo.Id));
                }
 
-               if (filters.SectorsIds.Count > 0)
+               if (filters.SectorsIds.Count() > 0)
                {
                    List<string> jobOffersIdsWithSelectedSectors = this.jobOffersRepository
                        .AllAsNoTracking()
@@ -150,7 +150,7 @@
                        .Where(jo => jobOffersIdsWithSelectedSectors.Contains(jo.Id));
                }
 
-               if (filters.TypesIds.Count > 0)
+               if (filters.TypesIds.Count() > 0)
                {
                    List<string> jobOffersIdsWithSelectedTypes = this.jobOfferJobTypesRepository
                        .AllAsNoTracking()
@@ -162,7 +162,7 @@
                        .Where(jo => jobOffersIdsWithSelectedTypes.Contains(jo.Id));
                }
 
-               if (filters.LanguagesIds.Count > 0)
+               if (filters.LanguagesIds.Count() > 0)
                {
                    List<string> jobOffersIdsWithSelectedLanguages = this.jobOfferLanguagesRepository
                        .AllAsNoTracking()
@@ -174,7 +174,7 @@
                        .Where(jo => jobOffersIdsWithSelectedLanguages.Contains(jo.Id));
                }
 
-               if (filters.SkillsIds.Count > 0)
+               if (filters.SkillsIds.Count() > 0)
                {
                    List<string> jobOffersIdsWithSelectedskills = this.jobOfferSkillsRepository
                        .AllAsNoTracking()

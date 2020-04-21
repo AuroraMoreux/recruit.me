@@ -1,6 +1,7 @@
 ﻿namespace RecruitMe.Services.Data.Tests
 {
     using System.Threading.Tasks;
+
     using Xunit;
 
     public class SettingsServiceTests
@@ -21,7 +22,7 @@
         }
 
         [Fact]
-        public async Task GetCountShouldReturnCorrectNumberUsingDbContext()
+        public void GetCountShouldReturnCorrectNumberUsingDbContext()
         {
             //DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>()
             //    .UseInMemoryDatabase(databaseName: "SettingsTestDb").Options;

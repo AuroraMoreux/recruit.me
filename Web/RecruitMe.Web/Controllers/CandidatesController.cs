@@ -78,7 +78,7 @@
             string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId == null)
             {
-                return this.RedirectToAction(nameof(this.Index));
+                return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
             ProfileViewModel viewModel = this.candidatesService.GetProfileDetails<ProfileViewModel>(candidateId);
@@ -138,7 +138,7 @@
             user.CandidateId = candidateId;
             await this.userManager.UpdateAsync(user);
             this.TempData["Success"] = GlobalConstants.ProfileSuccessfullyCreated;
-            return this.RedirectToAction(nameof(this.MyProfile));
+            return this.RedirectToAction("Upload", "Documents");
         }
 
         public IActionResult UpdateProfile()

@@ -22,8 +22,8 @@
 {
     <p>Our platform provides access to thousands of job offers posted by leading companies and recruitment agencies operating in all kinds of sectors, from healthcare and education to IT, the entertainment industry, science, construction and many more!</p>
 
-    <p>If you are interested in browsing all of the currently opened positions to find your next career, <a style="display:inline" href="/Identity/Account/Register">please register here.</a></p>
-    <p>If you already have an account, <a style="display:inline" href="/Identity/Account/Login">please sign in.</a></p>
+    <p>If you are interested in browsing all of the currently opened positions to find your next career, <a style="display:inline" href="/Identity/Account/Register"><strong>please register here.</strong></a></p>
+    <p>If you already have an account, <a style="display:inline" href="/Identity/Account/Login"><strong>please sign in.</strong></a></p>
 
     <div class="row">
         <div class="card text-center">
@@ -43,15 +43,17 @@
 else
 {
     <p>
-        Ready to find your new career?
+        <h5>
+            Ready to find your new career?
+        </h5>
     </p>
     if (!this.Model.IsProfileCreated)
     {
-        <p>Let us know more about you by <a style="display:inline" href="/Candidates/CreateProfile">filling out your profile details.</a></p>
+        <p><h5>Let us know more about you by <a style="display:inline" href="/Candidates/CreateProfile"><strong>filling out your profile details.</strong></a></h5></p>
     }
     else
     {
-        <p>Have a look at our latest offers or check out the offers of our top employers, or <a style="display:inline" href="/JobOffers/All">browse all offers.</a></p>
+        <p><h5>Have a look at our latest offers or check out the offers of our top employers, or <a style="display:inline" href="/JobOffers/All"><strong>browse all offers.</strong></a></h5></p>
     }
     <br />
     <hr />

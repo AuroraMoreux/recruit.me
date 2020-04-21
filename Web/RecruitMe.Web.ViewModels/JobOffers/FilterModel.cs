@@ -34,23 +34,23 @@
 
         [Display(Name = "Levels")]
         [IntArrayLength("Required Skills", 10, 0)]
-        public List<int> LevelsIds { get; set; } = new List<int>();
+        public IEnumerable<int> LevelsIds { get; set; } = new List<int>();
 
         [Display(Name = "Sectors")]
         [IntArrayLength("Required Skills", 10, 0)]
-        public List<int> SectorsIds { get; set; } = new List<int>();
+        public IEnumerable<int> SectorsIds { get; set; } = new List<int>();
 
         [Display(Name = "Types")]
         [IntArrayLength("Required Skills", 10, 0)]
-        public List<int> TypesIds { get; set; } = new List<int>();
+        public IEnumerable<int> TypesIds { get; set; } = new List<int>();
 
         [Display(Name = "Languages")]
         [IntArrayLength("Required Skills", 10, 0)]
-        public List<int> LanguagesIds { get; set; } = new List<int>();
+        public IEnumerable<int> LanguagesIds { get; set; } = new List<int>();
 
         [Display(Name = "Skills")]
         [IntArrayLength("Required Skills", 10, 0)]
-        public List<int> SkillsIds { get; set; } = new List<int>();
+        public IEnumerable<int> SkillsIds { get; set; } = new List<int>();
 
         public IEnumerable<JobLevelsDropDownViewModel> Levels { get; set; }
 

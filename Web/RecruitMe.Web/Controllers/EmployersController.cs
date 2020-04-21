@@ -46,7 +46,6 @@
         [AllowAnonymous]
         public IActionResult Index()
         {
-
             if (!this.User.Identity.IsAuthenticated)
             {
                 this.HttpContext.Session.SetString("UserRole", GlobalConstants.EmployerRoleName);

@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class JobOfferAllApplicationsModel:PaginatedModel
+    public class JobOfferAllApplicationsModel : PaginatedModel
     {
         public IEnumerable<JobOfferJobApplicationsViewModel> JobApplications { get; set; }
 

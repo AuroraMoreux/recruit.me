@@ -14,6 +14,11 @@
                 minLength = 0;
             }
 
+            if (maxLength < minLength)
+            {
+                maxLength = minLength;
+            }
+
             this.FieldName = fieldName;
             this.MinLength = minLength;
             this.MaxLength = maxLength;
@@ -28,6 +33,11 @@
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             List<int> selection = value as List<int>;
+
+            if (selection == null)
+            {
+                return new ValidationResult(GlobalConstants.SelectionListCannotBeNull);
+            }
 
             if (selection.Count < this.MinLength)
             {

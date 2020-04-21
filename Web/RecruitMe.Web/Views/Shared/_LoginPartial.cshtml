@@ -30,6 +30,9 @@
             else if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
             {
                 <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="JobOffers" asp-action="Post">Post an Offer</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Employers" asp-action="Index">Home</a>
                 </li>
                 <li class="nav-item">

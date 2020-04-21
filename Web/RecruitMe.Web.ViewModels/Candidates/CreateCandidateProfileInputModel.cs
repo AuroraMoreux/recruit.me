@@ -11,7 +11,7 @@
     using RecruitMe.Web.Infrastructure.ValidationAttributes;
     using RecruitMe.Web.ViewModels.JobOffers;
 
-    public class CreateCandidateProfileInputModel : IMapTo<Candidate>,IHaveCustomMappings
+    public class CreateCandidateProfileInputModel : IMapTo<Candidate>, IHaveCustomMappings
     {
         public IEnumerable<string> ImageExtensions { get; set; }
 
@@ -36,7 +36,7 @@
         [Display(Name = "Contact Address")]
         public string ContactAddress { get; set; }
 
-        [Display(Name ="Education")]
+        [Display(Name = "Education")]
         public string Education { get; set; }
 
         [MaxLength(800)]

@@ -1,6 +1,5 @@
 ﻿namespace RecruitMe.Web.ViewModels.Employers
 {
-
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
 
