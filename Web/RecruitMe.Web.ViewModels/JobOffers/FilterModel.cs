@@ -21,10 +21,10 @@
         public string City { get; set; }
 
         [Display(Name = "Valid From")]
-        public DateTime? PublishedFromDate { get; set; }
+        public DateTime? ValidFrom { get; set; }
 
         [Display(Name = "Valid Until")]
-        public DateTime? PublishedToDate { get; set; }
+        public DateTime? ValidUntil { get; set; }
 
         [Display(Name = "Salary From")]
         public decimal? SalaryFrom { get; set; }
@@ -64,7 +64,7 @@
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (this.PublishedFromDate < this.PublishedFromDate)
+            if (this.ValidUntil < this.ValidFrom)
             {
                 yield return new ValidationResult(errorMessage: GlobalConstants.ValidUntilDateMustBeCreaterThanValidFromDate, memberNames: new[] { "PublishedFromDate" });
             }

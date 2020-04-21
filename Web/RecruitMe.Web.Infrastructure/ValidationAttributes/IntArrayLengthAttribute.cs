@@ -32,7 +32,7 @@
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            List<int> selection = value as List<int>;
+            ICollection<int> selection = value as ICollection<int>;
 
             if (selection == null)
             {

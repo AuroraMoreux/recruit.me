@@ -113,17 +113,22 @@
                    && jo.City.ToLower().Contains(city));
 
                // range filters
-               DateTime publishedFromDate = filters.PublishedFromDate != null ? filters.PublishedFromDate.Value.Date : DateTime.MinValue.Date;
-               DateTime publishedToDate = filters.PublishedToDate != null ? filters.PublishedToDate.Value.Date : DateTime.MaxValue.Date;
-               decimal salaryFrom = filters.SalaryFrom != null ? filters.SalaryFrom.Value : 0m;
-               decimal salaryTo = filters.SalaryTo != null ? filters.SalaryTo.Value : decimal.MaxValue;
+               DateTime publishedFromDate = filters.ValidFrom != null ? filters.ValidFrom.Value.Date : DateTime.MinValue.Date;
+               DateTime publishedToDate = filters.ValidUntil != null ? filters.ValidUntil.Value.Date : DateTime.MaxValue.Date;
 
                baseQuery = baseQuery
-                   .Where(jo => jo.ValidFrom >= publishedFromDate
-                       && jo.ValidUntil <= publishedToDate
-                       && ((jo.Salary >= salaryFrom
-                       && jo.Salary <= salaryTo)
-                       || jo.Salary == null));
+                       .Where(jo => jo.ValidFrom >= publishedFromDate
+                           && jo.ValidUntil <= publishedToDate);
+
+               if (filters.SalaryFrom != null || filters.SalaryTo != null)
+               {
+                   decimal salaryFrom = filters.SalaryFrom != null ? filters.SalaryFrom.Value : 0m;
+                   decimal salaryTo = filters.SalaryTo != null ? filters.SalaryTo.Value : decimal.MaxValue;
+
+                   baseQuery = baseQuery
+                       .Where(jo => jo.Salary >= salaryFrom
+                           && jo.Salary <= salaryTo);
+               }
 
                // select options filters
                if (filters.LevelsIds.Count() > 0)

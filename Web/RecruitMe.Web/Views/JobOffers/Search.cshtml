@@ -52,16 +52,16 @@
 
                 </div>
                 <div class="form-group">
-                    <label asp-for="PublishedFromDate"></label>
-                    <input id="ValidFrom" type="date" value="@DateTime.UtcNow.Date.ToString("dd-MM-yyyy")" asp-for="PublishedFromDate" class="form-control" />
-                    <span asp-validation-for="PublishedFromDate" class="text-danger"></span>
+                    <label asp-for="ValidFrom"></label>
+                    <input id="ValidFrom" type="date" value="@DateTime.UtcNow.Date.ToString("dd-MM-yyyy")" asp-for="ValidFrom" class="form-control" />
+                    <span asp-validation-for="ValidFrom" class="text-danger"></span>
 
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="PublishedToDate"></label>
-                    <input id="ValidTo" type="date" value="@DateTime.UtcNow.Date.ToString("dd-MM-yyyy")" asp-for="PublishedToDate" class="form-control" />
-                    <span asp-validation-for="PublishedToDate" class="text-danger"></span>
+                    <label asp-for="ValidUntil"></label>
+                    <input id="ValidTo" type="date" value="@DateTime.UtcNow.Date.ToString("dd-MM-yyyy")" asp-for="ValidUntil" class="form-control" />
+                    <span asp-validation-for="ValidUntil" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
