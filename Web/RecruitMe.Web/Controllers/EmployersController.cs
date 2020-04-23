@@ -51,17 +51,17 @@
                 this.HttpContext.Session.SetString("UserRole", GlobalConstants.EmployerRoleName);
             }
 
-            IndexViewModel viewModel = new IndexViewModel();
+            var viewModel = new IndexViewModel();
 
-            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
 
             if (employerId != null)
             {
                 viewModel.IsProfileCreated = true;
             }
 
-            IEnumerable<IndexJobOffersModel> lastTenOffers = this.jobOffersService.GetLastTenOffers<IndexJobOffersModel>();
-            IEnumerable<IndexTopEmployersModel> topEmployers = this.employersService.GetTopFiveEmployers<IndexTopEmployersModel>();
+            var lastTenOffers = this.jobOffersService.GetLastTenOffers<IndexJobOffersModel>();
+            var topEmployers = this.employersService.GetTopFiveEmployers<IndexTopEmployersModel>();
             viewModel.LastTenJobOffers = lastTenOffers;
             viewModel.TopEmployers = topEmployers;
             return this.View(viewModel);
@@ -69,26 +69,26 @@
 
         public IActionResult MyProfile()
         {
-            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
                 return this.RedirectToAction(nameof(this.Index));
             }
 
-            ProfileViewModel viewModel = this.employersService.GetProfileDetails<ProfileViewModel>(employerId);
+            var viewModel = this.employersService.GetProfileDetails<ProfileViewModel>(employerId);
 
             return this.View(viewModel);
         }
 
         public IActionResult CreateProfile()
         {
-            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId != null)
             {
                 return this.RedirectToAction(nameof(this.UpdateProfile));
             }
 
-            CreateEmployerProfileInputModel model = new CreateEmployerProfileInputModel
+            var model = new CreateEmployerProfileInputModel
             {
                 ImageExtensions = this.fileExtensionsService.GetImageExtensions(),
                 JobSectors = this.jobSectors,
@@ -120,10 +120,10 @@
                 return this.View(input);
             }
 
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            var user = await this.userManager.GetUserAsync(this.User);
             input.ApplicationUserId = user.Id;
 
-            string employerId = await this.employersService.CreateProfileAsync(input);
+            var employerId = await this.employersService.CreateProfileAsync(input);
 
             if (employerId == null)
             {
@@ -138,13 +138,13 @@
 
         public IActionResult UpdateProfile()
         {
-            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            UpdateEmployerProfileViewModel details = this.employersService.GetProfileDetails<UpdateEmployerProfileViewModel>(employerId);
+            var details = this.employersService.GetProfileDetails<UpdateEmployerProfileViewModel>(employerId);
             if (details == null)
             {
                 return this.NotFound();
@@ -158,7 +158,7 @@
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(UpdateEmployerProfileViewModel input)
         {
-            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
@@ -179,7 +179,7 @@
                 return this.View(input);
             }
 
-            string updateResult = await this.employersService.UpdateProfileAsync(employerId, input);
+            var updateResult = await this.employersService.UpdateProfileAsync(employerId, input);
 
             if (employerId == null)
             {

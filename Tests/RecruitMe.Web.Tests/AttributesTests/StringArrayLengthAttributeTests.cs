@@ -10,10 +10,10 @@
         [Fact]
         public void ValidationPassesWhenMinLengthIsNotSetAndArrayIsEmpty()
         {
-            List<string> array = new List<string>();
-            StringArrayLengthAttribute attribute = new StringArrayLengthAttribute("Field", 3);
+            var array = new List<string>();
+            var attribute = new StringArrayLengthAttribute("Field", 3);
 
-            bool isValid = attribute.IsValid(array);
+            var isValid = attribute.IsValid(array);
 
             Assert.True(isValid);
         }
@@ -22,9 +22,9 @@
         public void ValidationFailsWhenMinLengthIsNotSetAndArrayIsNull()
         {
             List<string> array = null;
-            StringArrayLengthAttribute attribute = new StringArrayLengthAttribute("Field", 3);
+            var attribute = new StringArrayLengthAttribute("Field", 3);
 
-            bool isValid = attribute.IsValid(array);
+            var isValid = attribute.IsValid(array);
 
             Assert.False(isValid);
         }
@@ -36,8 +36,8 @@
         [InlineData(new object[] { new string[] { "OneWord", "TwoWord", "Hello, World", "TestString", "" } })]
         public void ValidationFailsWhenArrayLengthIsNotBetweenOneAndThree(ICollection<string> array)
         {
-            StringArrayLengthAttribute attribute = new StringArrayLengthAttribute("Field", 3, 1);
-            bool isValid = attribute.IsValid(array);
+            var attribute = new StringArrayLengthAttribute("Field", 3, 1);
+            var isValid = attribute.IsValid(array);
 
             Assert.False(isValid);
         }
@@ -45,9 +45,9 @@
         [Fact]
         public void IfMaxLengthIsGreaterThanMinLengthBothFieldsAreSetToTheSameValue()
         {
-            int minLength = 3;
-            int maxLength = 1;
-            StringArrayLengthAttribute attribute = new StringArrayLengthAttribute("Field", maxLength, minLength);
+            var minLength = 3;
+            var maxLength = 1;
+            var attribute = new StringArrayLengthAttribute("Field", maxLength, minLength);
 
             Assert.Equal(attribute.MaxLength, minLength);
         }
@@ -55,8 +55,8 @@
         [Fact]
         public void IfMinLengthIsNegativeItIsSetToZero()
         {
-            int minLength = -3;
-            StringArrayLengthAttribute attribute = new StringArrayLengthAttribute("Field", 4, minLength);
+            var minLength = -3;
+            var attribute = new StringArrayLengthAttribute("Field", 4, minLength);
 
             Assert.Equal(0, attribute.MinLength);
         }
@@ -69,8 +69,8 @@
 
         public void ValidationPassesWhenArrayLengthIsWithinBoundaries(ICollection<string> array)
         {
-            StringArrayLengthAttribute attribute = new StringArrayLengthAttribute("Field", 3, 1);
-            bool isValid = attribute.IsValid(array);
+            var attribute = new StringArrayLengthAttribute("Field", 3, 1);
+            var isValid = attribute.IsValid(array);
 
             Assert.True(isValid);
         }

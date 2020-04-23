@@ -16,9 +16,9 @@
                 return;
             }
 
-            List<string> documentCategories = new List<string> { "Resume", "Cover Letter", "Reference List", "Letter Of Recommendation", "Portflolio", "Certificate" };
+            var documentCategories = new List<string> { "Resume", "Cover Letter", "Reference List", "Letter Of Recommendation", "Portflolio", "Certificate" };
 
-            foreach (string category in documentCategories)
+            foreach (var category in documentCategories)
             {
                 await dbContext.DocumentCategories.AddAsync(new DocumentCategory
                 {

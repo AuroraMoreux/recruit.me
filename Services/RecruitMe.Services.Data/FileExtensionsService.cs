@@ -19,9 +19,9 @@
             this.extensionsRepository = extensionsRepository;
         }
 
-        public async Task<int> Create(CreateViewModel input)
+        public async Task<int> CreateAsync(CreateViewModel input)
         {
-            FileExtension extension = AutoMapperConfig.MapperInstance.Map<FileExtension>(input);
+            var extension = AutoMapperConfig.MapperInstance.Map<FileExtension>(input);
 
             if (extension.IsDeleted)
             {
@@ -41,9 +41,9 @@
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            FileExtension extension = this.extensionsRepository
+            var extension = this.extensionsRepository
                 .All()
                 .Where(e => e.Id == id)
                 .FirstOrDefault();
@@ -56,6 +56,7 @@
             try
             {
                 this.extensionsRepository.Delete(extension);
+                await this.extensionsRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -101,11 +102,11 @@
                 .ToList();
         }
 
-        public async Task<int> Update(EditViewModel input)
+        public async Task<int> UpdateAsync(int id, EditViewModel input)
         {
-            FileExtension extension = this.extensionsRepository
+            var extension = this.extensionsRepository
                  .AllWithDeleted()
-                 .Where(e => e.Id == input.Id)
+                 .Where(e => e.Id == id)
                  .FirstOrDefault();
 
             if (extension == null)

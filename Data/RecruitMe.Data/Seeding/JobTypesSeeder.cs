@@ -16,9 +16,9 @@
                 return;
             }
 
-            List<string> types = new List<string> { "Permanent", "Replacement", "Seasonal", "Internship", "Remote", "Full-Time" };
+            var types = new List<string> { "Permanent", "Replacement", "Seasonal", "Internship", "Remote", "Full-Time" };
 
-            foreach (string type in types)
+            foreach (var type in types)
             {
                 await dbContext.JobTypes.AddAsync(new JobType
                 {

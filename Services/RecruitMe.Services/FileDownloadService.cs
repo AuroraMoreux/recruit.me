@@ -7,8 +7,8 @@
     {
         public async Task<byte[]> DownloadFile(string url)
         {
-            using HttpClient client = new HttpClient();
-            using HttpResponseMessage result = await client.GetAsync(url);
+            using var client = new HttpClient();
+            using var result = await client.GetAsync(url);
 
             if (result.IsSuccessStatusCode)
             {

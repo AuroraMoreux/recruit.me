@@ -16,9 +16,9 @@
                 return;
             }
 
-            List<string> statuses = new List<string> { "Under Review", "Accepted", "Rejected", "Retracted" };
+            var statuses = new List<string> { "Under Review", "Accepted", "Rejected", "Retracted" };
 
-            foreach (string status in statuses)
+            foreach (var status in statuses)
             {
                 await dbContext.ApplicationStatuses.AddAsync(new JobApplicationStatus
                 {

@@ -19,9 +19,9 @@
             this.jobSectorsRepository = jobSectorsRepository;
         }
 
-        public async Task<int> Create(CreateViewModel input)
+        public async Task<int> CreateAsync(CreateViewModel input)
         {
-            JobSector sector = AutoMapperConfig.MapperInstance.Map<JobSector>(input);
+            var sector = AutoMapperConfig.MapperInstance.Map<JobSector>(input);
 
             if (sector.IsDeleted)
             {
@@ -41,9 +41,9 @@
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            JobSector sector = this.jobSectorsRepository
+            var sector = this.jobSectorsRepository
                   .All()
                   .Where(s => s.Id == id)
                   .FirstOrDefault();
@@ -56,6 +56,7 @@
             try
             {
                 this.jobSectorsRepository.Delete(sector);
+                await this.jobSectorsRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -91,11 +92,11 @@
                  .FirstOrDefault();
         }
 
-        public async Task<int> Update(EditViewModel input)
+        public async Task<int> UpdateAsync(int id,EditViewModel input)
         {
-            JobSector sector = this.jobSectorsRepository
+            var sector = this.jobSectorsRepository
                   .AllWithDeleted()
-                  .Where(s => s.Id == input.Id)
+                  .Where(s => s.Id == id)
                   .FirstOrDefault();
 
             if (sector == null)

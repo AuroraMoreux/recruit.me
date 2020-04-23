@@ -40,9 +40,9 @@
 
         public async Task<string> Upload(UploadInputModel model, string candidateId)
         {
-            Document document = AutoMapperConfig.MapperInstance.Map<Document>(model);
+            var document = AutoMapperConfig.MapperInstance.Map<Document>(model);
             document.CandidateId = candidateId;
-            string documentUrl = await CloudinaryService.UploadRawFileAsync(this.cloudinary, model.File, candidateId + $"_{document.Name}");
+            var documentUrl = await CloudinaryService.UploadRawFileAsync(this.cloudinary, model.File, candidateId + $"_{document.Name}");
             if (documentUrl == null)
             {
                 return null;
@@ -71,7 +71,7 @@
 
         public async Task<bool> Delete(string documentId)
         {
-            Document document = this.documentRepository
+            var document = this.documentRepository
                 .All()
                 .FirstOrDefault(d => d.Id == documentId);
 
@@ -98,13 +98,13 @@
 
         public async Task<byte[]> Download(string documentId)
         {
-            string documentUrl = this.documentRepository
+            var documentUrl = this.documentRepository
                 .AllAsNoTracking()
                 .Where(d => d.Id == documentId)
                 .Select(d => d.Url)
                 .FirstOrDefault();
 
-            byte[] file = await this.fileDownloadService.DownloadFile(documentUrl);
+            var file = await this.fileDownloadService.DownloadFile(documentUrl);
 
             return file;
         }

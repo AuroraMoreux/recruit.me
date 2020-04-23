@@ -22,15 +22,15 @@
         // GET: Administration/JobSectors
         public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            IEnumerable<JobSectorsViewModel> sectors = this.jobSectorsService.GetAllWithDeleted<JobSectorsViewModel>();
-            int pagesCount = (int)Math.Ceiling(sectors.Count() / (decimal)perPage);
+            var sectors = this.jobSectorsService.GetAllWithDeleted<JobSectorsViewModel>();
+            var pagesCount = (int)Math.Ceiling(sectors.Count() / (decimal)perPage);
 
-            List<JobSectorsViewModel> paginatedSectors = sectors
+            var paginatedSectors = sectors
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
 
-            AllJobSectorsViewModel viewModel = new AllJobSectorsViewModel
+            var viewModel = new AllJobSectorsViewModel
             {
                 Sectors = paginatedSectors,
                 CurrentPage = page,
@@ -56,7 +56,7 @@
                 return this.View(input);
             }
 
-            int result = await this.jobSectorsService.Create(input);
+            var result = await this.jobSectorsService.CreateAsync(input);
 
             if (result < 0)
             {
@@ -69,7 +69,7 @@
         // GET: Administration/JobSectors/Edit/5
         public IActionResult Edit(int id)
         {
-            EditViewModel sector = this.jobSectorsService.GetDetails<EditViewModel>(id);
+            var sector = this.jobSectorsService.GetDetails<EditViewModel>(id);
             if (sector == null)
             {
                 return this.NotFound();
@@ -93,7 +93,7 @@
                 return this.View(input);
             }
 
-            int result = await this.jobSectorsService.Update(input);
+            var result = await this.jobSectorsService.UpdateAsync(id, input);
 
             if (result < 0)
             {
@@ -106,7 +106,7 @@
         // GET: Administration/JobSectors/Delete/5
         public IActionResult Delete(int id)
         {
-            DeleteViewModel sector = this.jobSectorsService.GetDetails<DeleteViewModel>(id);
+            var sector = this.jobSectorsService.GetDetails<DeleteViewModel>(id);
             if (sector == null)
             {
                 return this.NotFound();
@@ -119,9 +119,9 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool isDeleted = this.jobSectorsService.Delete(id);
+            var isDeleted = await this.jobSectorsService.DeleteAsync(id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Error", "Home");

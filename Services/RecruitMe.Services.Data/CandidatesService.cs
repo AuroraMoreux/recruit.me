@@ -34,11 +34,11 @@
 
         public async Task<string> CreateProfileAsync(CreateCandidateProfileInputModel model)
         {
-            Candidate candidate = AutoMapperConfig.MapperInstance.Map<Candidate>(model);
+            var candidate = AutoMapperConfig.MapperInstance.Map<Candidate>(model);
 
             if (model.ProfilePicture != null)
             {
-                string pictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
+                var pictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
                 if (pictureUrl == null)
                 {
                     return null;
@@ -49,10 +49,10 @@
 
             candidate.CreatedOn = DateTime.UtcNow;
 
-            List<CandidateLanguage> candidateLanguages = new List<CandidateLanguage>();
-            foreach (int languageId in model.LanguagesIds)
+            var candidateLanguages = new List<CandidateLanguage>();
+            foreach (var languageId in model.LanguagesIds)
             {
-                CandidateLanguage language = new CandidateLanguage
+                var language = new CandidateLanguage
                 {
                     Candidate = candidate,
                     LanguageId = languageId,
@@ -61,10 +61,10 @@
                 candidateLanguages.Add(language);
             }
 
-            List<CandidateSkill> candidateSkills = new List<CandidateSkill>();
-            foreach (int skillId in model.SkillsIds)
+            var candidateSkills = new List<CandidateSkill>();
+            foreach (var skillId in model.SkillsIds)
             {
-                CandidateSkill skill = new CandidateSkill
+                var skill = new CandidateSkill
                 {
                     Candidate = candidate,
                     SkillId = skillId,
@@ -107,10 +107,10 @@
 
         public int GetNewCandidatesCount()
         {
-            DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            var yesterdaysDate = DateTime.UtcNow.AddDays(-1);
             return this.candidatesRepository
                 .AllAsNoTracking()
-                .Where(c => c.ApplicationUser.CreatedOn >= yesterdaysDate)
+                .Where(c => c.CreatedOn >= yesterdaysDate)
                 .Count();
         }
 
@@ -125,7 +125,7 @@
 
         public async Task<string> UpdateProfileAsync(string candidateId, UpdateCandidateProfileViewModel model)
         {
-            Candidate candidate = this.candidatesRepository
+            var candidate = this.candidatesRepository
                 .All()
                 .FirstOrDefault(c => c.Id == candidateId);
 
@@ -148,7 +148,7 @@
                     CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + PictureNameAddIn);
                 }
 
-                string pictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
+                var pictureUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.ProfilePicture, model.ApplicationUserId + PictureNameAddIn);
 
                 if (pictureUrl == null)
                 {
@@ -160,18 +160,18 @@
 
             candidate.ModifiedOn = DateTime.UtcNow;
 
-            List<int> candidateLanguagesIds = this.candidateLanguagesRepository
+            var candidateLanguagesIds = this.candidateLanguagesRepository
                .AllAsNoTracking()
                .Where(cl => cl.CandidateId == candidateId)
                .Select(cl => cl.LanguageId)
                .ToList();
 
             // Add new ones
-            foreach (int languageId in model.LanguagesIds)
+            foreach (var languageId in model.LanguagesIds)
             {
                 if (!candidateLanguagesIds.Contains(languageId))
                 {
-                    CandidateLanguage language = new CandidateLanguage
+                    var language = new CandidateLanguage
                     {
                         LanguageId = languageId,
                         CandidateId = candidate.Id,
@@ -182,11 +182,11 @@
             }
 
             // Delete old ones
-            foreach (int languageId in candidateLanguagesIds)
+            foreach (var languageId in candidateLanguagesIds)
             {
                 if (!model.LanguagesIds.Contains(languageId))
                 {
-                    CandidateLanguage languages = this.candidateLanguagesRepository
+                    var languages = this.candidateLanguagesRepository
                         .All()
                         .Where(cl => cl.LanguageId == languageId
                         && cl.CandidateId == candidate.Id)
@@ -196,18 +196,18 @@
                 }
             }
 
-            List<int> candidateSkillsIds = this.candidateSkillsRepository
+            var candidateSkillsIds = this.candidateSkillsRepository
               .AllAsNoTracking()
               .Where(cs => cs.CandidateId == candidateId)
               .Select(cs => cs.SkillId)
               .ToList();
 
             // Add new ones
-            foreach (int skillId in model.SkillsIds)
+            foreach (var skillId in model.SkillsIds)
             {
                 if (!candidateSkillsIds.Contains(skillId))
                 {
-                    CandidateSkill skill = new CandidateSkill
+                    var skill = new CandidateSkill
                     {
                         SkillId = skillId,
                         CandidateId = candidate.Id,
@@ -218,11 +218,11 @@
             }
 
             // Delete old ones
-            foreach (int skillId in candidateSkillsIds)
+            foreach (var skillId in candidateSkillsIds)
             {
                 if (!model.SkillsIds.Contains(skillId))
                 {
-                    CandidateSkill skills = this.candidateSkillsRepository
+                    var skills = this.candidateSkillsRepository
                         .All()
                         .Where(cs => cs.SkillId == skillId
                         && cs.CandidateId == candidate.Id)

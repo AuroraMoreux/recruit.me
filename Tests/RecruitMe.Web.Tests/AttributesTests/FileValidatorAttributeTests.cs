@@ -13,9 +13,9 @@
         public void NullFileValidationPassesWhenNullFlagIsRaised()
         {
             IFormFile file = null;
-            FileValidatiorAttribute attribute = new FileValidatiorAttribute(true);
+            var attribute = new FileValidatiorAttribute(true);
 
-            bool isValid = attribute.IsValid(file);
+            var isValid = attribute.IsValid(file);
 
             Assert.True(isValid);
         }
@@ -24,9 +24,9 @@
         public void NullFileValidationFailsWhenNullFlagIsNotRaised()
         {
             IFormFile file = null;
-            FileValidatiorAttribute attribute = new FileValidatiorAttribute(false);
+            var attribute = new FileValidatiorAttribute(false);
 
-            bool isValid = attribute.IsValid(file);
+            var isValid = attribute.IsValid(file);
 
             Assert.False(isValid);
         }
@@ -35,9 +35,9 @@
         public void ValidationFailsWhenFileNameLongerThanFiftyCharacters()
         {
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 50, "fileWithNameLongerThanFiftyCharactersShouldNotPassValidation", "fileWithNameLongerThanFiftyCharactersShouldNotPassValidation.doc");
-            FileValidatiorAttribute attribute = new FileValidatiorAttribute(false);
+            var attribute = new FileValidatiorAttribute(false);
 
-            bool isValid = attribute.IsValid(file);
+            var isValid = attribute.IsValid(file);
 
             Assert.False(isValid);
         }
@@ -48,9 +48,9 @@
         public void ValidationPassesWhenFileNameNotLongerThanFiftyCharacters(string fileName)
         {
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 50, fileName, fileName + ".doc");
-            FileValidatiorAttribute attribute = new FileValidatiorAttribute(false);
+            var attribute = new FileValidatiorAttribute(false);
 
-            bool isValid = attribute.IsValid(file);
+            var isValid = attribute.IsValid(file);
 
             Assert.True(isValid);
         }
@@ -59,9 +59,9 @@
         public void ValidationFailsWhenFileSizeExceeds10MB()
         {
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, (10 * 1024 * 1024) + 1, "FileName", "FileName.doc");
-            FileValidatiorAttribute attribute = new FileValidatiorAttribute(false);
+            var attribute = new FileValidatiorAttribute(false);
 
-            bool isValid = attribute.IsValid(file);
+            var isValid = attribute.IsValid(file);
 
             Assert.False(isValid);
         }
@@ -72,9 +72,9 @@
         public void ValidationPassesWhenFileSizeIsNotLargerThan10MB(long fileSize)
         {
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, fileSize, "FileName", "FileName.doc");
-            FileValidatiorAttribute attribute = new FileValidatiorAttribute(false);
+            var attribute = new FileValidatiorAttribute(false);
 
-            bool isValid = attribute.IsValid(file);
+            var isValid = attribute.IsValid(file);
 
             Assert.True(isValid);
         }

@@ -24,23 +24,23 @@
                 throw new ArgumentException("Subject and message should be provided.");
             }
 
-            EmailAddress fromAddress = new EmailAddress(from, fromName);
-            List<EmailAddress> recipientList = new List<EmailAddress>();
-            EmailAddress toAddress = new EmailAddress(to);
+            var fromAddress = new EmailAddress(from, fromName);
+            var recipientList = new List<EmailAddress>();
+            var toAddress = new EmailAddress(to);
             recipientList.Add(toAddress);
             if (additionalEmailAddresses != null)
             {
-                foreach (string address in additionalEmailAddresses)
+                foreach (var address in additionalEmailAddresses)
                 {
-                    EmailAddress emailAddress = new EmailAddress(address);
+                    var emailAddress = new EmailAddress(address);
                     recipientList.Add(emailAddress);
                 }
             }
 
-            SendGridMessage message = MailHelper.CreateSingleEmailToMultipleRecipients(fromAddress, recipientList, subject, null, htmlContent);
+            var message = MailHelper.CreateSingleEmailToMultipleRecipients(fromAddress, recipientList, subject, null, htmlContent);
             if (attachments?.Any() == true)
             {
-                foreach (EmailAttachment attachment in attachments)
+                foreach (var attachment in attachments)
                 {
                     message.AddAttachment(attachment.FileName, Convert.ToBase64String(attachment.Content), attachment.MimeType);
                 }
@@ -48,7 +48,7 @@
 
             try
             {
-                Response response = await this.client.SendEmailAsync(message);
+                var response = await this.client.SendEmailAsync(message);
                 Console.WriteLine(response.StatusCode);
                 Console.WriteLine(await response.Body.ReadAsStringAsync());
             }

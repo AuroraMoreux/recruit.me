@@ -22,16 +22,16 @@
         // GET: Administration/DocumentCategories
         public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            IEnumerable<DocumentCategoriesViewModel> categories = this.documentCategoriesService.GetAllWithDeleted<DocumentCategoriesViewModel>();
+            var categories = this.documentCategoriesService.GetAllWithDeleted<DocumentCategoriesViewModel>();
 
-            int pagesCount = (int)Math.Ceiling(categories.Count() / (decimal)perPage);
+            var pagesCount = (int)Math.Ceiling(categories.Count() / (decimal)perPage);
 
-            List<DocumentCategoriesViewModel> paginatedCategories = categories
+            var paginatedCategories = categories
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
 
-            AllDocumentCategoriesViewModel viewModel = new AllDocumentCategoriesViewModel
+            var viewModel = new AllDocumentCategoriesViewModel
             {
                 DocumentCategories = paginatedCategories,
                 CurrentPage = page,
@@ -57,7 +57,7 @@
                 return this.View(input);
             }
 
-            int result = await this.documentCategoriesService.Create(input);
+            var result = await this.documentCategoriesService.CreateAsync(input);
 
             if (result < 0)
             {
@@ -70,7 +70,7 @@
         // GET: Administration/DocumentCategories/Edit/5
         public IActionResult Edit(int id)
         {
-            EditViewModel category = this.documentCategoriesService.GetDetails<EditViewModel>(id);
+            var category = this.documentCategoriesService.GetDetails<EditViewModel>(id);
             if (category == null)
             {
                 return this.NotFound();
@@ -94,7 +94,7 @@
                 return this.View(input);
             }
 
-            int result = await this.documentCategoriesService.Update(input);
+            var result = await this.documentCategoriesService.UpdateAsync(id, input);
 
             if (result < 0)
             {
@@ -107,7 +107,7 @@
         // GET: Administration/DocumentCategories/Delete/5
         public IActionResult Delete(int id)
         {
-            DeleteViewModel category = this.documentCategoriesService.GetDetails<DeleteViewModel>(id);
+            var category = this.documentCategoriesService.GetDetails<DeleteViewModel>(id);
             if (category == null)
             {
                 return this.NotFound();
@@ -120,9 +120,9 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool isDeleted = this.documentCategoriesService.Delete(id);
+            var isDeleted = await this.documentCategoriesService.DeleteAsync(id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Error", "Home");

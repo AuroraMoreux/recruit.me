@@ -15,7 +15,7 @@
                 return new ValidationResult(GlobalConstants.UicCannotBeNull);
             }
 
-            string valueAsString = value.ToString();
+            var valueAsString = value.ToString();
 
             if (!Regex.IsMatch(valueAsString, "[0-9]{9}")
                 && !Regex.IsMatch(valueAsString, "[0-9]{13}"))
@@ -45,10 +45,10 @@
 
         private static char CalculateThirteenthDigit(string valueAsString)
         {
-            int currentSum = 0;
+            var currentSum = 0;
             var initialCoefficients = new int[] { 2, 7, 3, 5 };
 
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 currentSum += (valueAsString[i + 8] - '0') * initialCoefficients[i];
             }
@@ -64,7 +64,7 @@
                 currentSum = 0;
                 var secondaryCoefficients = new int[] { 4, 9, 5, 7 };
 
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
                     currentSum += (valueAsString[i + 8] - '0') * secondaryCoefficients[i];
                 }
@@ -84,9 +84,9 @@
 
         private static char CalculateNinthDigit(string valueAsString)
         {
-            int currentSum = 0;
+            var currentSum = 0;
             var initialCoefficients = new int[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
                 currentSum += (valueAsString[i] - '0') * initialCoefficients[i];
             }
@@ -102,7 +102,7 @@
                 currentSum = 0;
                 var secondaryCoefficients = new int[] { 3, 4, 5, 6, 7, 8, 9, 10 };
 
-                for (int i = 0; i < 8; i++)
+                for (var i = 0; i < 8; i++)
                 {
                     currentSum += (valueAsString[i] - '0') * secondaryCoefficients[i];
                 }

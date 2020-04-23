@@ -16,9 +16,9 @@
                 return;
             }
 
-            List<string> languages = new List<string> { "Bulgarian", "Croatian", "Czech", "Danish", "English", "Estonian", "Finnish", "French", "German", "Greek", "Hungarian", "Irish", "Italian", "Latvian", "Lithuanian", "Maltese", "Polish", "Portuguese", "Romanian", "Slovak", "Slovene", "Spanish", "Swedish" };
+            var languages = new List<string> { "Bulgarian", "Croatian", "Czech", "Danish", "English", "Estonian", "Finnish", "French", "German", "Greek", "Hungarian", "Irish", "Italian", "Latvian", "Lithuanian", "Maltese", "Polish", "Portuguese", "Romanian", "Slovak", "Slovene", "Spanish", "Swedish" };
 
-            foreach (string laguage in languages)
+            foreach (var laguage in languages)
             {
                 await dbContext.Languages.AddAsync(new Language
                 {

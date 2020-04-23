@@ -95,21 +95,21 @@
 
             EntityIndexesConfiguration.Configure(builder);
 
-            List<IMutableEntityType> entityTypes = builder.Model.GetEntityTypes().ToList();
+            var entityTypes = builder.Model.GetEntityTypes().ToList();
 
             // Set global query filter for not deleted entities only
-            IEnumerable<IMutableEntityType> deletableEntityTypes = entityTypes
+            var deletableEntityTypes = entityTypes
                 .Where(et => et.ClrType != null && typeof(IDeletableEntity).IsAssignableFrom(et.ClrType));
-            foreach (IMutableEntityType deletableEntityType in deletableEntityTypes)
+            foreach (var deletableEntityType in deletableEntityTypes)
             {
-                MethodInfo method = SetIsDeletedQueryFilterMethod.MakeGenericMethod(deletableEntityType.ClrType);
+                var method = SetIsDeletedQueryFilterMethod.MakeGenericMethod(deletableEntityType.ClrType);
                 method.Invoke(null, new object[] { builder });
             }
 
             // Disable cascade delete
-            IEnumerable<IMutableForeignKey> foreignKeys = entityTypes
+            var foreignKeys = entityTypes
                 .SelectMany(e => e.GetForeignKeys().Where(f => f.DeleteBehavior == DeleteBehavior.Cascade));
-            foreach (Microsoft.EntityFrameworkCore.Metadata.IMutableForeignKey foreignKey in foreignKeys)
+            foreach (var foreignKey in foreignKeys)
             {
                 foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
             }
@@ -246,15 +246,15 @@
 
         private void ApplyAuditInfoRules()
         {
-            IEnumerable<EntityEntry> changedEntries = this.ChangeTracker
+            var changedEntries = this.ChangeTracker
                 .Entries()
                 .Where(e =>
                     e.Entity is IAuditInfo &&
                     (e.State == EntityState.Added || e.State == EntityState.Modified));
 
-            foreach (EntityEntry entry in changedEntries)
+            foreach (var entry in changedEntries)
             {
-                IAuditInfo entity = (IAuditInfo)entry.Entity;
+                var entity = (IAuditInfo)entry.Entity;
                 if (entry.State == EntityState.Added && entity.CreatedOn == default)
                 {
                     entity.CreatedOn = DateTime.UtcNow;

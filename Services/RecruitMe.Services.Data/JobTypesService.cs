@@ -19,9 +19,9 @@
             this.jobTypesRepository = jobTypesRepository;
         }
 
-        public async Task<int> Create(CreateViewModel input)
+        public async Task<int> CreateAsync(CreateViewModel input)
         {
-            JobType jobType = AutoMapperConfig.MapperInstance.Map<JobType>(input);
+            var jobType = AutoMapperConfig.MapperInstance.Map<JobType>(input);
 
             if (jobType.IsDeleted)
             {
@@ -41,9 +41,9 @@
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            JobType jobType = this.jobTypesRepository
+            var jobType = this.jobTypesRepository
                   .All()
                   .Where(t => t.Id == id)
                   .FirstOrDefault();
@@ -56,6 +56,7 @@
             try
             {
                 this.jobTypesRepository.Delete(jobType);
+                await jobTypesRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -66,7 +67,7 @@
 
         public IEnumerable<T> GetAll<T>()
         {
-            List<T> jobTypes = this.jobTypesRepository
+            var jobTypes = this.jobTypesRepository
                 .AllAsNoTracking()
                 .OrderBy(jt => jt.Name)
                 .To<T>()
@@ -93,11 +94,11 @@
                   .FirstOrDefault();
         }
 
-        public async Task<int> Update(EditViewModel input)
+        public async Task<int> UpdateAsync(int id, EditViewModel input)
         {
-            JobType jobType = this.jobTypesRepository
+            var jobType = this.jobTypesRepository
                   .AllWithDeleted()
-                  .Where(t => t.Id == input.Id)
+                  .Where(t => t.Id == id)
                   .FirstOrDefault();
 
             if (jobType == null)

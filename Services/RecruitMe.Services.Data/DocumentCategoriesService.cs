@@ -19,9 +19,9 @@
             this.categoriesRepository = categoriesRepository;
         }
 
-        public async Task<int> Create(CreateViewModel input)
+        public async Task<int> CreateAsync(CreateViewModel input)
         {
-            DocumentCategory category = AutoMapperConfig.MapperInstance.Map<DocumentCategory>(input);
+            var category = AutoMapperConfig.MapperInstance.Map<DocumentCategory>(input);
 
             if (category.IsDeleted)
             {
@@ -41,9 +41,9 @@
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            DocumentCategory category = this.categoriesRepository
+            var category = this.categoriesRepository
                  .All()
                  .Where(c => c.Id == id)
                  .FirstOrDefault();
@@ -56,6 +56,7 @@
             try
             {
                 this.categoriesRepository.Delete(category);
+                await this.categoriesRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -91,11 +92,11 @@
                  .ToList();
         }
 
-        public async Task<int> Update(EditViewModel input)
+        public async Task<int> UpdateAsync(int id, EditViewModel input)
         {
-            DocumentCategory category = this.categoriesRepository
+            var category = this.categoriesRepository
                  .AllWithDeleted()
-                 .Where(c => c.Id == input.Id)
+                 .Where(c => c.Id == id)
                  .FirstOrDefault();
 
             if (category == null)

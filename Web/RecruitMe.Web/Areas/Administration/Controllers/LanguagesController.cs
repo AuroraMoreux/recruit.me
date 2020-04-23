@@ -22,15 +22,15 @@
         // GET: Administration/Languages
         public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            IEnumerable<LanguagesViewModel> languages = this.languagesService.GetAllWithDeleted<LanguagesViewModel>();
-            int pagesCount = (int)Math.Ceiling(languages.Count() / (decimal)perPage);
+            var languages = this.languagesService.GetAllWithDeleted<LanguagesViewModel>();
+            var pagesCount = (int)Math.Ceiling(languages.Count() / (decimal)perPage);
 
-            List<LanguagesViewModel> paginatedaLanguages = languages
+            var paginatedaLanguages = languages
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
 
-            AllLanguagesViewModel viewModel = new AllLanguagesViewModel
+            var viewModel = new AllLanguagesViewModel
             {
                 Languages = paginatedaLanguages,
                 CurrentPage = page,
@@ -56,7 +56,7 @@
                 return this.View(input);
             }
 
-            int result = await this.languagesService.Create(input);
+            var result = await this.languagesService.CreateAsync(input);
 
             if (result < 0)
             {
@@ -69,7 +69,7 @@
         // GET: Administration/Languages/Edit/5
         public IActionResult Edit(int id)
         {
-            EditViewModel language = this.languagesService.GetDetails<EditViewModel>(id);
+            var language = this.languagesService.GetDetails<EditViewModel>(id);
             if (language == null)
             {
                 return this.NotFound();
@@ -93,7 +93,7 @@
                 return this.View(input);
             }
 
-            int result = await this.languagesService.Update(input);
+            var result = await this.languagesService.UpdateAsync(id, input);
 
             if (result < 0)
             {
@@ -106,7 +106,7 @@
         // GET: Administration/Languages/Delete/5
         public IActionResult Delete(int id)
         {
-            DeleteViewModel language = this.languagesService.GetDetails<DeleteViewModel>(id);
+            var language = this.languagesService.GetDetails<DeleteViewModel>(id);
             if (language == null)
             {
                 return this.NotFound();
@@ -119,9 +119,9 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool isDeleted = this.languagesService.Delete(id);
+            var isDeleted = await this.languagesService.DeleteAsync(id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Error", "Home");

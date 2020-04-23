@@ -29,17 +29,17 @@
 
         public IActionResult Index()
         {
-            int totalUsers = this.applicationUsersService.GetCount();
-            int usersRegisteredToday = this.applicationUsersService.GetNewUsersCount();
-            int candidatesCount = this.candidatesService.GetCount();
-            int candidatesRegisteredToday = this.candidatesService.GetNewCandidatesCount();
-            int employersCount = this.employersService.GetCount();
-            int employersRegisteredToday = this.employersService.GetNewEmployersCount();
-            int jobOffersCount = this.jobOffersService.GetCount();
-            int newJobOffers = this.jobOffersService.GetNewOffersCount();
-            int jobApplicationsCount = this.jobApplicationService.GetCount();
-            int newApplications = this.jobApplicationService.GetNewApplicationsCount();
-            IndexViewModel indexModel = new IndexViewModel
+            var totalUsers = this.applicationUsersService.GetCount();
+            var usersRegisteredToday = this.applicationUsersService.GetNewUsersCount();
+            var candidatesCount = this.candidatesService.GetCount();
+            var candidatesRegisteredToday = this.candidatesService.GetNewCandidatesCount();
+            var employersCount = this.employersService.GetCount();
+            var employersRegisteredToday = this.employersService.GetNewEmployersCount();
+            var jobOffersCount = this.jobOffersService.GetCount();
+            var newJobOffers = this.jobOffersService.GetNewOffersCount();
+            var jobApplicationsCount = this.jobApplicationService.GetCount();
+            var newApplications = this.jobApplicationService.GetNewApplicationsCount();
+            var indexModel = new IndexViewModel
             {
                 TotalUsersCount = totalUsers,
                 UsersRegisteredToday = usersRegisteredToday,

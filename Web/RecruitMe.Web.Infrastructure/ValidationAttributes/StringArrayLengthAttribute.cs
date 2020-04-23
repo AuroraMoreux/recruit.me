@@ -33,7 +33,7 @@
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            ICollection<string> selection = value as ICollection<string>;
+            var selection = value as ICollection<string>;
 
             if (selection == null)
             {

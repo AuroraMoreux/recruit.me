@@ -43,9 +43,9 @@
 
         public async Task<string> Apply(ApplyViewModel input, string jobApplicationBaseUrl)
         {
-            JobApplication jobApplication = AutoMapperConfig.MapperInstance.Map<JobApplication>(input);
+            var jobApplication = AutoMapperConfig.MapperInstance.Map<JobApplication>(input);
 
-            int applicationStatusId = this.applicationStatusRepository
+            var applicationStatusId = this.applicationStatusRepository
                  .AllAsNoTracking()
                  .Where(jas => jas.Name == "Under Review")
                  .Select(jas => jas.Id)
@@ -54,10 +54,10 @@
             jobApplication.ApplicationStatusId = applicationStatusId;
             jobApplication.CreatedOn = DateTime.UtcNow;
 
-            List<JobApplicationDocument> jobApplicationDocuments = new List<JobApplicationDocument>();
-            foreach (string documentId in input.DocumentIds)
+            var jobApplicationDocuments = new List<JobApplicationDocument>();
+            foreach (var documentId in input.DocumentIds)
             {
-                JobApplicationDocument jobApplicationDocument = new JobApplicationDocument
+                var jobApplicationDocument = new JobApplicationDocument
                 {
                     JobApplication = jobApplication,
                     DocumentId = documentId,
@@ -90,7 +90,7 @@
                 })
                 .FirstOrDefault();
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append(string.Format(GlobalConstants.NewJobApplicationReceivedOpening, jobOfferDetails.ContactPersonNames, jobOfferDetails.Position, input.CandidateDetails.FirstName + " " + input.CandidateDetails.LastName, input.CandidateDetails.ApplicationUserEmail));
             if (input.CandidateDetails.PhoneNumber != null)
             {
@@ -106,12 +106,12 @@
 
         public async Task<int> ChangeJobApplicationStatus(string jobApplicationId, int statusId, string jobApplicationBaseUrl)
         {
-            JobApplication jobApplication = this.jobApplicationsRepository
+            var jobApplication = this.jobApplicationsRepository
                 .All()
                 .Where(ja => ja.Id == jobApplicationId)
                 .FirstOrDefault();
 
-            bool statusExists = this.applicationStatusRepository
+            var statusExists = this.applicationStatusRepository
                 .AllAsNoTracking()
                 .Any(jas => jas.Id == statusId);
 
@@ -143,7 +143,7 @@
                 })
                 .FirstOrDefault();
 
-            string htmlMessage = string.Format(GlobalConstants.JobApplicationStatusChanged, applicationDetails.JobOfferPosition, applicationDetails.JobApplicationStatus, HtmlEncoder.Default.Encode(jobApplicationBaseUrl + jobApplicationId));
+            var htmlMessage = string.Format(GlobalConstants.JobApplicationStatusChanged, applicationDetails.JobOfferPosition, applicationDetails.JobApplicationStatus, HtmlEncoder.Default.Encode(jobApplicationBaseUrl + jobApplicationId));
             await this.emailSender.SendEmailAsync(this.configuration["DefaultAdminCredentials:Email"], this.configuration["DefaultAdminCredentials:Username"], applicationDetails.Email, $"Your Job Application Status was Updated", htmlMessage);
 
             return jobApplication.ApplicationStatusId;
@@ -205,7 +205,7 @@
 
         public int GetNewApplicationsCount()
         {
-            DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            var yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
             return this.jobApplicationsRepository
                 .AllAsNoTracking()
                 .Where(ja => ja.CreatedOn >= yesterdaysDate)

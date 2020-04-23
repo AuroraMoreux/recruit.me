@@ -31,4 +31,10 @@
     <ProjectReference Include="..\..\Services\RecruitMe.Services.Data\RecruitMe.Services.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="UploadFiles\testImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

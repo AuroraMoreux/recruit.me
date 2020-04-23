@@ -22,15 +22,15 @@
         // GET: Administration/FileExtensions
         public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            IEnumerable<ExtensionsViewModel> extensions = this.fileExtensionsService.GetAllWithDeleted<ExtensionsViewModel>();
-            int pagesCount = (int)Math.Ceiling(extensions.Count() / (decimal)perPage);
+            var extensions = this.fileExtensionsService.GetAllWithDeleted<ExtensionsViewModel>();
+            var pagesCount = (int)Math.Ceiling(extensions.Count() / (decimal)perPage);
 
-            List<ExtensionsViewModel> paginatedExtensions = extensions
+            var paginatedExtensions = extensions
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
 
-            AllFileExtensionsViewModel viewModel = new AllFileExtensionsViewModel
+            var viewModel = new AllFileExtensionsViewModel
             {
                 Extensions = paginatedExtensions,
                 CurrentPage = page,
@@ -56,7 +56,7 @@
                 return this.View(input);
             }
 
-            int result = await this.fileExtensionsService.Create(input);
+            var result = await this.fileExtensionsService.CreateAsync(input);
 
             if (result < 0)
             {
@@ -69,7 +69,7 @@
         // GET: Administration/FileExtensions/Edit/5
         public IActionResult Edit(int id)
         {
-            EditViewModel extension = this.fileExtensionsService.GetDetails<EditViewModel>(id);
+            var extension = this.fileExtensionsService.GetDetails<EditViewModel>(id);
             if (extension == null)
             {
                 return this.NotFound();
@@ -93,7 +93,7 @@
                 return this.View(input);
             }
 
-            int result = await this.fileExtensionsService.Update(input);
+            var result = await this.fileExtensionsService.UpdateAsync(id, input);
 
             if (result < 0)
             {
@@ -106,7 +106,7 @@
         // GET: Administration/FileExtensions/Delete/5
         public IActionResult Delete(int id)
         {
-            DeleteViewModel extension = this.fileExtensionsService.GetDetails<DeleteViewModel>(id);
+            var extension = this.fileExtensionsService.GetDetails<DeleteViewModel>(id);
             if (extension == null)
             {
                 return this.NotFound();
@@ -119,9 +119,9 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool isDeleted = this.fileExtensionsService.Delete(id);
+            var isDeleted = await this.fileExtensionsService.DeleteAsync(id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Error", "Home");

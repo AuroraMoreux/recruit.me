@@ -15,9 +15,9 @@
     {
         public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
-            UserManager<ApplicationUser> userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            RoleManager<ApplicationRole> roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-            IConfiguration configManager = serviceProvider.GetRequiredService<IConfiguration>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            var configManager = serviceProvider.GetRequiredService<IConfiguration>();
 
             await SeedUserAsync(userManager, configManager);
             await SeedRoleAsync(roleManager, GlobalConstants.AdministratorRoleName);
@@ -28,10 +28,10 @@
 
         private static async Task SeedUserAsync(UserManager<ApplicationUser> userManager, IConfiguration configManager)
         {
-            ApplicationUser user = await userManager.FindByNameAsync(configManager["DefaultAdminCredentials:Username"]);
+            var user = await userManager.FindByNameAsync(configManager["DefaultAdminCredentials:Username"]);
             if (user == null)
             {
-                IdentityResult result = await userManager.CreateAsync(
+                var result = await userManager.CreateAsync(
                      new ApplicationUser
                      {
                          Email = "admin@recruit.me",
@@ -46,18 +46,18 @@
 
         private static async Task SeedRoleAsync(RoleManager<ApplicationRole> roleManager, string roleName)
         {
-            ApplicationRole role = await roleManager.FindByNameAsync(roleName);
+            var role = await roleManager.FindByNameAsync(roleName);
             if (role == null)
             {
-                IdentityResult result = await roleManager.CreateAsync(new ApplicationRole(roleName));
+                var result = await roleManager.CreateAsync(new ApplicationRole(roleName));
                 ValidateResults(result);
             }
         }
 
         private static async Task SeedUserToRoleAsync(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IConfiguration configManager, string roleName)
         {
-            ApplicationUser user = await userManager.FindByNameAsync(configManager["DefaultAdminCredentials:Username"]);
-            ApplicationRole role = await roleManager.FindByNameAsync(roleName);
+            var user = await userManager.FindByNameAsync(configManager["DefaultAdminCredentials:Username"]);
+            var role = await roleManager.FindByNameAsync(roleName);
 
             if (!dbContext.UserRoles.Any(ur => ur.RoleId == role.Id && ur.UserId == user.Id))
             {

@@ -24,7 +24,7 @@
 
         public int GetNewUsersCount()
         {
-            DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            var yesterdaysDate = DateTime.UtcNow.AddDays(-1);
             return this.applicationUsersRepository
                 .AllAsNoTracking()
                 .Where(au => au.CreatedOn >= yesterdaysDate)

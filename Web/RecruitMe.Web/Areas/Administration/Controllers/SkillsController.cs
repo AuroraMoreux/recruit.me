@@ -22,16 +22,16 @@
         // GET: Administration/Skills
         public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            IEnumerable<SkillsViewModel> skills = this.skillsService.GetAllWithDeleted<SkillsViewModel>();
+            var skills = this.skillsService.GetAllWithDeleted<SkillsViewModel>();
 
-            int pagesCount = (int)Math.Ceiling(skills.Count() / (decimal)perPage);
+            var pagesCount = (int)Math.Ceiling(skills.Count() / (decimal)perPage);
 
-            List<SkillsViewModel> paginatedSkills = skills
+            var paginatedSkills = skills
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
 
-            AllSkillsViewModel viewModel = new AllSkillsViewModel
+            var viewModel = new AllSkillsViewModel
             {
                 Skills = paginatedSkills,
                 CurrentPage = page,
@@ -56,7 +56,7 @@
                 return this.View(input);
             }
 
-            int result = await this.skillsService.Create(input);
+            var result = await this.skillsService.CreateAsync(input);
 
             if (result < 0)
             {
@@ -69,7 +69,7 @@
         // GET: Administration/Skills/Edit/5
         public IActionResult Edit(int id)
         {
-            EditViewModel skill = this.skillsService.GetDetails<EditViewModel>(id);
+            var skill = this.skillsService.GetDetails<EditViewModel>(id);
             if (skill == null)
             {
                 return this.NotFound();
@@ -93,7 +93,7 @@
                 return this.View(input);
             }
 
-            int result = await this.skillsService.Update(input);
+            var result = await this.skillsService.UpdateAsync(id, input);
 
             if (result < 0)
             {
@@ -106,7 +106,7 @@
         // GET: Administration/Skills/Delete/5
         public IActionResult Delete(int id)
         {
-            DeleteViewModel skill = this.skillsService.GetDetails<DeleteViewModel>(id);
+            var skill = this.skillsService.GetDetails<DeleteViewModel>(id);
             if (skill == null)
             {
                 return this.NotFound();
@@ -119,9 +119,9 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool isDeleted = this.skillsService.Delete(id);
+            var isDeleted = await this.skillsService.DeleteAsync(id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Error", "Home");

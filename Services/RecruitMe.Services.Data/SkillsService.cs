@@ -19,9 +19,9 @@
             this.skillsRepository = skillsRepository;
         }
 
-        public async Task<int> Create(CreateViewModel input)
+        public async Task<int> CreateAsync(CreateViewModel input)
         {
-            Skill skill = AutoMapperConfig.MapperInstance.Map<Skill>(input);
+            var skill = AutoMapperConfig.MapperInstance.Map<Skill>(input);
 
             if (skill.IsDeleted)
             {
@@ -41,9 +41,9 @@
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            Skill skill = this.skillsRepository
+            var skill = this.skillsRepository
                  .All()
                  .Where(s => s.Id == id)
                  .FirstOrDefault();
@@ -56,6 +56,7 @@
             try
             {
                 this.skillsRepository.Delete(skill);
+                await this.skillsRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -66,7 +67,7 @@
 
         public IEnumerable<T> GetAll<T>()
         {
-            List<T> skills = this.skillsRepository
+            var skills = this.skillsRepository
                  .AllAsNoTracking()
                  .OrderBy(s => s.Name)
                  .To<T>()
@@ -93,11 +94,11 @@
                  .FirstOrDefault();
         }
 
-        public async Task<int> Update(EditViewModel input)
+        public async Task<int> UpdateAsync(int id, EditViewModel input)
         {
-            Skill skill = this.skillsRepository
+            var skill = this.skillsRepository
                  .AllWithDeleted()
-                 .Where(c => c.Id == input.Id)
+                 .Where(c => c.Id == id)
                  .FirstOrDefault();
 
             if (skill == null)

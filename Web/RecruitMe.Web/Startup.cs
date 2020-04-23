@@ -92,8 +92,8 @@
             services.AddTransient<IJobApplicationService, JobApplicationService>();
             services.AddTransient<IJobApplicationStatusesService, JobApplicationStatusesService>();
 
-            Account account = new Account(this.configuration["CloudinaryDetails:CloudName"], this.configuration["CloudinaryDetails:ApiKey"], this.configuration["CloudinaryDetails:ApiSecret"]);
-            Cloudinary cloudinary = new Cloudinary(account);
+            var account = new Account(CloudinaryConfig.CloudName, CloudinaryConfig.ApiKey, CloudinaryConfig.ApiSecret);
+            var cloudinary = new Cloudinary(account);
             services.AddSingleton(cloudinary);
             services.AddSingleton<IMimeMappingService>(new MimeMappingService(new FileExtensionContentTypeProvider()));
         }
@@ -103,9 +103,9 @@
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
 
             // Seed data on application startup
-            using (IServiceScope serviceScope = app.ApplicationServices.CreateScope())
+            using (var serviceScope = app.ApplicationServices.CreateScope())
             {
-                ApplicationDbContext dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 dbContext.Database.Migrate();
 

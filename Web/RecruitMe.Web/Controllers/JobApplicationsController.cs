@@ -39,22 +39,22 @@
         [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public IActionResult Apply(string jobOfferId)
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Candidates");
             }
 
-            CandidateContactDetailsViewModel candidateDetails = this.candidatesService.GetProfileDetails<CandidateContactDetailsViewModel>(candidateId);
-            IEnumerable<CandidateDocumentsDropDownViewModel> candidateDocumentDetails = this.documentsService.GetAllDocumentsForCandidate<CandidateDocumentsDropDownViewModel>(candidateId);
-            JobApplicationJobOfferDetailsViewModel jobOfferDetails = this.jobOffersService.GetDetails<JobApplicationJobOfferDetailsViewModel>(jobOfferId);
+            var candidateDetails = this.candidatesService.GetProfileDetails<CandidateContactDetailsViewModel>(candidateId);
+            var candidateDocumentDetails = this.documentsService.GetAllDocumentsForCandidate<CandidateDocumentsDropDownViewModel>(candidateId);
+            var jobOfferDetails = this.jobOffersService.GetDetails<JobApplicationJobOfferDetailsViewModel>(jobOfferId);
 
             if (candidateDetails == null || candidateDocumentDetails == null || jobOfferDetails == null)
             {
                 return this.NotFound();
             }
 
-            ApplyViewModel viewModel = new ApplyViewModel
+            var viewModel = new ApplyViewModel
             {
                 CandidateDetails = candidateDetails,
                 Documents = candidateDocumentDetails,
@@ -70,7 +70,7 @@
         [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public async Task<IActionResult> Apply(ApplyViewModel input)
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Candidates");
@@ -78,9 +78,9 @@
 
             if (!this.ModelState.IsValid)
             {
-                CandidateContactDetailsViewModel candidateDetails = this.candidatesService.GetProfileDetails<CandidateContactDetailsViewModel>(input.CandidateId);
-                IEnumerable<CandidateDocumentsDropDownViewModel> candidateDocumentDetails = this.documentsService.GetAllDocumentsForCandidate<CandidateDocumentsDropDownViewModel>(input.CandidateId);
-                JobApplicationJobOfferDetailsViewModel jobOfferDetails = this.jobOffersService.GetDetails<JobApplicationJobOfferDetailsViewModel>(input.JobOfferId);
+                var candidateDetails = this.candidatesService.GetProfileDetails<CandidateContactDetailsViewModel>(input.CandidateId);
+                var candidateDocumentDetails = this.documentsService.GetAllDocumentsForCandidate<CandidateDocumentsDropDownViewModel>(input.CandidateId);
+                var jobOfferDetails = this.jobOffersService.GetDetails<JobApplicationJobOfferDetailsViewModel>(input.JobOfferId);
 
                 input.CandidateDetails = candidateDetails;
                 input.Documents = candidateDocumentDetails;
@@ -94,8 +94,8 @@
                 return this.RedirectToAction("Details", "JobOffers", new { id = input.JobOfferId });
             }
 
-            string jobApplicationBaseUrl = $"{this.Request.Scheme}://{this.Request.Host}/JobApplications/Details/";
-            string jobApplicationId = await this.jobApplicationService.Apply(input, jobApplicationBaseUrl);
+            var jobApplicationBaseUrl = $"{this.Request.Scheme}://{this.Request.Host}/JobApplications/Details/";
+            var jobApplicationId = await this.jobApplicationService.Apply(input, jobApplicationBaseUrl);
 
             if (jobApplicationId == null)
             {
@@ -110,15 +110,15 @@
 
         public IActionResult Details(string id)
         {
-            string userId = this.userManager.GetUserId(this.User);
+            var userId = this.userManager.GetUserId(this.User);
 
-            bool isUserRelatedToApplication = this.jobApplicationService.IsUserRelatedToJobApplication(id, userId);
+            var isUserRelatedToApplication = this.jobApplicationService.IsUserRelatedToJobApplication(id, userId);
             if (!isUserRelatedToApplication && !this.User.IsInRole(GlobalConstants.AdministratorRoleName))
             {
                 return this.Forbid();
             }
 
-            DetailsViewModel jobApplicationDetails = this.jobApplicationService.GetJobApplicationDetails<DetailsViewModel>(id);
+            var jobApplicationDetails = this.jobApplicationService.GetJobApplicationDetails<DetailsViewModel>(id);
 
             if (jobApplicationDetails == null)
             {
@@ -132,15 +132,15 @@
         [HttpGet]
         public async Task<IActionResult> StatusChange(int statusId, string jobApplicationId)
         {
-            string userId = this.userManager.GetUserId(this.User);
+            var userId = this.userManager.GetUserId(this.User);
 
-            bool isUserRelatedToApplication = this.jobApplicationService.IsUserRelatedToJobApplication(jobApplicationId, userId);
+            var isUserRelatedToApplication = this.jobApplicationService.IsUserRelatedToJobApplication(jobApplicationId, userId);
             if (!isUserRelatedToApplication && !this.User.IsInRole(GlobalConstants.AdministratorRoleName))
             {
                 return this.Forbid();
             }
 
-            int currentStatusId = this.jobApplicationService.GetJobApplicationStatusId(jobApplicationId);
+            var currentStatusId = this.jobApplicationService.GetJobApplicationStatusId(jobApplicationId);
 
             if (currentStatusId == statusId)
             {
@@ -148,8 +148,8 @@
             }
             else
             {
-                string jobApplicationBaseUrl = $"{this.Request.Scheme}://{this.Request.Host}/JobApplications/Details/";
-                int newStatus = await this.jobApplicationService.ChangeJobApplicationStatus(jobApplicationId, statusId, jobApplicationBaseUrl);
+                var jobApplicationBaseUrl = $"{this.Request.Scheme}://{this.Request.Host}/JobApplications/Details/";
+                var newStatus = await this.jobApplicationService.ChangeJobApplicationStatus(jobApplicationId, statusId, jobApplicationBaseUrl);
 
                 if (newStatus < 0)
                 {
@@ -164,13 +164,13 @@
         [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
         public IActionResult All(string sortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Candidates");
             }
 
-            IEnumerable<CandidateJobApplicationsViewModel> candidateApplications = this.jobApplicationService.GetCandidateApplications<CandidateJobApplicationsViewModel>(candidateId);
+            var candidateApplications = this.jobApplicationService.GetCandidateApplications<CandidateJobApplicationsViewModel>(candidateId);
 
             this.ViewData["DateSortParam"] = string.IsNullOrEmpty(sortOrder) ? "date_asc" : string.Empty;
             this.ViewData["StatusSortParam"] = sortOrder == "max_status" ? "min_status" : "max_status";
@@ -186,14 +186,14 @@
                 _ => candidateApplications.OrderByDescending(ja => ja.ApplicationDate)
             };
 
-            int pagesCount = (int)Math.Ceiling(candidateApplications.Count() / (decimal)perPage);
+            var pagesCount = (int)Math.Ceiling(candidateApplications.Count() / (decimal)perPage);
 
             IEnumerable<CandidateJobApplicationsViewModel> paginatedApplications = candidateApplications
                 .Skip(perPage * (page - 1))
                 .Take(perPage)
                 .ToList();
 
-            AllViewModel viewModel = new AllViewModel
+            var viewModel = new AllViewModel
             {
                 JobApplications = paginatedApplications,
                 CurrentPage = page,
@@ -206,19 +206,19 @@
         [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
         public IActionResult ByOffer(string jobOfferId, string sortOrder, int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            string employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
                 return this.RedirectToAction("CreateProfile", "Employers");
             }
 
-            bool isOfferPostedByEmployer = this.jobOffersService.IsOfferPostedByEmployer(jobOfferId, employerId);
+            var isOfferPostedByEmployer = this.jobOffersService.IsOfferPostedByEmployer(jobOfferId, employerId);
             if (!isOfferPostedByEmployer)
             {
                 return this.Forbid();
             }
 
-            IEnumerable<JobOfferJobApplicationsViewModel> jobOfferApplications = this.jobApplicationService.GetApplicationsForOffer<JobOfferJobApplicationsViewModel>(jobOfferId);
+            var jobOfferApplications = this.jobApplicationService.GetApplicationsForOffer<JobOfferJobApplicationsViewModel>(jobOfferId);
             this.ViewData["DateSortParam"] = string.IsNullOrEmpty(sortOrder) ? "date_asc" : string.Empty;
             this.ViewData["StatusSortParam"] = sortOrder == "max_status" ? "min_status" : "max_status";
             this.ViewData["EducationSortParam"] = sortOrder == "name_asc" ? "name_desc" : "name_asc";
@@ -233,16 +233,16 @@
                 _ => jobOfferApplications.OrderByDescending(ja => ja.CreatedOn)
             };
 
-            int pagesCount = (int)Math.Ceiling(jobOfferApplications.Count() / (decimal)perPage);
+            var pagesCount = (int)Math.Ceiling(jobOfferApplications.Count() / (decimal)perPage);
 
             IEnumerable<JobOfferJobApplicationsViewModel> paginatedApplications = jobOfferApplications
                 .Skip(perPage * (page - 1))
                 .Take(perPage)
                 .ToList();
 
-            string getOfferPosition = this.jobOffersService.GetOfferPositionById(jobOfferId);
+            var getOfferPosition = this.jobOffersService.GetOfferPositionById(jobOfferId);
 
-            JobOfferAllApplicationsModel viewModel = new JobOfferAllApplicationsModel
+            var viewModel = new JobOfferAllApplicationsModel
             {
                 JobOfferId = jobOfferId,
                 Position = getOfferPosition,

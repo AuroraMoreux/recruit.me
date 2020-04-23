@@ -19,9 +19,9 @@
             this.languagesRepository = languagesRepository;
         }
 
-        public async Task<int> Create(CreateViewModel input)
+        public async Task<int> CreateAsync(CreateViewModel input)
         {
-            Language language = AutoMapperConfig.MapperInstance.Map<Language>(input);
+            var language = AutoMapperConfig.MapperInstance.Map<Language>(input);
 
             if (language.IsDeleted)
             {
@@ -41,9 +41,9 @@
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            Language language = this.languagesRepository
+            var language = this.languagesRepository
                .All()
                .Where(l => l.Id == id)
                .FirstOrDefault();
@@ -56,6 +56,7 @@
             try
             {
                 this.languagesRepository.Delete(language);
+                await this.languagesRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -66,7 +67,7 @@
 
         public IEnumerable<T> GetAll<T>()
         {
-            List<T> languages = this.languagesRepository
+            var languages = this.languagesRepository
                  .AllAsNoTracking()
                  .OrderBy(l => l.Name)
                  .To<T>()
@@ -93,11 +94,11 @@
                  .FirstOrDefault();
         }
 
-        public async Task<int> Update(EditViewModel input)
+        public async Task<int> UpdateAsync(int id, EditViewModel input)
         {
-            Language language = this.languagesRepository
+            var language = this.languagesRepository
                  .AllWithDeleted()
-                 .Where(c => c.Id == input.Id)
+                 .Where(c => c.Id == id)
                  .FirstOrDefault();
 
             if (language == null)

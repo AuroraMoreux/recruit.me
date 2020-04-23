@@ -31,7 +31,7 @@
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 if (this.Salary.HasValue)
                 {
                     sb.Append($"Salary: {this.Salary.Value:f2}€; ");

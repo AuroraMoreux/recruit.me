@@ -22,15 +22,15 @@
         // GET: Administration/JobTypes
         public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            IEnumerable<JobTypesViewModel> types = this.jobTypesService.GetAllWithDeleted<JobTypesViewModel>();
-            int pagesCount = (int)Math.Ceiling(types.Count() / (decimal)perPage);
+            var types = this.jobTypesService.GetAllWithDeleted<JobTypesViewModel>();
+            var pagesCount = (int)Math.Ceiling(types.Count() / (decimal)perPage);
 
-            List<JobTypesViewModel> paginatedTypes = types
+            var paginatedTypes = types
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
 
-            AllJobTypesViewModel viewModel = new AllJobTypesViewModel
+            var viewModel = new AllJobTypesViewModel
             {
                 Types = paginatedTypes,
                 CurrentPage = page,
@@ -56,7 +56,7 @@
                 return this.View(input);
             }
 
-            int result = await this.jobTypesService.Create(input);
+            var result = await this.jobTypesService.CreateAsync(input);
 
             if (result < 0)
             {
@@ -69,7 +69,7 @@
         // GET: Administration/JobTypes/Edit/5
         public IActionResult Edit(int id)
         {
-            EditViewModel jobType = this.jobTypesService.GetDetails<EditViewModel>(id);
+            var jobType = this.jobTypesService.GetDetails<EditViewModel>(id);
             if (jobType == null)
             {
                 return this.NotFound();
@@ -93,7 +93,7 @@
                 return this.View(input);
             }
 
-            int result = await this.jobTypesService.Update(input);
+            var result = await this.jobTypesService.UpdateAsync(id, input);
 
             if (result < 0)
             {
@@ -106,7 +106,7 @@
         // GET: Administration/JobTypes/Delete/5
         public IActionResult Delete(int id)
         {
-            DeleteViewModel jobType = this.jobTypesService.GetDetails<DeleteViewModel>(id);
+            var jobType = this.jobTypesService.GetDetails<DeleteViewModel>(id);
             if (jobType == null)
             {
                 return this.NotFound();
@@ -119,9 +119,9 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool isDeleted = this.jobTypesService.Delete(id);
+            var isDeleted = await this.jobTypesService.DeleteAsync(id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Error", "Home");

@@ -21,8 +21,8 @@
         [InlineData("0009039460578")]
         public void UicShouldBeInvalid(string uic)
         {
-            UicValidatorAttribute attribute = new UicValidatorAttribute();
-            bool result = attribute.IsValid(uic);
+            var attribute = new UicValidatorAttribute();
+            var result = attribute.IsValid(uic);
 
             Assert.False(result);
         }
@@ -53,8 +53,8 @@
         [InlineData("1314720070159")]
         public void UicShouldBeValid(string uic)
         {
-            UicValidatorAttribute attribute = new UicValidatorAttribute();
-            bool result = attribute.IsValid(uic);
+            var attribute = new UicValidatorAttribute();
+            var result = attribute.IsValid(uic);
 
             Assert.True(result);
         }

@@ -362,3 +362,5 @@ appsettings.Production.json
 /Web/RecruitMe.Web/appsettings.Development.json
 /Web/RecruitMe.Web/wwwroot/css/custom.css
 /Data/RecruitMe.Data/appsettings.json
+/Services/RecruitMe.Services/CloudinaryConfig.cs
+/Tests/RecruitMe.Services.Data.Tests/UploadFiles/testImage.png

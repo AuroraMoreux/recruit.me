@@ -16,9 +16,9 @@
                 return;
             }
 
-            List<string> levels = new List<string> { "Entry Level", "Expert", "Management" };
+            var levels = new List<string> { "Entry Level", "Expert", "Management" };
 
-            foreach (string level in levels)
+            foreach (var level in levels)
             {
                 await dbContext.JobLevels.AddAsync(new JobLevel
                 {

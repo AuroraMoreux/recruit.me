@@ -21,9 +21,9 @@
                 throw new ArgumentNullException(nameof(serviceProvider));
             }
 
-            ILogger logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(typeof(ApplicationDbContextSeeder));
+            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(typeof(ApplicationDbContextSeeder));
 
-            List<ISeeder> seeders = new List<ISeeder>
+            var seeders = new List<ISeeder>
             {
                 new RolesSeeder(),
                 new AdminUserSeeder(),
@@ -37,7 +37,7 @@
                 new SkillsSeeder(),
             };
 
-            foreach (ISeeder seeder in seeders)
+            foreach (var seeder in seeders)
             {
                 await seeder.SeedAsync(dbContext, serviceProvider);
                 await dbContext.SaveChangesAsync();

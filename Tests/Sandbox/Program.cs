@@ -27,19 +27,19 @@
         public static int Main(string[] args)
         {
             Console.WriteLine($"{typeof(Program).Namespace} ({string.Join(" ", args)}) starts working...");
-            ServiceCollection serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider(true);
 
             // Seed data on application startup
-            using (IServiceScope serviceScope = serviceProvider.CreateScope())
+            using (var serviceScope = serviceProvider.CreateScope())
             {
-                ApplicationDbContext dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 dbContext.Database.Migrate();
                 new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
             }
 
-            using (IServiceScope serviceScope = serviceProvider.CreateScope())
+            using (var serviceScope = serviceProvider.CreateScope())
             {
                 serviceProvider = serviceScope.ServiceProvider;
 
@@ -51,13 +51,13 @@
 
         private static async Task<int> SandboxCode(SandboxOptions options, IServiceProvider serviceProvider)
         {
-            Stopwatch sw = Stopwatch.StartNew();
+            var sw = Stopwatch.StartNew();
 
-            ISettingsService settingsService = serviceProvider.GetService<ISettingsService>();
+            var settingsService = serviceProvider.GetService<ISettingsService>();
 
-            List<string> list = new List<string>() { "hello", "hi ya", "new string" };
+            var list = new List<string>() { "hello", "hi ya", "new string" };
 
-            List<string> filteredResults = list.Where(i => i.Contains(string.Empty)).ToList();
+            var filteredResults = list.Where(i => i.Contains(string.Empty)).ToList();
 
             Console.WriteLine(string.Join(", ", filteredResults));
             return await Task.FromResult(0);
@@ -65,7 +65,7 @@
 
         private static void ConfigureServices(ServiceCollection services)
         {
-            IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+            var configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables()
                 .Build();

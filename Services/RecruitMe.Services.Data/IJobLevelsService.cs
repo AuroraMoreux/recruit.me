@@ -11,11 +11,11 @@
 
         IEnumerable<T> GetAllWithDeleted<T>();
 
-        Task<int> Create(CreateViewModel input);
+        Task<int> CreateAsync(CreateViewModel input);
 
-        Task<int> Update(EditViewModel input);
+        Task<int> UpdateAsync(int id,EditViewModel input);
 
-        bool Delete(int id);
+        Task<bool> DeleteAsync(int id);
 
         T GetDetails<T>(int id);
     }

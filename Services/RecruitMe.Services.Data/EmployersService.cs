@@ -27,11 +27,11 @@
 
         public async Task<string> CreateProfileAsync(CreateEmployerProfileInputModel model)
         {
-            Employer employer = AutoMapperConfig.MapperInstance.Map<Employer>(model);
+            var employer = AutoMapperConfig.MapperInstance.Map<Employer>(model);
 
             if (model.Logo != null)
             {
-                string logoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
+                var logoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
 
                 if (logoUrl == null)
                 {
@@ -81,7 +81,7 @@
 
         public int GetNewEmployersCount()
         {
-            DateTime yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            var yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
             return this.employersRepository
                 .AllAsNoTracking()
                 .Where(e => e.ApplicationUser.CreatedOn >= yesterdaysDate)
@@ -109,7 +109,7 @@
 
         public async Task<string> UpdateProfileAsync(string employerId, UpdateEmployerProfileViewModel model)
         {
-            Employer employer = this.employersRepository
+            var employer = this.employersRepository
                   .All()
                   .FirstOrDefault(e => e.Id == employerId);
 
@@ -138,7 +138,7 @@
                     CloudinaryService.DeleteFile(this.cloudinary, model.ApplicationUserId + LogoNameAddIn);
                 }
 
-                string logoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
+                var logoUrl = await CloudinaryService.UploadImageAsync(this.cloudinary, model.Logo, model.ApplicationUserId + LogoNameAddIn);
                 if (logoUrl == null)
                 {
                     return null;

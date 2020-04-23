@@ -50,11 +50,11 @@
 
         [Display(Name = "My Skills")]
         [IntArrayLength("My Skills", 10, 1)]
-        public List<int> SkillsIds { get; set; }
+        public IEnumerable<int> SkillsIds { get; set; } = new List<int>();
 
         [Display(Name = "My Languages")]
         [IntArrayLength("My Languages", 5, 1)]
-        public List<int> LanguagesIds { get; set; }
+        public IEnumerable<int> LanguagesIds { get; set; } = new List<int>();
 
         public IEnumerable<SkillsDropDownCheckboxListViewModel> SkillsList { get; set; }
 

@@ -16,7 +16,7 @@
                 return;
             }
 
-            Dictionary<string, string> extensions = new Dictionary<string, string>
+            var extensions = new Dictionary<string, string>
             {
                 { ".docx", "File" },
                 { ".doc", "File" },
@@ -28,7 +28,7 @@
                 { ".png", "Image" },
             };
 
-            foreach (string key in extensions.Keys)
+            foreach (var key in extensions.Keys)
             {
                 await dbContext.FileExtensions.AddAsync(new FileExtension
                 {

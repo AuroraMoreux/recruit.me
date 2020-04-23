@@ -22,15 +22,15 @@
         // GET: Administration/JobLevels
         public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            IEnumerable<JobLevelViewModel> levels = this.jobLevelsService.GetAllWithDeleted<JobLevelViewModel>();
-            int pagesCount = (int)Math.Ceiling(levels.Count() / (decimal)perPage);
+            var levels = this.jobLevelsService.GetAllWithDeleted<JobLevelViewModel>();
+            var pagesCount = (int)Math.Ceiling(levels.Count() / (decimal)perPage);
 
-            List<JobLevelViewModel> paginatedLevels = levels
+            var paginatedLevels = levels
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
 
-            AllJobLevelsViewModel viewModel = new AllJobLevelsViewModel
+            var viewModel = new AllJobLevelsViewModel
             {
                 Levels = paginatedLevels,
                 CurrentPage = page,
@@ -56,7 +56,7 @@
                 return this.View(input);
             }
 
-            int result = await this.jobLevelsService.Create(input);
+            var result = await this.jobLevelsService.CreateAsync(input);
 
             if (result < 0)
             {
@@ -69,7 +69,7 @@
         // GET: Administration/JobLevels/Edit/5
         public IActionResult Edit(int id)
         {
-            EditViewModel level = this.jobLevelsService.GetDetails<EditViewModel>(id);
+            var level = this.jobLevelsService.GetDetails<EditViewModel>(id);
             if (level == null)
             {
                 return this.NotFound();
@@ -93,7 +93,7 @@
                 return this.View(input);
             }
 
-            int result = await this.jobLevelsService.Update(input);
+            var result = await this.jobLevelsService.UpdateAsync(id, input);
 
             if (result < 0)
             {
@@ -106,7 +106,7 @@
         // GET: Administration/JobLevels/Delete/5
         public IActionResult Delete(int id)
         {
-            DeleteViewModel level = this.jobLevelsService.GetDetails<DeleteViewModel>(id);
+            var level = this.jobLevelsService.GetDetails<DeleteViewModel>(id);
             if (level == null)
             {
                 return this.NotFound();
@@ -119,9 +119,9 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool isDeleted = this.jobLevelsService.Delete(id);
+            var isDeleted = await this.jobLevelsService.DeleteAsync(id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Error", "Home");

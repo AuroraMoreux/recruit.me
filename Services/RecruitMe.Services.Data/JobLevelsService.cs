@@ -19,9 +19,9 @@
             this.jobLevelsRepository = jobLevelsRepository;
         }
 
-        public async Task<int> Create(CreateViewModel input)
+        public async Task<int> CreateAsync(CreateViewModel input)
         {
-            JobLevel level = AutoMapperConfig.MapperInstance.Map<JobLevel>(input);
+            var level = AutoMapperConfig.MapperInstance.Map<JobLevel>(input);
 
             if (level.IsDeleted)
             {
@@ -41,9 +41,9 @@
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            JobLevel level = this.jobLevelsRepository
+            var level = this.jobLevelsRepository
                   .All()
                   .Where(l => l.Id == id)
                   .FirstOrDefault();
@@ -56,6 +56,7 @@
             try
             {
                 this.jobLevelsRepository.Delete(level);
+                await this.jobLevelsRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -66,7 +67,7 @@
 
         public IEnumerable<T> GetAll<T>()
         {
-            List<T> jobLevels = this.jobLevelsRepository
+            var jobLevels = this.jobLevelsRepository
                 .AllAsNoTracking()
                 .To<T>()
                 .ToList();
@@ -92,11 +93,11 @@
                 .FirstOrDefault();
         }
 
-        public async Task<int> Update(EditViewModel input)
+        public async Task<int> UpdateAsync(int id,EditViewModel input)
         {
-            JobLevel level = this.jobLevelsRepository
+            var level = this.jobLevelsRepository
                  .AllWithDeleted()
-                 .Where(l => l.Id == input.Id)
+                 .Where(l => l.Id == id)
                  .FirstOrDefault();
 
             if (level == null)

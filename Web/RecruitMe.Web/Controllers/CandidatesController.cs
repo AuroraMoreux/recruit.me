@@ -59,15 +59,15 @@
                 this.HttpContext.Session.SetString("UserRole", GlobalConstants.CandidateRoleName);
             }
 
-            IndexViewModel viewModel = new IndexViewModel();
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            var viewModel = new IndexViewModel();
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId != null)
             {
                 viewModel.IsProfileCreated = true;
             }
 
-            IEnumerable<IndexJobOffersModel> lastTenOffers = this.jobOffersService.GetLastTenOffers<IndexJobOffersModel>();
-            IEnumerable<IndexTopEmployersModel> topEmployers = this.employersService.GetTopFiveEmployers<IndexTopEmployersModel>();
+            var lastTenOffers = this.jobOffersService.GetLastTenOffers<IndexJobOffersModel>();
+            var topEmployers = this.employersService.GetTopFiveEmployers<IndexTopEmployersModel>();
             viewModel.LastTenJobOffers = lastTenOffers;
             viewModel.TopEmployers = topEmployers;
             return this.View(viewModel);
@@ -75,26 +75,26 @@
 
         public IActionResult MyProfile()
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            ProfileViewModel viewModel = this.candidatesService.GetProfileDetails<ProfileViewModel>(candidateId);
+            var viewModel = this.candidatesService.GetProfileDetails<ProfileViewModel>(candidateId);
 
             return this.View(viewModel);
         }
 
         public IActionResult CreateProfile()
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId != null)
             {
                 return this.RedirectToAction(nameof(this.UpdateProfile));
             }
 
-            CreateCandidateProfileInputModel viewModel = new CreateCandidateProfileInputModel
+            var viewModel = new CreateCandidateProfileInputModel
             {
                 ImageExtensions = this.allowedExtensions,
                 Languages = this.languages,
@@ -126,10 +126,10 @@
                 return this.View(input);
             }
 
-            ApplicationUser user = await this.userManager.GetUserAsync(this.User);
+            var user = await this.userManager.GetUserAsync(this.User);
             input.ApplicationUserId = user.Id;
 
-            string candidateId = await this.candidatesService.CreateProfileAsync(input);
+            var candidateId = await this.candidatesService.CreateProfileAsync(input);
             if (candidateId == null)
             {
                 return this.RedirectToAction("Error", "Home");
@@ -143,13 +143,13 @@
 
         public IActionResult UpdateProfile()
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
-            UpdateCandidateProfileViewModel details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(candidateId);
+            var details = this.candidatesService.GetProfileDetails<UpdateCandidateProfileViewModel>(candidateId);
             if (details == null)
             {
                 return this.NotFound();
@@ -164,7 +164,7 @@
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(UpdateCandidateProfileViewModel input)
         {
-            string candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
             if (candidateId == null)
             {
                 return this.RedirectToAction(nameof(this.CreateProfile));
@@ -185,7 +185,7 @@
                 return this.View(input);
             }
 
-            string updateResult = await this.candidatesService.UpdateProfileAsync(candidateId, input);
+            var updateResult = await this.candidatesService.UpdateProfileAsync(candidateId, input);
 
             if (updateResult == null)
             {

@@ -13,8 +13,8 @@
         [InlineData(null, null)]
         public void MultipleRolesAreCorrectlyConcatenated(params string[] roles)
         {
-            string expectedRoles = string.Join(",", roles);
-            AuthorizeRolesAttribute attribute = new AuthorizeRolesAttribute(roles);
+            var expectedRoles = string.Join(",", roles);
+            var attribute = new AuthorizeRolesAttribute(roles);
 
             Assert.Equal(expectedRoles, attribute.Roles);
         }

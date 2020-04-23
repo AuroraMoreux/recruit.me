@@ -22,15 +22,15 @@
         // GET: Administration/JobApplicationStatuses
         public IActionResult Index(int page = 1, int perPage = GlobalConstants.ItemsPerPage)
         {
-            IEnumerable<JobApplicationStatusViewModel> statuses = this.jobApplicationStatusesService.GetAllWithDeleted<JobApplicationStatusViewModel>();
-            int pagesCount = (int)Math.Ceiling(statuses.Count() / (decimal)perPage);
+            var statuses = this.jobApplicationStatusesService.GetAllWithDeleted<JobApplicationStatusViewModel>();
+            var pagesCount = (int)Math.Ceiling(statuses.Count() / (decimal)perPage);
 
-            List<JobApplicationStatusViewModel> paginatedStatuses = statuses
+            var paginatedStatuses = statuses
                .Skip(perPage * (page - 1))
                .Take(perPage)
                .ToList();
 
-            AllStatusesViewModel viewModel = new AllStatusesViewModel
+            var viewModel = new AllStatusesViewModel
             {
                 Statuses = paginatedStatuses,
                 CurrentPage = page,
@@ -56,7 +56,7 @@
                 return this.View(input);
             }
 
-            int result = await this.jobApplicationStatusesService.Create(input);
+            var result = await this.jobApplicationStatusesService.CreateAsync(input);
 
             if (result < 0)
             {
@@ -69,7 +69,7 @@
         // GET: Administration/JobApplicationStatuses/Edit/5
         public IActionResult Edit(int id)
         {
-            EditViewModel status = this.jobApplicationStatusesService.GetDetails<EditViewModel>(id);
+            var status = this.jobApplicationStatusesService.GetDetails<EditViewModel>(id);
             if (status == null)
             {
                 return this.NotFound();
@@ -93,7 +93,7 @@
                 return this.View(input);
             }
 
-            int result = await this.jobApplicationStatusesService.Update(input);
+            var result = await this.jobApplicationStatusesService.UpdateAsync(id, input);
 
             if (result < 0)
             {
@@ -106,7 +106,7 @@
         // GET: Administration/JobApplicationStatuses/Delete/5
         public IActionResult Delete(int id)
         {
-            DeleteViewModel status = this.jobApplicationStatusesService.GetDetails<DeleteViewModel>(id);
+            var status = this.jobApplicationStatusesService.GetDetails<DeleteViewModel>(id);
             if (status == null)
             {
                 return this.NotFound();
@@ -119,9 +119,9 @@
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            bool isDeleted = this.jobApplicationStatusesService.Delete(id);
+            var isDeleted = await this.jobApplicationStatusesService.DeleteAsync(id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Error", "Home");

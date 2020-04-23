@@ -19,9 +19,9 @@
             this.jobApplicationStatusRepository = jobApplicationStatusRepository;
         }
 
-        public async Task<int> Create(CreateViewModel input)
+        public async Task<int> CreateAsync(CreateViewModel input)
         {
-            JobApplicationStatus status = AutoMapperConfig.MapperInstance.Map<JobApplicationStatus>(input);
+            var status = AutoMapperConfig.MapperInstance.Map<JobApplicationStatus>(input);
 
             if (status.IsDeleted)
             {
@@ -41,9 +41,9 @@
             }
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            JobApplicationStatus status = this.jobApplicationStatusRepository
+            var status = this.jobApplicationStatusRepository
                  .All()
                  .Where(s => s.Id == id)
                  .FirstOrDefault();
@@ -56,6 +56,7 @@
             try
             {
                 this.jobApplicationStatusRepository.Delete(status);
+                await this.jobApplicationStatusRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception)
@@ -90,11 +91,11 @@
                  .FirstOrDefault();
         }
 
-        public async Task<int> Update(EditViewModel input)
+        public async Task<int> UpdateAsync(int id,EditViewModel input)
         {
-            JobApplicationStatus status = this.jobApplicationStatusRepository
+            var status = this.jobApplicationStatusRepository
                  .AllWithDeleted()
-                 .Where(s => s.Id == input.Id)
+                 .Where(s => s.Id == id)
                  .FirstOrDefault();
 
             if (status == null)

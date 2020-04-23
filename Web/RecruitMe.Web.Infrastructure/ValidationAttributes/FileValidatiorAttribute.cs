@@ -27,7 +27,7 @@
                     return new ValidationResult(GlobalConstants.FileCannotBeNull);
                 }
 
-                IFormFile file = value as IFormFile;
+                var file = value as IFormFile;
 
                 if (file.FileName.Length > 50)
                 {
