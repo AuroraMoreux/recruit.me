@@ -94,5 +94,7 @@
         public const string EmailAddressChanged = "You are receiving this email because there has been a request to update the email address for your account. Please confirm your new email address by <a href='{0}'>clicking here</a>.";
 
         public const string JobApplicationStatusChanged = @"The status for your application for position ""{0}"" has been updated to ''{1}''. Please click <a href='{2}'>here</a> for more details.";
+
+        public const string ForgottenPasswordRequest = @"We have received a forgotten password request for your account. If that was you and you would like to reset your password, <a href='{0}'>click here</a>.";
     }
 }
