@@ -54,6 +54,10 @@
 
         public const string SalaryToValueMustBeGreater = @"The ""Salary To"" amount must be greater than the ""Salary From"" amount";
 
+        public const string FIleCountReached = "You have reached the limit of 15 files per candidate profile.";
+
+        public const string PhoneNumberMustBeNoLongerThan15Digits = "The phone number must begin with a country code, e.g. +359, and be no longer than 15 digits";
+
         // Notifications
         public const string UserSuccessfullyCreated = "User account successfully created";
 

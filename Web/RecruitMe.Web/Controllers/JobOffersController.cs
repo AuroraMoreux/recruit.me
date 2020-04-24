@@ -359,7 +359,7 @@
                 return this.Forbid();
             }
 
-            var deleteResult = await this.jobOffersService.Delete(id);
+            var deleteResult = await this.jobOffersService.DeleteAsync(id);
             if (deleteResult == false)
             {
                 return this.NotFound();

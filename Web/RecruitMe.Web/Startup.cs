@@ -89,7 +89,7 @@
             services.AddTransient<ILanguagesService, LanguagesService>();
             services.AddTransient<ISkillsService, SkillsService>();
             services.AddTransient<IJobOffersService, JobOffersService>();
-            services.AddTransient<IJobApplicationService, JobApplicationService>();
+            services.AddTransient<IJobApplicationService, JobApplicationsService>();
             services.AddTransient<IJobApplicationStatusesService, JobApplicationStatusesService>();
 
             var account = new Account(CloudinaryConfig.CloudName, CloudinaryConfig.ApiKey, CloudinaryConfig.ApiSecret);

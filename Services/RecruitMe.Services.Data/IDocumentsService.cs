@@ -11,14 +11,16 @@
 
         string GetDocumentNameById(string documentId);
 
-        Task<string> Upload(UploadInputModel model, string candidateId);
+        Task<string> UploadAsync(UploadInputModel model, string candidateId);
 
-        bool DocumentNameAlreadyExists(string fileName);
+        bool DocumentNameAlreadyExists(string fileName,string candidateId);
 
-        Task<bool> Delete(string documentId);
+        Task<bool> DeleteAsync(string documentId);
 
-        Task<byte[]> Download(string documentId);
+        Task<byte[]> DownloadAsync(string documentId);
 
         bool IsCandidateOwnerOfDocument(string candidateId, string documentId);
+
+        int GetDocumentCountForCandidate(string candidateId);
     }
 }

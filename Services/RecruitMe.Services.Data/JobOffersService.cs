@@ -217,11 +217,11 @@
 
         public bool IsPositionDuplicate(string employerId, string jobOfferPosition)
         {
-            var currentDate = DateTime.UtcNow.Date;
+            var currentDate = DateTime.UtcNow;
 
             return this.jobOffersRepository
                 .AllAsNoTracking()
-                .Any(jo => jo.Position == jobOfferPosition
+                .Any(jo => jo.Position.ToLower() == jobOfferPosition.ToLower()
                 && jo.EmployerId == employerId
                 && currentDate >= jo.ValidFrom
                 && currentDate <= jo.ValidUntil);
@@ -367,12 +367,17 @@
             }
         }
 
-        public async Task<bool> Delete(string jobOfferId)
+        public async Task<bool> DeleteAsync(string jobOfferId)
         {
             var jobOffer = this.jobOffersRepository
                 .All()
                 .Where(jo => jo.Id == jobOfferId)
                 .FirstOrDefault();
+
+            if (jobOffer == null)
+            {
+                return false;
+            }
 
             try
             {
@@ -398,7 +403,7 @@
 
         public int GetNewOffersCount()
         {
-            var yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            var yesterdaysDate = DateTime.UtcNow.AddDays(-1);
             return this.jobOffersRepository
                 .AllAsNoTracking()
                 .Where(jo => jo.CreatedOn >= yesterdaysDate)
@@ -407,9 +412,13 @@
 
         public IEnumerable<T> GetEmployerJobOffers<T>(string employerId)
         {
+            var requestTime = DateTime.UtcNow;
+
             return this.jobOffersRepository
                  .AllAsNoTracking()
-                 .Where(jo => jo.EmployerId == employerId)
+                 .Where(jo => jo.EmployerId == employerId
+                     && jo.ValidFrom <= requestTime
+                     && jo.ValidUntil >= requestTime)
                  .OrderByDescending(jo => jo.CreatedOn)
                  .To<T>()
                  .ToList();

@@ -81,10 +81,10 @@
 
         public int GetNewEmployersCount()
         {
-            var yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            var yesterdaysDate = DateTime.UtcNow.AddDays(-1);
             return this.employersRepository
                 .AllAsNoTracking()
-                .Where(e => e.ApplicationUser.CreatedOn >= yesterdaysDate)
+                .Where(e => e.CreatedOn >= yesterdaysDate)
                 .Count();
         }
 
@@ -99,8 +99,13 @@
 
         public IEnumerable<T> GetTopFiveEmployers<T>()
         {
+            var requestTime = DateTime.UtcNow;
             return this.employersRepository
                 .AllAsNoTracking()
+                .Where(e => e.JobOffers
+                .Where(jo => jo.ValidFrom <= requestTime
+                     && jo.ValidUntil >= requestTime)
+                .Count() > 0)
                 .OrderByDescending(e => e.JobOffers.Count)
                 .Take(5)
                 .To<T>()

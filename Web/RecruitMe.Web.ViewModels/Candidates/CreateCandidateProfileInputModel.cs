@@ -6,6 +6,7 @@
     using AutoMapper;
     using Ganss.XSS;
     using Microsoft.AspNetCore.Http;
+    using RecruitMe.Common;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
     using RecruitMe.Web.Infrastructure.ValidationAttributes;
@@ -27,8 +28,8 @@
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
-        [MaxLength(12)]
-        [RegularExpression("[0-9]+")]
+        [MaxLength(16)]
+        [RegularExpression(@"\+[0-9]+",ErrorMessage =GlobalConstants.PhoneNumberMustBeNoLongerThan15Digits)]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
 
@@ -39,7 +40,7 @@
         [Display(Name = "Education")]
         public string Education { get; set; }
 
-        [MaxLength(800)]
+        [MaxLength(1000)]
         [Display(Name = "About Me")]
         public string AboutMe { get; set; }
 

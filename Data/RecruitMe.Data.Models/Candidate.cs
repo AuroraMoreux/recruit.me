@@ -27,8 +27,8 @@
 
         public string ProfilePictureUrl { get; set; }
 
-        [MaxLength(12)]
-        [RegularExpression("[0-9]+")]
+        [MaxLength(16)]
+        [RegularExpression(@"\+[0-9]+")]
         public string PhoneNumber { get; set; }
 
         [MaxLength(80)]
@@ -36,7 +36,7 @@
 
         public string Education { get; set; }
 
-        [MaxLength(800)]
+        [MaxLength(1000)]
         public string AboutMe { get; set; }
 
         [Required]

@@ -9,6 +9,8 @@
 
     public class JobOfferDetailsViewModel : IMapFrom<JobOffer>, IHaveCustomMappings
     {
+        public string EmployerApplicationUserUserName { get; set; }
+
         public string Id { get; set; }
 
         public string Position { get; set; }

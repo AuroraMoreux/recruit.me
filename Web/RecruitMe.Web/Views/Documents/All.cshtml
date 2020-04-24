@@ -1,4 +1,5 @@
 ﻿@model RecruitMe.Web.ViewModels.Documents.CandidateDocumentsViewModel
+@using RecruitMe.Common
 @{
     ViewData["Title"] = "My Documents";
     var documents = Model.Documents.ToList();
@@ -29,7 +30,14 @@
                 <th scope="col">File Size</th>
                 <th scope="col">Uploaded On</th>
                 <th style="text-align:center">
-                    <a class=" btn btn-success float-left" asp-controller="Documents" asp-action="Upload">Upload</a>
+                    @if (documents.Count < 15)
+                    {
+                        <a class=" btn btn-success float-left" asp-controller="Documents" asp-action="Upload">Upload</a>
+                    }
+                    else
+                    {
+                        <label class="text-danger float-right"><small><strong>@GlobalConstants.FIleCountReached</strong></small></label>
+                    }
                 </th>
             </tr>
         </thead>

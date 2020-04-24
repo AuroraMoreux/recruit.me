@@ -19,7 +19,6 @@
         [Display(Name = "Email Address: ")]
         public string ApplicationUserEmail { get; set; }
 
-        [Required]
         [Display(Name = "Phone Number: ")]
         public string PhoneNumber { get; set; }
     }

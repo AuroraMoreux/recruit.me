@@ -28,7 +28,7 @@
                 IsDeleted = true,
             };
 
-            int id = await service.CreateAsync(model);
+            var id = await service.CreateAsync(model);
 
             Assert.NotEqual(-1, id);
             Assert.Equal(1, context.FileExtensions.IgnoreQueryFilters().Count());

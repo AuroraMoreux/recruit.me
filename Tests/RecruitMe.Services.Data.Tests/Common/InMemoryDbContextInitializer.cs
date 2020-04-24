@@ -1,10 +1,11 @@
 ﻿namespace RecruitMe.Services.Data.Tests.Common
 {
-    using Microsoft.EntityFrameworkCore;
-    using RecruitMe.Data;
     using System;
     using System.Collections.Generic;
     using System.Text;
+
+    using Microsoft.EntityFrameworkCore;
+    using RecruitMe.Data;
 
     public class InMemoryDbContextInitializer
     {

@@ -4,6 +4,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using Microsoft.AspNetCore.Http;
+using RecruitMe.Common;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
     using RecruitMe.Web.Infrastructure.ValidationAttributes;
@@ -22,8 +23,8 @@
         [Display(Name = "Unique Identification Code")]
         public string UniqueIdentificationCode { get; set; }
 
-        [MaxLength(12)]
-        [RegularExpression("[0-9]+")]
+        [MaxLength(16)]
+        [RegularExpression(@"\+[0-9]+", ErrorMessage = GlobalConstants.PhoneNumberMustBeNoLongerThan15Digits)]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
 
@@ -38,8 +39,8 @@
         [Display(Name = "Contact Person Email")]
         public string ContactPersonEmail { get; set; }
 
-        [MaxLength(12)]
-        [RegularExpression("[0-9]+")]
+        [MaxLength(16)]
+        [RegularExpression(@"\+[0-9]+", ErrorMessage = GlobalConstants.PhoneNumberMustBeNoLongerThan15Digits)]
         [Display(Name = "Contact Person Phone Number")]
         public string ContactPersonPhoneNumber { get; set; }
 

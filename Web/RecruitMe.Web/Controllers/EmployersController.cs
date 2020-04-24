@@ -72,7 +72,7 @@
             var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
             {
-                return this.RedirectToAction(nameof(this.Index));
+                return this.RedirectToAction(nameof(this.CreateProfile));
             }
 
             var viewModel = this.employersService.GetProfileDetails<ProfileViewModel>(employerId);

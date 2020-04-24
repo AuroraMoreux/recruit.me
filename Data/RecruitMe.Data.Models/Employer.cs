@@ -22,8 +22,8 @@
         [Required]
         public string UniqueIdentificationCode { get; set; }
 
-        [MaxLength(12)]
-        [RegularExpression("[0-9]+")]
+        [MaxLength(16)]
+        [RegularExpression(@"\+[0-9]+")]
         public string PhoneNumber { get; set; }
 
         [MaxLength(80)]
@@ -37,8 +37,8 @@
         [EmailAddress]
         public string ContactPersonEmail { get; set; }
 
-        [MaxLength(12)]
-        [RegularExpression("[0-9]+")]
+        [MaxLength(16)]
+        [RegularExpression(@"\+[0-9]+")]
         public string ContactPersonPhoneNumber { get; set; }
 
         public string ContactPersonPosition { get; set; }

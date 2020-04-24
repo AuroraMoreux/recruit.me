@@ -16,7 +16,7 @@
     using RecruitMe.Services.Messaging;
     using RecruitMe.Web.ViewModels.JobApplications;
 
-    public class JobApplicationService : IJobApplicationService
+    public class JobApplicationsService : IJobApplicationService
     {
         private readonly IDeletableEntityRepository<JobApplication> jobApplicationsRepository;
         private readonly IDeletableEntityRepository<JobApplicationDocument> jobApplicationDocumentsRepository;
@@ -25,7 +25,7 @@
         private readonly IEmailSender emailSender;
         private readonly IConfiguration configuration;
 
-        public JobApplicationService(
+        public JobApplicationsService(
             IDeletableEntityRepository<JobApplication> jobApplicationRepository,
             IDeletableEntityRepository<JobApplicationDocument> jobApplicationDocumentsRepository,
             IDeletableEntityRepository<JobOffer> jobOfferRepository,
@@ -205,7 +205,7 @@
 
         public int GetNewApplicationsCount()
         {
-            var yesterdaysDate = DateTime.UtcNow.AddDays(-1).Date;
+            var yesterdaysDate = DateTime.UtcNow.AddDays(-1);
             return this.jobApplicationsRepository
                 .AllAsNoTracking()
                 .Where(ja => ja.CreatedOn >= yesterdaysDate)

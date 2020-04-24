@@ -108,7 +108,7 @@
                 return this.View(input);
             }
 
-            if (this.documentsService.DocumentNameAlreadyExists(input.SanitizedFileName))
+            if (this.documentsService.DocumentNameAlreadyExists(input.SanitizedFileName, candidateId))
             {
                 this.ModelState.AddModelError(string.Empty, GlobalConstants.DocumentAlreadyExists);
                 input.FileExtensions = this.allowedExtensions;
@@ -119,10 +119,20 @@
             if (!this.allowedExtensions.Any(ae => input.File.FileName.EndsWith(ae)))
             {
                 this.ModelState.AddModelError(string.Empty, GlobalConstants.FileExtensionNotSupported);
+                input.FileExtensions = this.allowedExtensions;
+                input.Categories = this.allowedCategories;
                 return this.View(input);
             }
 
-            var documentId = await this.documentsService.Upload(input, candidateId);
+            if (this.documentsService.GetDocumentCountForCandidate(candidateId) > 15)
+            {
+                this.ModelState.AddModelError(string.Empty, GlobalConstants.FIleCountReached);
+                input.FileExtensions = this.allowedExtensions;
+                input.Categories = this.allowedCategories;
+                return this.View(input);
+            }
+
+            var documentId = await this.documentsService.UploadAsync(input, candidateId);
 
             if (documentId == null)
             {
@@ -150,7 +160,7 @@
                 return this.Forbid();
             }
 
-            var deletionResult = await this.documentsService.Delete(id);
+            var deletionResult = await this.documentsService.DeleteAsync(id);
 
             if (deletionResult == false)
             {
@@ -190,7 +200,7 @@
                 }
             }
 
-            var fileAsByteArray = await this.documentsService.Download(id);
+            var fileAsByteArray = await this.documentsService.DownloadAsync(id);
             if (fileAsByteArray == null)
             {
                 return this.NotFound();

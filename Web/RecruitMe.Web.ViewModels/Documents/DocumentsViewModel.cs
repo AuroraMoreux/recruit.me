@@ -1,4 +1,5 @@
-﻿namespace RecruitMe.Web.ViewModels.Documents
+﻿
+namespace RecruitMe.Web.ViewModels.Documents
 {
     using System;
 
@@ -23,11 +24,6 @@
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<Document, DocumentsViewModel>()
-                .ForMember(dvm => dvm.Name, options =>
-                {
-                    options.MapFrom(d => d.Name);
-                })
-
                 .ForMember(dvm => dvm.UploadedOn, options =>
                 {
                     options.MapFrom(d => d.CreatedOn);

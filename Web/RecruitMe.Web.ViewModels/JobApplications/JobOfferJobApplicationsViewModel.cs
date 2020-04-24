@@ -16,7 +16,7 @@
 
         public string ApplicationStatusName { get; set; }
 
-        public string ApplicationStatusId { get; set; }
+        public int ApplicationStatusId { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

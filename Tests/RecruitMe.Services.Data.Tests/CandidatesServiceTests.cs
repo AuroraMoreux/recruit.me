@@ -116,13 +116,7 @@
             var cloudinary = new Cloudinary(new Account(CloudinaryConfig.CloudName, CloudinaryConfig.ApiKey, CloudinaryConfig.ApiSecret));
             var candidatesService = this.GetMockedService(candidateRepository, null, null, cloudinary);
 
-            using var stream = new MemoryStream(File.ReadAllBytes(@"UploadFiles/testImage.png"));
-            var profilePicture = new FormFile(stream, 0, stream.Length, "image", "image.png")
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "image/png",
-                ContentDisposition = "form-data",
-            };
+            var profilePicture = this.PrepareImage();
 
             var model = new CreateCandidateProfileInputModel
             {
@@ -177,7 +171,7 @@
             await context.SaveChangesAsync();
 
             var candidatesRepository = new EfDeletableEntityRepository<Candidate>(context);
-            var candidatesService = new CandidatesService(candidatesRepository, null, null, null);
+            var candidatesService = this.GetMockedService(candidatesRepository, null, null, null);
 
             var result = candidatesService.GetProfileDetails<ProfileViewModel>("First");
 
@@ -194,7 +188,7 @@
             await context.SaveChangesAsync();
 
             var candidatesRepository = new EfDeletableEntityRepository<Candidate>(context);
-            var candidatesService = new CandidatesService(candidatesRepository, null, null, null);
+            var candidatesService = this.GetMockedService(candidatesRepository, null, null, null);
 
             var result = candidatesService.GetProfileDetails<ProfileViewModel>("IdNotInDatabase");
             Assert.Null(result);

@@ -10,7 +10,10 @@
 
 <h1 style="display:inline-block">@ViewData["Title"]</h1>
 <a class="btn btn-warning float-right" href="javascript:history.go(-1)">Back to List</a>
-
+@if (this.User.Identity.Name == Model.EmployerApplicationUserUserName)
+{
+    <a class="btn btn-info float-right" style="margin-right:0.5rem" asp-controller="JobOffers" asp-action="Edit" asp-route-id="@Model.Id">Edit Details</a>
+}
 @if (this.TempData["AlreadyAppliedMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
