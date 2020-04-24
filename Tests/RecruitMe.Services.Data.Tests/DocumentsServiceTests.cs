@@ -166,6 +166,25 @@
             Assert.Equal(1, context.Documents.Count());
         }
 
+        [Fact]
+        public async Task GetDocumentDetailsReturnsCorrectInformation()
+        {
+            AutoMapperInitializer.InitializeMapper();
+            var context = InMemoryDbContextInitializer.InitializeContext();
+
+            await context.Documents.AddRangeAsync(this.SeedTestData());
+            await context.SaveChangesAsync();
+
+            var repository = new EfDeletableEntityRepository<Document>(context);
+
+            var documentsService = this.GetMockedService(repository);
+
+            var result = documentsService.GetDocumentDetails<DeleteViewModel>("11");
+
+            Assert.NotNull(result);
+            Assert.Equal("File1.doc", result.Name);
+        }
+
         private DocumentsService GetMockedService(IDeletableEntityRepository<Document> documentsRepository, IFileDownloadService fileDownloadService = null, Cloudinary cloudinary = null)
         {
             var mockFileDownload = fileDownloadService ?? new Mock<IFileDownloadService>().Object;

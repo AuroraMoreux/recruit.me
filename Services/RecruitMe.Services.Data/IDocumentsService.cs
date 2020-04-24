@@ -22,5 +22,7 @@
         bool IsCandidateOwnerOfDocument(string candidateId, string documentId);
 
         int GetDocumentCountForCandidate(string candidateId);
+
+        T GetDocumentDetails<T>(string documentId);
     }
 }

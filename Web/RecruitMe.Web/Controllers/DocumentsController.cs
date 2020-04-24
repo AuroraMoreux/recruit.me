@@ -160,6 +160,28 @@
                 return this.Forbid();
             }
 
+            var viewModel = this.documentsService.GetDocumentDetails<DeleteViewModel>(id);
+
+            return this.View(viewModel);
+        }
+
+        [HttpPost]
+        [AuthorizeRoles(GlobalConstants.CandidateRoleName, GlobalConstants.AdministratorRoleName)]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var candidateId = this.candidatesService.GetCandidateIdByUsername(this.User.Identity.Name);
+            if (candidateId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Candidates");
+            }
+
+            var isOwner = this.documentsService.IsCandidateOwnerOfDocument(candidateId, id);
+
+            if (!isOwner)
+            {
+                return this.Forbid();
+            }
+
             var deletionResult = await this.documentsService.DeleteAsync(id);
 
             if (deletionResult == false)

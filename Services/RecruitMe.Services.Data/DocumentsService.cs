@@ -84,7 +84,6 @@
                 .FirstOrDefault(d => d.Id == documentId);
 
             CloudinaryService.DeleteFile(this.cloudinary, document.CandidateId + $"_{document.Name}");
-            document.Url = null;
             try
             {
                 this.documentRepository.Delete(document);
@@ -124,6 +123,15 @@
                   .AllAsNoTracking()
                   .Where(d => d.Id == documentId)
                   .Select(d => d.Name)
+                  .FirstOrDefault();
+        }
+
+        public T GetDocumentDetails<T>(string documentId)
+        {
+            return this.documentRepository
+                  .AllAsNoTracking()
+                  .Where(d => d.Id == documentId)
+                  .To<T>()
                   .FirstOrDefault();
         }
     }

@@ -10,12 +10,12 @@
 
 @if (this.TempData["Success"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["Success"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    @TempData["Success"]
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 }
 
 <div class="table-responsive-sm">
@@ -32,11 +32,11 @@
                 <th style="text-align:center">
                     @if (documents.Count < 15)
                     {
-                        <a class=" btn btn-success float-left" asp-controller="Documents" asp-action="Upload">Upload</a>
+                    <a class=" btn btn-success float-left" asp-controller="Documents" asp-action="Upload">Upload</a>
                     }
                     else
                     {
-                        <label class="text-danger float-right"><small><strong>@GlobalConstants.FIleCountReached</strong></small></label>
+                    <label class="text-danger float-right"><small><strong>@GlobalConstants.FIleCountReached</strong></small></label>
                     }
                 </th>
             </tr>
@@ -44,26 +44,26 @@
         <tbody>
             @if (documents.Count == 0)
             {
-                <tr>
-                    <td>
-                        No documents to show.
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    No documents to show.
+                </td>
+            </tr>
             }
             @foreach (var document in documents)
             {
                 var fileSize = (document.Size < 1024 ? @document.Size + " KB" : Math.Round(@document.Size / 1024m, 2) + " MB");
-                <tr>
-                    <td><icon class="documentIcons" name="@document.FileExtensionName"></icon></td>
-                    <td>@document.Name</td>
-                    <td>@document.DocumentCategoryName</td>
-                    <td>@fileSize</td>
-                    <td>@document.UploadedOn</td>
-                    <td>
-                        <a class="btn btn-primary btn-sm" asp-controller="Documents" asp-action="Download" asp-route-id="@document.Id">Download</a>
-                        <a class="btn btn-danger btn-sm" asp-controller="Documents" asp-action="Delete" asp-route-id="@document.Id">Delete</a>
-                    </td>
-                </tr>
+            <tr>
+                <td><icon class="documentIcons" name="@document.FileExtensionName"></icon></td>
+                <td>@document.Name</td>
+                <td>@document.DocumentCategoryName</td>
+                <td>@fileSize</td>
+                <td>@document.UploadedOn</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-controller="Documents" asp-action="Download" asp-route-id="@document.Id">Download</a>
+                    <a class="btn btn-danger btn-sm" target="_blank" asp-controller="Documents" asp-action="Delete" asp-route-id="@document.Id">Delete</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -71,27 +71,27 @@
         <ul class="pagination">
             @if (this.Model.CurrentPage == 1)
             {
-                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-left"></icon></a></li>
+            <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-left"></icon></a></li>
             }
             else
             {
-                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
+            <li class="page-item"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@Model.PreviousPage"><icon class="fas fa-angle-left"></icon></a></li>
             }
 
             @for (int i = 1; i <= Model.PagesCount; i++)
             {
                 var active = i == this.Model.CurrentPage ? "active" : string.Empty;
 
-                <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@i">@i</a></li>
+            <li class="page-item @active"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@i">@i</a></li>
             }
 
             @if (this.Model.CurrentPage == this.Model.PagesCount || this.Model.PagesCount == 0)
             {
-                <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
+            <li class="page-item disabled"><a class="page-link" style="margin: 5px" href="#"><icon class="fas fa-angle-right"></icon></a></li>
             }
             else
             {
-                <li class="page-item"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
+            <li class="page-item"><a class="page-link" style="margin: 5px" href="~/Documents/All?page=@Model.NextPage"><icon class="fas fa-angle-right"></icon></a></li>
             }
         </ul>
     </nav>

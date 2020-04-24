@@ -38,10 +38,14 @@
                     <span asp-validation-for="DocumentCategoryId" class="text-danger"></span>
                 </div>
 
-                <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
+                <input style="margin-left: 1.5rem;" type="submit" value="Upload" class="btn btn-primary" />
                 @if (shouldHaveSkipButton)
                 {
                     <a class="btn btn-warning" style="margin-left:0.5rem" asp-controller="JobOffers" asp-action="All">Skip</a>
+                }
+                else
+                {
+                    <a class="btn btn-danger" style="margin-left:0.5rem" href="javascript:history.go(-1)">Back</a>
                 }
                 <hr />
             </div>
