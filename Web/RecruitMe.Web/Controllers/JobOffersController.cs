@@ -343,9 +343,28 @@
             return this.View(viewModel);
         }
 
+        public IActionResult Delete(string id)
+        {
+            var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
+            if (employerId == null)
+            {
+                return this.RedirectToAction("CreateProfile", "Employers");
+            }
+
+            var isOfferPostedByEmployer = this.jobOffersService.IsOfferPostedByEmployer(id, employerId);
+            if (!isOfferPostedByEmployer)
+            {
+                return this.Forbid();
+            }
+
+            var viewModel = this.jobOffersService.GetDetails<DeleteViewModel>(id);
+
+            return this.View(viewModel);
+        }
+
         [HttpPost]
         [AuthorizeRoles(GlobalConstants.EmployerRoleName, GlobalConstants.AdministratorRoleName)]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var employerId = this.employersService.GetEmployerIdByUsername(this.User.Identity.Name);
             if (employerId == null)
@@ -365,7 +384,7 @@
                 return this.NotFound();
             }
 
-            this.TempData["Success"] = GlobalConstants.JobOfferSuccessfullyUpdated;
+            this.TempData["Success"] = GlobalConstants.JobOfferSuccessfullyDeleted;
             return this.RedirectToAction(nameof(this.All));
         }
     }

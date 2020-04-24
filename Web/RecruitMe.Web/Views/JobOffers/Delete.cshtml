@@ -1,0 +1,21 @@
+﻿@model RecruitMe.Web.ViewModels.JobOffers.DeleteViewModel
+@{
+    ViewData["Title"] = @$"Delete Job Offer";
+}
+
+<h1 style="display:inline">@ViewData["Title"]</h1>
+<hr />
+
+<h3>Are you sure you want to delete the following job offer?</h3>
+<br />
+<div>
+    <form method="post">
+        <div class="form-group">
+            <h5><strong>Position: </strong> @Model.Position</h5>
+        </div>
+        <br />
+        <input type="submit" value="Delete" class="btn btn-danger" asp-controller="JobOffers" asp-action="DeleteConfirmed" asp-route-id="@Model.Id" />
+        <a href="javascript:window.open('','_self').close()" class="btn btn-warning">Back</a>
+    </form>
+</div>
+

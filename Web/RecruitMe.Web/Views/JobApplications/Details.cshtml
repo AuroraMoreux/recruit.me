@@ -1,7 +1,7 @@
 ﻿@model RecruitMe.Web.ViewModels.JobApplications.DetailsViewModel
 @using RecruitMe.Common
 @{
-    ViewData["Title"] = $"Application Details for Position {Model.JobOfferPosition}";
+    ViewData["Title"] = $"Application Details for Position '{Model.JobOfferPosition}'";
     var acceptStatusId = Model.JobApplicationStatusChangeList.Where(jas => jas.Name.ToLower().Contains("accepted")).Select(jas => jas.Id).FirstOrDefault();
     var rejectStatusId = Model.JobApplicationStatusChangeList.Where(jas => jas.Name.ToLower().Contains("rejected")).Select(jas => jas.Id).FirstOrDefault();
     var retractStatusId = Model.JobApplicationStatusChangeList.Where(jas => jas.Name.ToLower().Contains("retracted")).Select(jas => jas.Id).FirstOrDefault();

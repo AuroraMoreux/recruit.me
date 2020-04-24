@@ -13,11 +13,11 @@
             <tr>
                 <th scope="col">Position <a style="margin: 5px" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["PositionSortParam"]"><icon class="fas fa-sort"></icon></a></th>
                 <th scope="col">Active <a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["IsActiveSortParam"]"><icon class="fas fa-sort"></icon></a></th>
-                <th scope="col">Valid From  <a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["DateFromSortParam"]"><icon class="fas fa-sort"></icon></a></th>
-                <th scope="col">Valid Until  <a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["DateUntilSortParam"]"><icon class="fas fa-sort"></icon></a></th>
+                <th scope="col">Valid From <a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["DateFromSortParam"]"><icon class="fas fa-sort"></icon></a></th>
+                <th scope="col">Valid Until <a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["DateUntilSortParam"]"><icon class="fas fa-sort"></icon></a></th>
                 <th scope="col">Job Level <a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["LevelSortParam"]"><icon class="fas fa-sort"></icon></a></th>
                 <th scope="col">
-                    Applications Count <a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["CountSortParam"]"><icon class="fas fa-sort"></icon></a>
+                    Applications<a style="margin: 5px;display:inline" asp-action="MyOffers" asp-controller="JobOffers" asp-route-sortOrder="@ViewData["CountSortParam"]"><icon class="fas fa-sort"></icon></a>
                 </th>
                 <th><a class="btn btn-success float-right" asp-controller="JobOffers" asp-action="Post">Post New Offer</a></th>
             </tr>
@@ -42,9 +42,9 @@
                     <td>@offer.JobApplicationsCount</td>
                     <td>
                         <a class=" btn btn-primary btn-sm" asp-controller="JobOffers" target="_blank" asp-action="Details" asp-route-id="@offer.Id">Details</a>
-                        <a class=" btn btn-info btn-sm" asp-controller="JobApplications" asp-action="ByOffer" asp-route-jobOfferId="@offer.Id">Applications</a>
-                        <a class=" btn btn-warning btn-sm" asp-controller="JobOffers" asp-action="Edit" asp-route-id="@offer.Id">Edit</a>
-                        <a class=" btn btn-danger btn-sm" asp-controller="JobOffers" asp-action="Delete" asp-route-id="@offer.Id">Delete</a>
+                        <a class=" btn btn-info btn-sm" asp-controller="JobApplications" target="_blank" asp-action="ByOffer" asp-route-jobOfferId="@offer.Id">Applications</a>
+                        <a class=" btn btn-warning btn-sm" target="_blank"asp-controller="JobOffers" asp-action="Edit" asp-route-id="@offer.Id">Edit</a>
+                        <a class="btn btn-danger btn-sm" target="_blank"asp-controller="JobOffers" asp-action="Delete" asp-route-id="@offer.Id">Delete</a>
                     </td>
                 </tr>
             }
