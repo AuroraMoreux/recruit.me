@@ -3,9 +3,20 @@
     ViewData["Title"] = "Upload new file";
     var allowedFileExtensions = string.Join(", ", this.Model.FileExtensions);
     var categories = this.Model.Categories.Select(c => new SelectListItem(c.Name, c.Id.ToString()));
+    bool shouldHaveSkipButton = false;
 }
 
 <h1>@ViewData["Title"]</h1>
+@if (this.TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    shouldHaveSkipButton = true;
+}
 <h3>Add documents to your portfolio to use in your job applications</h3>
 <div class="container-fluid">
     <form class="container" asp-controller="Documents" asp-action="Upload" method="post" enctype="multipart/form-data">
@@ -28,7 +39,10 @@
                 </div>
 
                 <input style="margin-left: 1.5rem;" type="submit" value="Send" class="btn btn-primary" />
-                <a class="btn btn-warning" style="margin-left:0.5rem" asp-controller="JobOffers" asp-action="All">Skip</a>
+                @if (shouldHaveSkipButton)
+                {
+                    <a class="btn btn-warning" style="margin-left:0.5rem" asp-controller="JobOffers" asp-action="All">Skip</a>
+                }
                 <hr />
             </div>
         </div>

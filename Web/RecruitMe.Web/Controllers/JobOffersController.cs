@@ -67,7 +67,7 @@
             }
 
             var totalJobOffersCount = this.jobOffersService.GetCount();
-            var filteredJobOffers = await this.jobOffersService.GetAllValidFilteredOffers<JobOffersViewModel>(filters);
+            var filteredJobOffers = await this.jobOffersService.GetAllValidFilteredOffersAsync<JobOffersViewModel>(filters);
 
             if (filteredJobOffers == null)
             {
@@ -251,7 +251,7 @@
                 return this.View(input);
             }
 
-            var jobOfferId = await this.jobOffersService.Update(input, employerId);
+            var jobOfferId = await this.jobOffersService.UpdateAsync(input, employerId);
 
             if (jobOfferId == null)
             {

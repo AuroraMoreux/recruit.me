@@ -117,7 +117,7 @@
 
             var repository = new EfDeletableEntityRepository<Document>(context);
             var mockFileDownload = new Mock<IFileDownloadService>();
-            mockFileDownload.Setup(m => m.DownloadFile(It.IsAny<string>())).Returns(Task.FromResult(new byte[7]));
+            mockFileDownload.Setup(m => m.DownloadFileAsync(It.IsAny<string>())).Returns(Task.FromResult(new byte[7]));
             var documentsService = this.GetMockedService(repository, mockFileDownload.Object, null);
 
             var result = await documentsService.DownloadAsync("11");
@@ -136,7 +136,7 @@
 
             var repository = new EfDeletableEntityRepository<Document>(context);
             var mockFileDownload = new Mock<IFileDownloadService>();
-            mockFileDownload.Setup(m => m.DownloadFile(It.IsAny<string>())).Returns(Task.FromResult(new byte[7]));
+            mockFileDownload.Setup(m => m.DownloadFileAsync(It.IsAny<string>())).Returns(Task.FromResult(new byte[7]));
             var documentsService = this.GetMockedService(repository, mockFileDownload.Object, null);
 
             var result = documentsService.GetDocumentCountForCandidate("CandidateId");

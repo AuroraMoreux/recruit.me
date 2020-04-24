@@ -4,6 +4,6 @@
 
     public interface IFileDownloadService
     {
-        Task<byte[]> DownloadFile(string url);
+        Task<byte[]> DownloadFileAsync(string url);
     }
 }

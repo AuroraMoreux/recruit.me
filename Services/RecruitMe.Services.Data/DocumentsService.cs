@@ -113,7 +113,7 @@
                 .Select(d => d.Url)
                 .FirstOrDefault();
 
-            var file = await this.fileDownloadService.DownloadFile(documentUrl);
+            var file = await this.fileDownloadService.DownloadFileAsync(documentUrl);
 
             return file;
         }

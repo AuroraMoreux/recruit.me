@@ -7,12 +7,11 @@
 
     using AutoMapper;
     using Ganss.XSS;
-    using RecruitMe.Common;
     using RecruitMe.Data.Models;
     using RecruitMe.Services.Mapping;
     using RecruitMe.Web.Infrastructure.ValidationAttributes;
 
-    public class EditJobOfferDetailsModel : IMapFrom<JobOffer>, IMapTo<JobOffer>, IHaveCustomMappings, IValidatableObject
+    public class EditJobOfferDetailsModel : IMapFrom<JobOffer>, IMapTo<JobOffer>, IHaveCustomMappings
     {
         [Required]
         public string Id { get; set; }
@@ -35,11 +34,9 @@
         [Display(Name = "Office Address")]
         public string OfficeAddress { get; set; }
 
-        [Required]
         [Display(Name = "Valid From")]
         public DateTime ValidFrom { get; set; }
 
-        [Required]
         [Display(Name = "Valid Until")]
         public DateTime ValidUntil { get; set; }
 
@@ -88,19 +85,6 @@
                    {
                        options.MapFrom(jo => jo.JobTypes.Select(jojt => jojt.JobTypeId).ToList());
                    });
-        }
-
-        public IEnumerable<ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
-        {
-            if (this.ValidUntil < this.ValidFrom)
-            {
-                yield return new ValidationResult(errorMessage: GlobalConstants.ValidUntilDateMustBeCreaterThanValidFromDate, memberNames: new[] { "ValidUntil" });
-            }
-
-            if (this.ValidFrom < DateTime.UtcNow.Date)
-            {
-                yield return new ValidationResult(errorMessage: GlobalConstants.ValidFromDateMustBeAfterCurrentDate, memberNames: new[] { "ValidFrom" });
-            }
         }
     }
 }

@@ -9,7 +9,7 @@
     {
         Task<string> AddAsync(PostViewModel model, string employerId);
 
-        Task<IEnumerable<T>> GetAllValidFilteredOffers<T>(FilterModel filters);
+        Task<IEnumerable<T>> GetAllValidFilteredOffersAsync<T>(FilterModel filters);
 
         T GetDetails<T>(string jobOfferId);
 
@@ -17,7 +17,7 @@
 
         bool IsPositionDuplicate(string employerId, string jobOfferPosition);
 
-        Task<string> Update(EditViewModel model, string employerId);
+        Task<string> UpdateAsync(EditViewModel model, string employerId);
 
         Task<bool> DeleteAsync(string jobOfferId);
 

@@ -89,7 +89,7 @@
             }
         }
 
-        public async Task<IEnumerable<T>> GetAllValidFilteredOffers<T>(FilterModel filters)
+        public async Task<IEnumerable<T>> GetAllValidFilteredOffersAsync<T>(FilterModel filters)
         {
             var offers = await Task.Run(() =>
            {
@@ -147,7 +147,7 @@
                {
                    var jobOffersIdsWithSelectedSectors = this.jobOffersRepository
                        .AllAsNoTracking()
-                       .Where(jo => filters.SectorsIds.Contains(jo.JobLevelId))
+                       .Where(jo => filters.SectorsIds.Contains(jo.JobSectorId))
                        .Select(jo => jo.Id)
                        .ToList();
 
@@ -227,12 +227,16 @@
                 && currentDate <= jo.ValidUntil);
         }
 
-        public async Task<string> Update(EditViewModel model, string employerId)
+        public async Task<string> UpdateAsync(EditViewModel model, string employerId)
         {
             var jobOffer = this.jobOffersRepository
                  .All()
                  .Where(jo => jo.Id == model.JobOfferDetails.Id)
                  .FirstOrDefault();
+            if (jobOffer == null)
+            {
+                return null;
+            }
 
             var input = model.JobOfferDetails;
 

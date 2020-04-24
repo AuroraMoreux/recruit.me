@@ -42,7 +42,7 @@
                     <td>@offer.JobApplicationsCount</td>
                     <td>
                         <a class=" btn btn-primary btn-sm" asp-controller="JobOffers" target="_blank" asp-action="Details" asp-route-id="@offer.Id">Details</a>
-                        <a class=" btn btn-info btn-sm" asp-controller="JobApplications" asp-action="ByOffer" asp-route-jobOfferId="@offer.Id">View Applications</a>
+                        <a class=" btn btn-info btn-sm" asp-controller="JobApplications" asp-action="ByOffer" asp-route-jobOfferId="@offer.Id">Applications</a>
                         <a class=" btn btn-warning btn-sm" asp-controller="JobOffers" asp-action="Edit" asp-route-id="@offer.Id">Edit</a>
                         <a class=" btn btn-danger btn-sm" asp-controller="JobOffers" asp-action="Delete" asp-route-id="@offer.Id">Delete</a>
                     </td>

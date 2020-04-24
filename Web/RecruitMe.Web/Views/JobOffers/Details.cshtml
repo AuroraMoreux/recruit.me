@@ -8,13 +8,15 @@
     var skills = string.Join("; ", Model.Skills);
 }
 
-<h1 style="display:inline-block">@ViewData["Title"]</h1>
-<a class="btn btn-warning float-right" href="javascript:window.open('','_self').close()">Close</a>
+<h1>@ViewData["Title"]</h1>
+
+<a style ="display:inline" class="btn btn-warning float-right" href="javascript:window.open('','_self').close()">Close</a>
 @if (this.User.Identity.Name == Model.EmployerApplicationUserUserName)
 {
-    <a class="btn btn-info float-right" style="margin-right:0.5rem" asp-controller="JobOffers" asp-action="Edit" asp-route-id="@Model.Id">Edit Details</a>
+    <a style ="display:inline" class="btn btn-info float-right"  asp-controller="JobOffers" asp-action="Edit" asp-route-id="@Model.Id">Edit Details</a>
 }
-
+<br />
+<hr />
 <div class="card">
     <div class="card-body">
         <h5 class="card-title" style="display:inline-block">Position Details:</h5>
