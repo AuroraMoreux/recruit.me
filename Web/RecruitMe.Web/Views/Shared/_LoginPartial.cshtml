@@ -7,10 +7,6 @@
     <ul class="navbar-nav navbar-expand-sm">
         @if (this.SignInManager.IsSignedIn(this.User))
         {
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="JobOffers" asp-action="All">Browse Job Offers</a>
-            </li>
-
             if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
             {
                 <li class="nav-item">
@@ -23,17 +19,22 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Candidates" asp-action="Index">Home</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="JobOffers" asp-action="All">Browse Job Offers</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Candidates" asp-action="MyProfile">My Profile</a>
                 </li>
-                //browse JOs, add files, review applications, view top employers and browse their ads etc.
             }
             else if (this.User.IsInRole(GlobalConstants.EmployerRoleName))
             {
                 <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Employers" asp-action="Index">Home</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="JobOffers" asp-action="Post">Post an Offer</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Employers" asp-action="Index">Home</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="JobOffers" asp-action="All">Browse Job Offers</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Employers" asp-action="MyProfile">My Profile</a>

@@ -7,7 +7,7 @@
 
     public interface IJobOffersService
     {
-        Task<string> Add(PostViewModel model, string employerId);
+        Task<string> AddAsync(PostViewModel model, string employerId);
 
         Task<IEnumerable<T>> GetAllValidFilteredOffers<T>(FilterModel filters);
 

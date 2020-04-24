@@ -29,7 +29,7 @@
             this.jobOfferJobTypesRepository = jobOfferJobTypeRepository;
         }
 
-        public async Task<string> Add(PostViewModel model, string employerId)
+        public async Task<string> AddAsync(PostViewModel model, string employerId)
         {
             var offer = AutoMapperConfig.MapperInstance.Map<JobOffer>(model);
             offer.EmployerId = employerId;

@@ -180,7 +180,7 @@
                 return this.View(input);
             }
 
-            var jobOfferId = await this.jobOffersService.Add(input, employerId);
+            var jobOfferId = await this.jobOffersService.AddAsync(input, employerId);
 
             if (jobOfferId == null)
             {

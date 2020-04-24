@@ -9,30 +9,11 @@
 }
 
 <h1 style="display:inline-block">@ViewData["Title"]</h1>
-<a class="btn btn-warning float-right" href="javascript:history.go(-1)">Back to List</a>
+<a class="btn btn-warning float-right" href="javascript:window.open('','_self').close()">Close</a>
 @if (this.User.Identity.Name == Model.EmployerApplicationUserUserName)
 {
     <a class="btn btn-info float-right" style="margin-right:0.5rem" asp-controller="JobOffers" asp-action="Edit" asp-route-id="@Model.Id">Edit Details</a>
 }
-@if (this.TempData["AlreadyAppliedMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["AlreadyAppliedMessage"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
-@if (this.TempData["SuccessfulApplication"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessfulApplication"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
-
 
 <div class="card">
     <div class="card-body">

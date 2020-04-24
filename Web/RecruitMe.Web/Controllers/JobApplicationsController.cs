@@ -91,7 +91,7 @@
             if (this.jobApplicationService.HasCandidateAppliedForOffer(input.CandidateId, input.JobOfferId))
             {
                 this.TempData["AlreadyAppliedMessage"] = GlobalConstants.CandidateAlreadyApplied;
-                return this.RedirectToAction("Details", "JobOffers", new { id = input.JobOfferId });
+                return this.RedirectToAction(nameof(this.All));
             }
 
             var jobApplicationBaseUrl = $"{this.Request.Scheme}://{this.Request.Host}/JobApplications/Details/";
@@ -104,7 +104,7 @@
             else
             {
                 this.TempData["SuccessfulApplication"] = GlobalConstants.JobApplicationSuccessfullySubmitted;
-                return this.RedirectToAction("Details", "JobOffers", new { id = input.JobOfferId });
+                return this.RedirectToAction(nameof(this.All));
             }
         }
 

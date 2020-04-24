@@ -192,6 +192,24 @@
             Assert.Equal(10, result.Count());
         }
 
+        [Fact]
+        public async Task AddAsyncSavesRecordCorrectly()
+        {
+            AutoMapperInitializer.InitializeMapper();
+            var context = InMemoryDbContextInitializer.InitializeContext();
+            var repository = new EfDeletableEntityRepository<JobOffer>(context);
+            var languagesRepository = new EfDeletableEntityRepository<JobOfferLanguage>(context);
+            var skillsRepository = new EfDeletableEntityRepository<JobOfferSkill>(context);
+            var service = this.GetMockedService(repository, languagesRepository, skillsRepository);
+
+            var model = new PostViewModel
+            {
+                LanguagesIds = new List<int> { 1, 2, 3 },
+                SkillsIds = new List<int> { 4, 5, 6 },
+                JobTypesIds = new List<int> { 7, 8, 9 },
+
+            };
+        }
         private JobOffersService GetMockedService(
             IDeletableEntityRepository<JobOffer> offersRepository,
             IDeletableEntityRepository<JobOfferLanguage> languagesRepository = null,
