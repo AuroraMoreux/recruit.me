@@ -137,7 +137,7 @@
                 .Where(ja => ja.Id == jobApplicationId)
                 .Select(ja => new
                 {
-                    JobOfferPosition= ja.JobOffer.Position,
+                    JobOfferPosition = ja.JobOffer.Position,
                     JobApplicationStatus = ja.ApplicationStatus.Name,
                     ja.Candidate.ApplicationUser.Email,
                 })
@@ -153,7 +153,8 @@
         {
             return this.jobApplicationsRepository
                  .AllAsNoTracking()
-                 .Where(ja => ja.JobOfferId == offerId)
+                 .Where(ja => ja.JobOfferId == offerId
+                 && ja.ApplicationStatus.Name.ToLower() != "retracted")
                  .OrderBy(ja => ja.CreatedOn)
                  .To<T>()
                  .ToList();
@@ -217,7 +218,8 @@
             return this.jobApplicationsRepository
                  .AllAsNoTracking()
                  .Any(ja => ja.CandidateId == candidateId
-                   && ja.JobOfferId == jobOfferId);
+                   && ja.JobOfferId == jobOfferId
+                   && ja.ApplicationStatus.Name.ToLower() != "retracted");
         }
 
         public bool IsUserRelatedToJobApplication(string jobApplicationId, string userId)

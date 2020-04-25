@@ -32,7 +32,7 @@
 
             var result = service.GetApplicationsForOffer<JobOfferJobApplicationsViewModel>("111");
 
-            Assert.Equal(3, result.Count());
+            Assert.Equal(2, result.Count());
         }
 
         [Fact]
@@ -142,6 +142,21 @@
             var repository = new EfDeletableEntityRepository<JobApplication>(context);
             var service = this.GetMockedService(repository);
             var result = service.HasCandidateAppliedForOffer("Second", "112");
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task HasCandidateAppliedForOfferReturnsCorrectInfoWhenApplicationIsRetracted()
+        {
+            AutoMapperInitializer.InitializeMapper();
+            var context = InMemoryDbContextInitializer.InitializeContext();
+            await context.JobApplications.AddRangeAsync(this.SeedTestData());
+            await context.SaveChangesAsync();
+
+            var repository = new EfDeletableEntityRepository<JobApplication>(context);
+            var service = this.GetMockedService(repository);
+            var result = service.HasCandidateAppliedForOffer("Second", "3");
 
             Assert.False(result);
         }
@@ -367,7 +382,7 @@
                     CandidateId = "Second",
                     CreatedOn = DateTime.UtcNow.AddHours(-25),
                     JobOfferId = "111",
-                    ApplicationStatus = new JobApplicationStatus { Name = "Third", Id = 3 },
+                    ApplicationStatus = new JobApplicationStatus { Name = "Retracted", Id = 3 },
                     Message = "someText",
                 },
                 new JobApplication
