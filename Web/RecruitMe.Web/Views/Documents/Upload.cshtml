@@ -45,10 +45,24 @@
                 }
                 else
                 {
-                    <a class="btn btn-danger" style="margin-left:0.5rem" href="javascript:history.go(-1)">Back</a>
+                    <a id="cancelButton" class="btn btn-danger" style="margin-left:0.5rem">Back</a>
                 }
                 <hr />
             </div>
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $("#cancelButton").attr("href", "http://www.google.com/")
+
+        if (window.opener != null) {
+            //PopUp
+            $("#cancelButton").attr("href", "javascript:window.open('','_self').close()");
+        }
+        else {
+            $("#cancelButton").attr("href", "javascript:history.go(-1)");
+        }
+    });
+</script>

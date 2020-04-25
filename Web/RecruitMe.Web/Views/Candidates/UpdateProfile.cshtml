@@ -86,7 +86,21 @@
                 </div>
             </div>
             <input style="margin-left: 1.5rem;" type="submit" value="Submit" class="btn btn-primary" />
-            <a class="btn btn-danger" style="margin-left:0.5rem" href="javascript:history.go(-1)">Cancel</a>
+            <a id="cancelButton" class="btn btn-danger" style="margin-left:0.5rem">Cancel</a>
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $("#cancelButton").attr("href", "http://www.google.com/")
+
+        if (window.opener != null) {
+            //PopUp
+            $("#cancelButton").attr("href", "javascript:window.open('','_self').close()");
+        }
+        else {
+            $("#cancelButton").attr("href", "javascript:history.go(-1)");
+        }
+    });
+</script>
